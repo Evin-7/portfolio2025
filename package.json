@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "aos": "^2.3.4",
+    "rellax": "^1.12.1",
     "vue": "^3.4.21"
   },
   "devDependencies": {

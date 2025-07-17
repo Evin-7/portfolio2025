@@ -1,115 +1,242 @@
 <template>
-  <section id="works" class="min-h-screen bg-black text-white py-16 px-6">
-    <div class="max-w-6xl mx-auto">
-      <h2
-        class="text-4xl font-bold text-center mb-12 tracking-wide"
-        data-aos="fade-up"
-      >
-        My Work
-      </h2>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div
-          v-for="(project, index) in projects"
+  <div class="section works" :class="{ visible: isVisible }">
+    <div class="container">
+      <h2 class="section-title gradient-text">My Works</h2>
+      <div class="works-grid">
+        <a
+          v-for="(work, index) in works"
           :key="index"
-          class="bg-[#0f0f0f] rounded-2xl overflow-hidden border border-green-500/30 shadow-lg hover:shadow-green-400/50 transition-shadow hover:scale-[1.02] duration-300"
-          :data-aos="'fade-up'"
-          :data-aos-delay="index * 100"
+          :href="work.link"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="work-card glass-card hover-lift interactive"
+          :class="{ animate: isVisible }"
+          :style="{ animationDelay: `${index * 0.1}s` }"
         >
-          <a :href="project.link" target="_blank" class="block h-full group">
-            <div class="relative overflow-hidden">
-              <img
-                :src="project.image"
-                :alt="project.name"
-                class="w-full h-52 object-cover transform group-hover:scale-110 transition-transform duration-500"
-              />
-              <div
-                class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity"
-              ></div>
-            </div>
-            <div class="p-5">
-              <h3 class="text-xl font-semibold mb-2 group-hover:text-green-400 transition-colors">
-                {{ project.name }}
-              </h3>
-              <p class="text-sm text-gray-400">{{ project.description }}</p>
-            </div>
-          </a>
-        </div>
+          <div class="work-image-container">
+            <img :src="work.image" :alt="work.name" class="work-image" />
+          </div>
+          <div class="work-content">
+            <h3 class="work-title">{{ work.name }}</h3>
+            <p class="work-description">{{ work.description }}</p>
+          </div>
+        </a>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup>
-import { onMounted } from "vue";
-import AOS from "aos";
-import "aos/dist/aos.css";
+import { ref, onMounted } from "vue";
 
-onMounted(() => {
-  AOS.init({
-    duration: 1000,
-    once: true,
-  });
-});
+const isVisible = ref(false);
 
-const projects = [
+// Your actual works data
+const works = ref([
   {
     name: "Access Rooms",
     link: "https://accessrooms.com/",
-    image: new URL("@/assets/images/9-min.png", import.meta.url).href,
+    // Changed @/assets to ../assets
+    image: new URL("../assets/images/9-min.png", import.meta.url).href,
     description: "Online houseboat booking platform",
   },
   {
     name: "Mudumalai Tiger Reserve",
     link: "https://www.mudumalaitigerreserve.com/",
-    image: new URL("@/assets/images/8-min.png", import.meta.url).href,
+    // Changed @/assets to ../assets
+    image: new URL("../assets/images/8-min.png", import.meta.url).href,
     description: "Official website of the wildlife sanctuary",
   },
   {
     name: "Periyar Tiger Reserve",
     link: "https://www.periyartigerreserve.org/",
-    image: new URL("@/assets/images/6-min.png", import.meta.url).href,
+    // Changed @/assets to ../assets
+    image: new URL("../assets/images/6-min.png", import.meta.url).href,
     description: "National park website for Periyar reserve",
   },
   {
     name: "GT School of Logistics",
     link: "https://www.gtschooloflogistics.com/",
-    image: new URL("@/assets/images/4-min.png", import.meta.url).href,
+    // Changed @/assets to ../assets
+    image: new URL("../assets/images/4-min.png", import.meta.url).href,
     description: "Educational institute website",
   },
   {
     name: "Wissen ITC",
     link: "https://wissenitc.com/",
-    image: new URL("@/assets/images/5-min.png", import.meta.url).href,
+    // Changed @/assets to ../assets
+    image: new URL("../assets/images/5-min.png", import.meta.url).href,
     description: "Construction and consulting firm site",
   },
   {
     name: "OLE Website",
     link: "https://olewebsite.leopardtechlabs.com/",
-    image: new URL("@/assets/images/1-min.png", import.meta.url).href,
+    // Changed @/assets to ../assets
+    image: new URL("../assets/images/1-min.png", import.meta.url).href,
     description: "Official site for OLE project",
   },
   {
     name: "Admin Panel - Whale Shark",
     link: "https://whaleshark.leopardtechlabs.com",
-    image: new URL("@/assets/images/2-min.png", import.meta.url).href,
+    // Changed @/assets to ../assets
+    image: new URL("../assets/images/2-min.png", import.meta.url).href,
     description: "Rescue application admin panel",
   },
   {
     name: "Poacher Portal - WTI",
     link: "https://poacher.wti.org.in/",
-    image: new URL("@/assets/images/3-min.png", import.meta.url).href,
+    // Changed @/assets to ../assets
+    image: new URL("../assets/images/3-min.png", import.meta.url).href,
     description: "Wildlife Trust of India donation portal",
   },
   {
     name: "Mudumalai Admin Panel",
     link: "https://admin.mudumalaitigerreserve.com/",
-    image: new URL("@/assets/images/10-min.png", import.meta.url).href,
+    // Changed @/assets to ../assets
+    image: new URL("../assets/images/10-min.png", import.meta.url).href,
     description: "Admin dashboard for sanctuary",
   },
-];
+]);
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        isVisible.value = true;
+      }
+    },
+    { threshold: 0.1 }
+  );
+
+  observer.observe(document.querySelector(".works"));
+});
 </script>
 
 <style scoped>
-/* Custom scroll animation styles (optional) */
+/* Your styles remain unchanged, as they were already correct */
+.works {
+  padding: 5rem 2rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.work-card {
+  display: flex; /* Make it a flex container */
+  flex-direction: column; /* Stack image and text vertically */
+  text-decoration: none; /* Remove underline from link */
+  color: inherit; /* Inherit text color */
+  padding: 0; /* Remove padding from card itself, apply to content */
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+  height: 100%; /* Ensure cards fill grid space */
+}
+
+.work-card.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Image Container */
+.work-image-container {
+  width: 100%;
+  height: 200px; /* Fixed height for image container */
+  overflow: hidden;
+  border-radius: 20px 20px 0 0; /* Match top radius of glass card */
+  position: relative; /* For potential overlays */
+  background-color: rgba(0, 0, 0, 0.2); /* Placeholder for transparent images */
+}
+
+.work-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Cover the container, cropping if necessary */
+  display: block; /* Remove extra space below image */
+  transition: transform 0.3s ease;
+}
+
+.work-card:hover .work-image {
+  transform: scale(1.05); /* Subtle zoom on hover */
+}
+
+/* Content Area within the card */
+.work-content {
+  padding: 1.5rem; /* Padding for text content */
+  flex-grow: 1; /* Allow content to grow and fill space */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes description to bottom if title is short */
+}
+
+.work-title {
+  font-size: 1.4rem; /* Slightly smaller for better fit */
+  margin-bottom: 0.8rem;
+  color: #ff6b6b; /* Accent color for title */
+  position: relative;
+  z-index: 2;
+}
+
+.work-description {
+  font-size: 0.95rem; /* Slightly smaller for dense info */
+  opacity: 0.8;
+  line-height: 1.6;
+  position: relative;
+  z-index: 2;
+}
+
+/* Original Hover Effects (slightly adjusted for new structure) */
+.work-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 107, 107, 0.1),
+    rgba(78, 205, 196, 0.1)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 20px; /* Apply to match card radius */
+  z-index: 1; /* Ensure it's behind text, but over image container */
+}
+
+.work-card:hover::before {
+  opacity: 1;
+}
+
+.work-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(255, 107, 107, 0.2);
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2rem;
+  }
+  .works-grid {
+    grid-template-columns: 1fr; /* Stack cards on smaller screens */
+  }
+}
 </style>
