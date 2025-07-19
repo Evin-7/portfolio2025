@@ -31,8 +31,46 @@ import { ref, onMounted } from "vue";
 
 const isVisible = ref(false);
 
-// Your actual works data
 const works = ref([
+  {
+    name: "Mezeh App",
+    link: "",
+    image: new URL("../assets/images/mezehapp.png", import.meta.url).href,
+    description: "A high-performance delivery app designed with a sleek interface and robust features to ensure a smooth and reliable user experience.",
+  },
+  {
+    name: "Mezeh Catering",
+    link: "https://catering.mezeh.com/",
+    image: new URL("../assets/images/mezehcat.png", import.meta.url).href,
+    description: "Catering platform for Mezeh Mediterranean Grill.",
+  },
+  {
+    name: "Mezeh Frontend",
+    link: "https://mezeh-frontend-production.azurewebsites.net/",
+    image: new URL("../assets/images/mezehmeal.png", import.meta.url).href,
+    description: "Frontend application for Mezeh Mediterranean Grill.",
+  },
+
+  {
+    name: "Flight MS",
+    link: "https://flightms.netlify.app/flights",
+    image: new URL("../assets/images/flightms.png", import.meta.url).href,
+    description: "Flight Management System",
+  },
+  {
+    name: "Vue Verse",
+    link: "https://vueverseblogs-fd452c.netlify.app/",
+    image: new URL("../assets/images/vueverse.png", import.meta.url).href,
+    description: "Blog application",
+  },
+
+  {
+    name: "Tech Blogs",
+    link: "https://tech-blogs-init.netlify.app/",
+    image: new URL("../assets/images/techblogs.png", import.meta.url).href,
+    description: "Blog application",
+
+  },
   {
     name: "Access Rooms",
     link: "https://accessrooms.com/",

@@ -7,7 +7,10 @@
       <div class="floating-element diamond"></div>
     </div>
     <div class="hero-content">
-      <h1 class="hero-title" :class="{ animate: isVisible }">
+      <h1
+        class="hero-title xl:pt-[10px] pt-[200px]"
+        :class="{ animate: isVisible }"
+      >
         Evin Leyander
         <br />
         Full stack Developer
@@ -23,12 +26,18 @@
         interactions. My full-stack skill set allows me to develop seamless,
         end-to-end web and mobile solutions tailored to user needs.
       </p>
-      <a
-        href="#works"
-        class="cta-button interactive"
-        :class="{ animate: isVisible }"
-        >Explore My Creations</a
-      >
+      <div class="cta-buttons-container" :class="{ animate: isVisible }">
+        <a href="#works" class="cta-button interactive">
+          Explore My Creations
+        </a>
+        <a
+          href="/JEvinLeyander-Resume.pdf"
+          download="JEvinLeyander-Resume.pdf"
+          class="cta-button interactive download-cv-btn"
+        >
+          Download CV
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -155,7 +164,7 @@ onMounted(() => {
   margin-bottom: 1rem;
   background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
   -webkit-background-clip: text;
-  font-family: 'DM Sans', sans-serif; /* Changed to DM Sans */
+  font-family: "DM Sans", sans-serif; /* Changed to DM Sans */
 
   -webkit-text-fill-color: transparent;
   opacity: 0;
@@ -169,8 +178,8 @@ onMounted(() => {
 }
 
 .hero-subtitle {
-  font-size: 11;
-  font-family: 'DM Sans', sans-serif; 
+  font-size: 1.1rem; /* Corrected typo from '11' */
+  font-family: "DM Sans", sans-serif;
   margin-bottom: 2rem;
   opacity: 0;
   transform: translateY(30px);
@@ -182,6 +191,23 @@ onMounted(() => {
   opacity: 0.8;
   transform: translateY(0);
 }
+
+/* Container for multiple CTA buttons */
+.cta-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem; /* Space between buttons */
+  margin-top: 2rem; /* Space above buttons */
+  opacity: 0; /* Inherit animation from parent */
+  transform: translateY(30px);
+  transition: all 1s ease 0.4s; /* Match the cta-button.animate transition delay */
+}
+
+.cta-buttons-container.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 
 /* Call to Action Button */
 .cta-button {
@@ -200,16 +226,15 @@ onMounted(() => {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  opacity: 0;
-  transform: translateY(30px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Initial subtle shadow */
 }
 
-.cta-button.animate {
+/* No direct .cta-button.animate anymore, parent container handles it */
+/* .cta-button.animate {
   opacity: 1;
   transform: translateY(0);
   transition: all 1s ease 0.4s, transform 0.3s ease, box-shadow 0.3s ease;
-}
+} */
 
 .cta-button::before {
   content: "";
@@ -241,6 +266,19 @@ onMounted(() => {
   ); /* Reverse gradient on hover */
 }
 
+/* Specific style for the download CV button if needed to differentiate */
+.download-cv-btn {
+  /* You can add different background, border, etc., if you want it to look distinct */
+  background: linear-gradient(45deg, #4ecdc4, #45b7d1); /* Example: different gradient */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.download-cv-btn:hover {
+  box-shadow: 0 15px 40px rgba(78, 205, 196, 0.4);
+  background: linear-gradient(45deg, #45b7d1, #4ecdc4);
+}
+
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .hero-title {
@@ -248,11 +286,16 @@ onMounted(() => {
   }
 
   .hero-subtitle {
-    font-size: 1.3rem;
+    font-size: 1rem; /* Adjusted for better readability on smaller screens */
   }
 
   .hero-content {
     padding: 0 1rem;
+  }
+
+  .cta-buttons-container {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 1rem; /* Adjust gap for vertical stacking */
   }
 }
 
@@ -262,7 +305,7 @@ onMounted(() => {
   }
 
   .hero-subtitle {
-    font-size: 11;
+    font-size: 0.9rem; /* Further adjustment for very small screens */
   }
 
   .cta-button {
