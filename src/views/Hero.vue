@@ -18,7 +18,7 @@
       <p class="hero-subtitle" :class="{ animate: isVisible }">
         With over 3 years of experience in full-stack development, I have built
         dynamic and responsive applications using a wide range of frameworks and
-        libraries, including Vue 2, Vue 3, React, and React Native. On the
+        libraries, including Vue 2, Vue 3, Next.js, React, and React Native. On the
         frontend, I specialize in crafting visually appealing and user-friendly
         interfaces with CSS frameworks such as Tailwind CSS, Bootstrap, and
         Vuetify. On the backend, I have hands-on experience with Node.js and
@@ -26,14 +26,14 @@
         interactions. My full-stack skill set allows me to develop seamless,
         end-to-end web and mobile solutions tailored to user needs.
       </p>
-      <div class="cta-buttons-container" :class="{ animate: isVisible }">
-        <a href="#works" class="cta-button interactive">
+      <div   class="cta-buttons-container " :class="{ animate: isVisible }">
+        <a href="#works" class="cta-button interactive uppercase text-[15px]">
           Explore My Creations
         </a>
         <a
           href="/JEvinLeyander-Resume.pdf"
           download="JEvinLeyander-Resume.pdf"
-          class="cta-button interactive download-cv-btn"
+          class="cta-button interactive download-cv-btn uppercase text-[15px]"
         >
           Download CV
         </a>
@@ -193,15 +193,25 @@ onMounted(() => {
 }
 
 /* Container for multiple CTA buttons */
+/* Ensure CTA buttons have equal width */
 .cta-buttons-container {
   display: flex;
   justify-content: center;
-  gap: 1.5rem; /* Space between buttons */
-  margin-top: 2rem; /* Space above buttons */
-  opacity: 0; /* Inherit animation from parent */
+  gap: 1.5rem;
+  margin-top: 2rem;
+  opacity: 0;
   transform: translateY(30px);
-  transition: all 1s ease 0.4s; /* Match the cta-button.animate transition delay */
+  transition: all 1s ease 0.4s;
 }
+
+.cta-button {
+  display: inline-block;
+  flex: 1; /* Make both buttons take equal width */
+  text-align: center; /* Center text inside */
+  min-width: 200px; /* Optional: enforce minimum size */
+  max-width: 300px; /* Optional: keep it from stretching too much */
+}
+
 
 .cta-buttons-container.animate {
   opacity: 1;
@@ -225,6 +235,7 @@ onMounted(() => {
   letter-spacing: 0.05em; /* Slightly spaced letters */
   transition: all 0.3s ease;
   position: relative;
+  
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Initial subtle shadow */
 }
@@ -308,9 +319,5 @@ onMounted(() => {
     font-size: 0.9rem; /* Further adjustment for very small screens */
   }
 
-  .cta-button {
-    padding: 0.8rem 1.8rem;
-    font-size: 0.9rem;
-  }
 }
 </style>

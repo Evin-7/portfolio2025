@@ -55,7 +55,7 @@
               </div>
               <div class="job-duration">
                 <span class="duration">Apr 2024 - Present</span>
-                <span class="duration-length">1 yr 4 mos</span>
+                <span class="duration-length">1 yr 6 mos</span>
               </div>
             </div>
             <p class="job-location">Mumbai, Maharashtra, India · On-site</p>

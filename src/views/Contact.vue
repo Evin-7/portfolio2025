@@ -13,6 +13,7 @@
           <h3>My Expertise</h3>
           <ul class="skills-list">
             <li>Vue.js</li>
+            <li>Next.js</li>
             <li>React.js</li>
             <li>React Native</li>
             <li>Python</li>
@@ -280,7 +281,12 @@ onMounted(() => {
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 500;
-  white-space: nowrap;
+  text-align: center;
+
+  /* 👇 New for equal width */
+  flex: 1 1 120px;  /* Grow/shrink but minimum width 120px */
+  max-width: 150px; /* Prevent them from being too wide */
+  
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s ease;
 }
@@ -305,11 +311,13 @@ onMounted(() => {
   text-align: center;
 }
 
+
 .social-links {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: center;
+  width: 100%; /* Ensure they line up nicely */
 }
 
 .social-link,
@@ -323,11 +331,16 @@ onMounted(() => {
   padding: 0.8rem 2rem;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 50px;
-  width: fit-content;
   justify-content: center;
   transition: all 0.3s ease;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  /* 👇 New equal width rules */
+  max-width: 260px;  /* Prevent them from stretching too much */
+  width: 100%;       /* Fill evenly within container */
+  text-align: center;
 }
+
 
 .social-link:hover,
 .contact-number.interactive:hover {

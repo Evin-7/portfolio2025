@@ -51,26 +51,7 @@ const works = ref([
     description: "Frontend application for Mezeh Mediterranean Grill.",
   },
 
-  {
-    name: "Flight MS",
-    link: "https://flightms.netlify.app/flights",
-    image: new URL("../assets/images/flightms.png", import.meta.url).href,
-    description: "Flight Management System",
-  },
-  {
-    name: "Vue Verse",
-    link: "https://vueverseblogs-fd452c.netlify.app/",
-    image: new URL("../assets/images/vueverse.png", import.meta.url).href,
-    description: "Blog application",
-  },
-
-  {
-    name: "Tech Blogs",
-    link: "https://tech-blogs-init.netlify.app/",
-    image: new URL("../assets/images/techblogs.png", import.meta.url).href,
-    description: "Blog application",
-
-  },
+  
   {
     name: "Access Rooms",
     link: "https://accessrooms.com/",
@@ -92,19 +73,14 @@ const works = ref([
     image: new URL("../assets/images/6-min.png", import.meta.url).href,
     description: "National park website for Periyar reserve",
   },
+  
   {
-    name: "GT School of Logistics",
-    link: "https://www.gtschooloflogistics.com/",
+    name: "Parambikulam Tiger Reserve",
+
+    link: "https://www.parambikulam.org/",
     // Changed @/assets to ../assets
-    image: new URL("../assets/images/4-min.png", import.meta.url).href,
-    description: "Educational institute website",
-  },
-  {
-    name: "Wissen ITC",
-    link: "https://wissenitc.com/",
-    // Changed @/assets to ../assets
-    image: new URL("../assets/images/5-min.png", import.meta.url).href,
-    description: "Construction and consulting firm site",
+    image: new URL("../assets/images/paramb.png", import.meta.url).href,
+    description: "National park website for Parambikulam reserve",
   },
   {
     name: "OLE Website",
@@ -120,19 +96,34 @@ const works = ref([
     image: new URL("../assets/images/2-min.png", import.meta.url).href,
     description: "Rescue application admin panel",
   },
-  {
-    name: "Poacher Portal - WTI",
-    link: "https://poacher.wti.org.in/",
-    // Changed @/assets to ../assets
-    image: new URL("../assets/images/3-min.png", import.meta.url).href,
-    description: "Wildlife Trust of India donation portal",
-  },
+  
   {
     name: "Mudumalai Admin Panel",
     link: "https://admin.mudumalaitigerreserve.com/",
     // Changed @/assets to ../assets
     image: new URL("../assets/images/10-min.png", import.meta.url).href,
     description: "Admin dashboard for sanctuary",
+  },
+
+  {
+    name: "Flight MS",
+    link: "https://flightms.netlify.app/flights",
+    image: new URL("../assets/images/flightms.png", import.meta.url).href,
+    description: "Flight Management System",
+  },
+  {
+    name: "Vue Verse",
+    link: "https://vueverseblogs-fd452c.netlify.app/",
+    image: new URL("../assets/images/vueverse.png", import.meta.url).href,
+    description: "Blog application",
+  },
+
+  {
+    name: "Tech Blogs",
+    link: "https://tech-blogs-init.netlify.app/",
+    image: new URL("../assets/images/techblogs.png", import.meta.url).href,
+    description: "Blog application",
+
   },
 ]);
 
