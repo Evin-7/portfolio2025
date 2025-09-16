@@ -23,14 +23,12 @@
         </div>
 
         <div
-          class="about-image glass-card hover-lift"
-          :class="{ animate: isVisible }"
-          style="animation-delay: 0.4s"
+        
         >
           <img
-            src="../assets/images/evin.jpeg"
+            src="../assets/images/evinley.png"
             alt="Evin Leyander - Software Engineer"
-            class="profile-photo"
+            class="object-contain rounded-[30px]"
           />
         </div>
       </div>
@@ -186,6 +184,7 @@ onMounted(() => {
 
 .about-image:hover .profile-photo {
   transform: scale(1.05);
+  
   filter: grayscale(0%) brightness(100%);
 }
 
