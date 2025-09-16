@@ -99,6 +99,20 @@ onMounted(() => {
   height: 100%;
   pointer-events: none; /* Allows clicks to pass through to content below */
 }
+@media (max-width: 768px) {
+  .cta-buttons-container {
+    flex-direction: column; /* Stack vertically */
+    align-items: center;    /* Center align horizontally */
+    gap: 1rem;
+  }
+
+  .cta-button {
+    flex: none;             /* Remove forced flex sizing */
+    width: 100%;            /* Make them stretch nicely */
+    max-width: 250px;       /* Keep them from becoming too wide */
+  }
+}
+
 
 .floating-element {
   position: absolute;
@@ -165,7 +179,6 @@ onMounted(() => {
   background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
   -webkit-background-clip: text;
   font-family: "DM Sans", sans-serif; /* Changed to DM Sans */
-
   -webkit-text-fill-color: transparent;
   opacity: 0;
   transform: translateY(30px);
