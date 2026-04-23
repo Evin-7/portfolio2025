@@ -3,7 +3,7 @@
       <div
         ref="rellaxRef"
         class="absolute inset-0 bg-cover bg-center"
-        :style="{ backgroundImage: `url(${background})` }"
+        :style="{ backgroundColor: '#ffffff' }"
         :data-rellax-speed="speed"
       ></div>
   

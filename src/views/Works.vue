@@ -1,271 +1,400 @@
 <template>
-  <div class="section works" :class="{ visible: isVisible }">
-    <div class="container">
-      <h2 class="section-title gradient-text">My Works</h2>
+  <section class="works">
+    <div class="works-shell">
+      <div class="works-heading">
+        <p class="works-eyebrow">Projects</p>
+        <h2 class="works-title">Selected work.</h2>
+      </div>
+
       <div class="works-grid">
         <a
-          v-for="(work, index) in works"
-          :key="index"
+          v-for="work in works"
+          :key="work.name"
           :href="work.link"
           target="_blank"
           rel="noopener noreferrer"
-          class="work-card glass-card hover-lift interactive"
-          :class="{ animate: isVisible }"
-          :style="{ animationDelay: `${index * 0.1}s` }"
+          class="work-card interactive"
+          :class="work.size"
+          :style="cardStyle(work.name)"
+          @mousemove="handleMove(work.name, $event)"
+          @mouseleave="resetMove(work.name)"
         >
-          <div class="work-image-container">
-            <img :src="work.image" :alt="work.name" class="work-image" />
+          <div class="work-image-wrap">
+            <div class="laptop-frame">
+              <div class="laptop-screen">
+                <div class="laptop-camera"></div>
+                <img :src="work.image" :alt="work.name" class="work-image" />
+              </div>
+              <div class="laptop-base">
+                <div class="laptop-trackpad"></div>
+              </div>
+            </div>
           </div>
-          <div class="work-content">
+          <div class="work-copy">
+            <p class="work-kicker">{{ work.kicker }}</p>
             <h3 class="work-title">{{ work.name }}</h3>
             <p class="work-description">{{ work.description }}</p>
           </div>
         </a>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 
-const isVisible = ref(false);
+const cardOffsets = ref({});
 
-const works = ref([
+const defaultOffset = {
+  "--image-x": "0px",
+  "--image-y": "0px",
+};
+
+const cardStyle = (key) => cardOffsets.value[key] || defaultOffset;
+
+const handleMove = (key, event) => {
+  const rect = event.currentTarget.getBoundingClientRect();
+  const x = (event.clientX - rect.left) / rect.width - 0.5;
+  const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+  cardOffsets.value[key] = {
+    "--image-x": `${x * 12}px`,
+    "--image-y": `${y * 12}px`,
+  };
+};
+
+const resetMove = (key) => {
+  cardOffsets.value[key] = defaultOffset;
+};
+
+const works = [
+  {
+    name: "Peniel Tech",
+    link: "https://www.penieltech.com/",
+    image: new URL("../assets/images/penieltech-shot.png", import.meta.url).href,
+    description: "Corporate site for IT products and solutions.",
+    kicker: "Company",
+    size: "span-wide",
+  },
+  {
+    name: "Oh Yes World",
+    link: "https://ohyesworld.com/",
+    image: new URL("../assets/images/ohyesworld.png", import.meta.url).href,
+    description: "Brand website with a service-led product feel.",
+    kicker: "Business",
+    size: "span-regular",
+  },
+  {
+    name: "Home Maintenance",
+    link: "https://homemaintenance.ohyesworld.com/",
+    image: new URL("../assets/images/homemaintaince.png", import.meta.url).href,
+    description: "Home services website with strong conversion focus.",
+    kicker: "Service",
+    size: "span-regular",
+  },
   {
     name: "Mezeh App",
-    link: "",
+    link: "https://mezeh.com/",
     image: new URL("../assets/images/mezehapp.png", import.meta.url).href,
-    description: "A high-performance delivery app designed with a sleek interface and robust features to ensure a smooth and reliable user experience.",
+    description: "Delivery-focused product UI.",
+    kicker: "Mobile Product",
+    size: "span-wide",
   },
   {
     name: "Mezeh Catering",
     link: "https://catering.mezeh.com/",
     image: new URL("../assets/images/mezehcat.png", import.meta.url).href,
-    description: "Catering platform for Mezeh Mediterranean Grill.",
+    description: "Catering ordering platform.",
+    kicker: "Food Platform",
+    size: "span-regular",
   },
   {
     name: "Mezeh Frontend",
     link: "https://mezeh-frontend-production.azurewebsites.net/",
     image: new URL("../assets/images/mezehmeal.png", import.meta.url).href,
-    description: "Frontend application for Mezeh Mediterranean Grill.",
+    description: "Branded customer frontend.",
+    kicker: "Frontend",
+    size: "span-regular",
   },
-
-  
   {
     name: "Access Rooms",
     link: "https://accessrooms.com/",
-    // Changed @/assets to ../assets
     image: new URL("../assets/images/9-min.png", import.meta.url).href,
-    description: "Online houseboat booking platform",
+    description: "Houseboat booking platform.",
+    kicker: "Travel",
+    size: "span-regular",
   },
   {
     name: "Mudumalai Tiger Reserve",
     link: "https://www.mudumalaitigerreserve.com/",
-    // Changed @/assets to ../assets
     image: new URL("../assets/images/8-min.png", import.meta.url).href,
-    description: "Official website of the wildlife sanctuary",
+    description: "Tourism website for the reserve.",
+    kicker: "Website",
+    size: "span-regular",
   },
   {
     name: "Periyar Tiger Reserve",
     link: "https://www.periyartigerreserve.org/",
-    // Changed @/assets to ../assets
     image: new URL("../assets/images/6-min.png", import.meta.url).href,
-    description: "National park website for Periyar reserve",
+    description: "National park website.",
+    kicker: "Website",
+    size: "span-regular",
   },
-  
   {
     name: "Parambikulam Tiger Reserve",
-
     link: "https://www.parambikulam.org/",
-    // Changed @/assets to ../assets
     image: new URL("../assets/images/paramb.png", import.meta.url).href,
-    description: "National park website for Parambikulam reserve",
+    description: "Reserve website.",
+    kicker: "Website",
+    size: "span-regular",
   },
   {
     name: "OLE Website",
     link: "https://olewebsite.leopardtechlabs.com/",
-    // Changed @/assets to ../assets
     image: new URL("../assets/images/1-min.png", import.meta.url).href,
-    description: "Official site for OLE project",
+    description: "Brand website.",
+    kicker: "Brand",
+    size: "span-regular",
   },
   {
     name: "Admin Panel - Whale Shark",
     link: "https://whaleshark.leopardtechlabs.com",
-    // Changed @/assets to ../assets
     image: new URL("../assets/images/2-min.png", import.meta.url).href,
-    description: "Rescue application admin panel",
+    description: "Operations dashboard.",
+    kicker: "Dashboard",
+    size: "span-regular",
   },
-  
   {
     name: "Mudumalai Admin Panel",
     link: "https://admin.mudumalaitigerreserve.com/",
-    // Changed @/assets to ../assets
     image: new URL("../assets/images/10-min.png", import.meta.url).href,
-    description: "Admin dashboard for sanctuary",
+    description: "Admin workflow panel.",
+    kicker: "Dashboard",
+    size: "span-regular",
   },
-
-  {
-    name: "Flight MS",
-    link: "https://flightms.netlify.app/flights",
-    image: new URL("../assets/images/flightms.png", import.meta.url).href,
-    description: "Flight Management System",
-  },
-  {
-    name: "Vue Verse",
-    link: "https://vueverseblogs-fd452c.netlify.app/",
-    image: new URL("../assets/images/vueverse.png", import.meta.url).href,
-    description: "Blog application",
-  },
-
-  {
-    name: "Tech Blogs",
-    link: "https://tech-blogs-init.netlify.app/",
-    image: new URL("../assets/images/techblogs.png", import.meta.url).href,
-    description: "Blog application",
-
-  },
-]);
-
-onMounted(() => {
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting) {
-        isVisible.value = true;
-      }
-    },
-    { threshold: 0.1 }
-  );
-
-  observer.observe(document.querySelector(".works"));
-});
+];
 </script>
 
 <style scoped>
-/* Your styles remain unchanged, as they were already correct */
 .works {
-  padding: 5rem 2rem;
+  padding: 5.5rem 1.5rem;
+  background: #fbfbfd;
 }
 
-.container {
-  max-width: 1200px;
+.works-shell {
+  max-width: 980px;
   margin: 0 auto;
 }
 
-.section-title {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
+.works-heading {
   text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.works-eyebrow {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6e6e73;
+}
+
+.works-title {
+  margin-top: 0.9rem;
+  font-size: clamp(2.3rem, 5vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #1d1d1f;
 }
 
 .works-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-top: 3rem;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 0.5rem;
 }
 
 .work-card {
-  display: flex; /* Make it a flex container */
-  flex-direction: column; /* Stack image and text vertically */
-  text-decoration: none; /* Remove underline from link */
-  color: inherit; /* Inherit text color */
-  padding: 0; /* Remove padding from card itself, apply to content */
-  position: relative;
+  display: block;
+  grid-column: span 2;
+  border-radius: 14px;
   overflow: hidden;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.6s ease;
-  height: 100%; /* Ensure cards fill grid space */
+  background: #ffffff;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.work-card.animate {
-  opacity: 1;
-  transform: translateY(0);
+.span-wide {
+  grid-column: span 3;
 }
 
-/* Image Container */
-.work-image-container {
+.work-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(29, 29, 31, 0.07);
+}
+
+.work-image-wrap {
+  aspect-ratio: 1.58 / 1;
+  background: linear-gradient(180deg, #f7f7f9 0%, #f2f2f5 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 0.4rem 0.25rem;
+}
+
+.span-wide .work-image-wrap {
+  aspect-ratio: 1.78 / 1;
+}
+
+.laptop-frame {
   width: 100%;
-  height: 200px; /* Fixed height for image container */
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  filter: drop-shadow(0 10px 18px rgba(29, 29, 31, 0.1));
+}
+
+.laptop-screen {
+  position: relative;
+  width: 88%;
+  aspect-ratio: 1.55 / 1;
+  border-radius: 0.65rem 0.65rem 0.3rem 0.3rem;
+  background: #111214;
+  border: 1px solid rgba(17, 18, 20, 0.18);
+  padding: 0.22rem;
   overflow: hidden;
-  border-radius: 20px 20px 0 0; /* Match top radius of glass card */
-  position: relative; /* For potential overlays */
-  background-color: rgba(0, 0, 0, 0.2); /* Placeholder for transparent images */
+}
+
+.span-wide .laptop-screen {
+  width: 84%;
+}
+
+.laptop-camera {
+  position: absolute;
+  top: 0.13rem;
+  left: 50%;
+  width: 18%;
+  max-width: 2.3rem;
+  height: 0.24rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(-50%);
+  z-index: 2;
 }
 
 .work-image {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Cover the container, cropping if necessary */
-  display: block; /* Remove extra space below image */
-  transition: transform 0.3s ease;
+  object-fit: cover;
+  display: block;
+  transform: translate3d(var(--image-x), var(--image-y), 0) scale(1.015);
+  transition: transform 0.25s ease;
+  border-radius: 0.42rem 0.42rem 0.18rem 0.18rem;
 }
 
-.work-card:hover .work-image {
-  transform: scale(1.05); /* Subtle zoom on hover */
+.laptop-base {
+  position: relative;
+  width: 100%;
+  height: 0.75rem;
+  margin-top: -0.02rem;
+  border-radius: 0 0 1rem 1rem;
+  background: linear-gradient(180deg, #d9d9df 0%, #bfc1c8 100%);
 }
 
-/* Content Area within the card */
-.work-content {
-  padding: 1.5rem; /* Padding for text content */
-  flex-grow: 1; /* Allow content to grow and fill space */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Pushes description to bottom if title is short */
+.laptop-base::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.12rem;
+  width: 34%;
+  height: 0.14rem;
+  border-radius: 999px;
+  background: rgba(29, 29, 31, 0.12);
+  transform: translateX(-50%);
+}
+
+.laptop-trackpad {
+  position: absolute;
+  top: 0.14rem;
+  left: 50%;
+  width: 18%;
+  height: 0.18rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  transform: translateX(-50%);
+}
+
+.work-copy {
+  padding: 0.58rem 0.62rem 0.68rem;
+}
+
+.work-kicker {
+  font-size: 0.54rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6e6e73;
 }
 
 .work-title {
-  font-size: 1.4rem; /* Slightly smaller for better fit */
-  margin-bottom: 0.8rem;
-  color: #ff6b6b; /* Accent color for title */
-  position: relative;
-  z-index: 2;
+  margin-top: 0.22rem;
+  font-size: 0.78rem;
+  line-height: 1.15;
+  color: #1d1d1f;
 }
 
 .work-description {
-  font-size: 0.95rem; /* Slightly smaller for dense info */
-  opacity: 0.8;
-  line-height: 1.6;
-  position: relative;
-  z-index: 2;
+  margin-top: 0.22rem;
+  font-size: 0.66rem;
+  line-height: 1.25;
+  color: #6e6e73;
 }
 
-/* Original Hover Effects (slightly adjusted for new structure) */
-.work-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    45deg,
-    rgba(255, 107, 107, 0.1),
-    rgba(78, 205, 196, 0.1)
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 20px; /* Apply to match card radius */
-  z-index: 1; /* Ensure it's behind text, but over image container */
-}
-
-.work-card:hover::before {
-  opacity: 1;
-}
-
-.work-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(255, 107, 107, 0.2);
-}
-
-@media (max-width: 768px) {
-  .section-title {
-    font-size: 2rem;
-  }
+@media (max-width: 1100px) {
   .works-grid {
-    grid-template-columns: 1fr; /* Stack cards on smaller screens */
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+  .span-wide {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 780px) {
+  .works-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .work-card,
+  .span-wide {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .works-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .work-card,
+  .span-wide {
+    grid-column: span 1;
+  }
+
+  .work-image-wrap,
+  .span-wide .work-image-wrap {
+    aspect-ratio: 1.5 / 1;
+    padding: 0.45rem 0.28rem 0.22rem;
+  }
+
+  .laptop-screen,
+  .span-wide .laptop-screen {
+    width: 92%;
+  }
+
+  .work-description {
+    display: none;
   }
 }
 </style>

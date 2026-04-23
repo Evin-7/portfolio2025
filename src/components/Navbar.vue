@@ -1,43 +1,18 @@
 <template>
-  <nav class="navbar" :class="{ scrolled: isScrolled }">
-    <div class="nav-container">
-      <div class="logo">Evin Leyander</div>
+  <nav class="navbar">
+    <div class="nav-shell">
+      <a href="#home" class="logo">
+        <span class="logo-badge" aria-label="JEL logo">JEL</span>
+      </a>
       <ul class="nav-links">
-        <li><a href="#home" class="interactive">Home</a></li>
         <li><a href="#about" class="interactive">About</a></li>
-        <li><a href="#works" class="interactive">Works</a></li>
+        <li><a href="#skills" class="interactive">Skills</a></li>
+        <li><a href="#works" class="interactive">Work</a></li>
         <li><a href="#contact" class="interactive">Contact</a></li>
       </ul>
     </div>
   </nav>
 </template>
-
-<script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-
-const isScrolled = ref(false);
-let lastScrollTop = 0;
-
-const handleScroll = () => {
-  const scrollTop = window.pageYOffset;
-
-  if (scrollTop > lastScrollTop && scrollTop > 100) {
-    isScrolled.value = true;
-  } else {
-    isScrolled.value = false;
-  }
-
-  lastScrollTop = scrollTop;
-};
-
-onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll);
-});
-</script>
 
 <style scoped>
 .navbar {
@@ -46,69 +21,59 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 1rem 2rem;
-  background: rgba(10, 10, 10, 0.9);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  background: rgba(251, 251, 253, 0.86);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(29, 29, 31, 0.06);
 }
 
-.navbar.scrolled {
-  background: rgba(10, 10, 10, 0.95);
-  transform: translateY(-100%);
-  animation: slideDown 0.5s ease forwards;
-}
-
-@keyframes slideDown {
-  to {
-    transform: translateY(0);
-  }
-}
-
-.nav-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
+.nav-shell {
+  max-width: 1180px;
   margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .logo {
-  font-size: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-mark {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+.logo-badge {
+  min-width: 118px;
+  height: 36px;
+  padding: 0 1.15rem;
+  border-radius: 12px;
+  background: #111111;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
   font-weight: 700;
-  background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: glow 2s ease-in-out infinite alternate;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-indent: 0.12em;
 }
 
 .nav-links {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
   list-style: none;
 }
 
 .nav-links a {
-  color: #ffffff;
+  color: #1d1d1f;
   text-decoration: none;
-  font-weight: 500;
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.nav-links a::after {
-  content: "";
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-  transition: width 0.3s ease;
-}
-
-.nav-links a:hover::after {
-  width: 100%;
+  font-size: 0.95rem;
 }
 
 @media (max-width: 768px) {
@@ -117,4 +82,3 @@ onUnmounted(() => {
   }
 }
 </style>
-

@@ -1,16 +1,15 @@
 <template>
   <footer class="footer">
-    <div class="footer-container">
-      <div class="footer-logo">Evin Leyander</div>
-      <ul class="footer-links">
-        <li><a href="#home" class="interactive">Home</a></li>
-        <li><a href="#about" class="interactive">About</a></li>
-        <li><a href="#works" class="interactive">Works</a></li>
-        <li><a href="#contact" class="interactive">Contact</a></li>
-      </ul>
-      <div class="footer-bottom">
-        <p>&copy; {{ currentYear }} Evin Leyander. All rights reserved.</p>
+    <div class="footer-shell">
+      <div class="footer-brand">
+        <span class="footer-badge" aria-label="JEL logo">JEL</span>
       </div>
+      <div class="footer-links">
+        <a href="mailto:yjevin75@gmail.com">Email</a>
+        <a href="https://github.com/Evin-7" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://www.linkedin.com/feed/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </div>
+      <p class="footer-meta">&copy; {{ currentYear }}</p>
     </div>
   </footer>
 </template>
@@ -21,79 +20,68 @@ const currentYear = new Date().getFullYear();
 
 <style scoped>
 .footer {
-  background-color: #0a0a0a;
-  padding: 3rem 2rem 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: 6rem;
+  padding: 3rem 1.5rem 4rem;
+  background: #ffffff;
+  border-top: 1px solid rgba(29, 29, 31, 0.06);
 }
 
-.footer-container {
-  max-width: 1200px;
+.footer-shell {
+  max-width: 1180px;
   margin: 0 auto;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
 }
 
-.footer-logo {
-  font-size: 1.8rem;
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+}
+
+.footer-mark {
+  height: 24px;
+  width: auto;
+  display: block;
+}
+
+.footer-badge {
+  min-width: 96px;
+  height: 32px;
+  padding: 0 0.95rem;
+  border-radius: 11px;
+  background: #111111;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.94rem;
   font-weight: 700;
-  margin-bottom: 1rem;
-  background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: glow 2s ease-in-out infinite alternate;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-indent: 0.12em;
+}
+
+.footer-meta {
+  font-size: 0.92rem;
+  color: #6e6e73;
 }
 
 .footer-links {
   display: flex;
-  justify-content: center;
-  gap: 2rem;
-  list-style: none;
-  padding: 0;
-  margin-bottom: 1.5rem;
+  gap: 1rem;
 }
 
 .footer-links a {
-  color: #ffffff;
-  font-weight: 500;
+  color: #6e6e73;
   text-decoration: none;
-  position: relative;
-  transition: all 0.3s ease;
+  font-size: 0.92rem;
 }
 
-.footer-links a::after {
-  content: "";
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-  transition: width 0.3s ease;
-}
-
-.footer-links a:hover::after {
-  width: 100%;
-}
-
-.footer-bottom p {
-  font-size: 0.9rem;
-  color: #aaa;
-  margin: 0;
-}
-
-@keyframes glow {
-  from {
-    text-shadow: 0 0 5px #ff6b6b;
-  }
-  to {
-    text-shadow: 0 0 10px #4ecdc4;
-  }
-}
-
-@media (max-width: 768px) {
-  .footer-links {
+@media (max-width: 640px) {
+  .footer-shell {
     flex-direction: column;
-    gap: 1rem;
+    align-items: flex-start;
   }
 }
 </style>
