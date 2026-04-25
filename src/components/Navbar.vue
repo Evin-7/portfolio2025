@@ -2,7 +2,7 @@
   <nav class="navbar">
     <div class="nav-shell">
       <a href="#home" class="logo">
-        <span class="logo-badge" aria-label="JEL logo">JEL</span>
+        <img :src="logoMark" alt="Evin logo" class="logo-mark" />
       </a>
       <ul class="nav-links">
         <li><a href="#about" class="interactive">About</a></li>
@@ -13,6 +13,10 @@
     </div>
   </nav>
 </template>
+
+<script setup>
+import logoMark from "../assets/icons/peniel-mark.svg";
+</script>
 
 <style scoped>
 .navbar {
@@ -42,26 +46,10 @@
 }
 
 .logo-mark {
-  height: 28px;
-  width: auto;
+  width: 38px;
+  height: 38px;
   display: block;
-}
-
-.logo-badge {
-  min-width: 118px;
-  height: 36px;
-  padding: 0 1.15rem;
-  border-radius: 12px;
-  background: #111111;
-  color: #ffffff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  line-height: 1;
-  text-indent: 0.12em;
+  filter: drop-shadow(0 10px 18px rgba(17, 17, 17, 0.12));
 }
 
 .nav-links {

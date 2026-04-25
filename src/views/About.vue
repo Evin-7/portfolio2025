@@ -20,16 +20,16 @@
         <div class="experience-item">
           <div>
             <h3>Software Engineer</h3>
-            <p>Turinix</p>
+            <p>Turinix, Mumbai, Maharashtra</p>
           </div>
-          <span>2024 - Present</span>
+          <span>Apr 2024 - Jan 2026</span>
         </div>
         <div class="experience-item">
           <div>
             <h3>Frontend Developer</h3>
-            <p>Leopard Tech Labs</p>
+            <p>Leopard Tech Labs, Kanjirappally, Kerala</p>
           </div>
-          <span>2022 - 2024</span>
+          <span>Oct 2022 - Mar 2024</span>
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@
 <style scoped>
 .about {
   padding: 5.5rem 1.5rem;
-  background: #ffffff;
+  background: transparent;
 }
 
 .about-shell {
@@ -78,7 +78,11 @@
 .experience-item {
   padding: 1.4rem;
   border-radius: 24px;
-  background: #f5f5f7;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(29, 29, 31, 0.12);
+  box-shadow:
+    0 12px 30px rgba(29, 29, 31, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 .experience-item h3 {
   font-size: 1.1rem;

@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="footer-shell">
       <div class="footer-brand">
-        <span class="footer-badge" aria-label="JEL logo">JEL</span>
+        <img :src="logoMark" alt="Evin logo" class="footer-mark" />
       </div>
       <div class="footer-links">
         <a href="mailto:yjevin75@gmail.com">Email</a>
@@ -15,6 +15,8 @@
 </template>
 
 <script setup>
+import logoMark from "../assets/icons/peniel-mark.svg";
+
 const currentYear = new Date().getFullYear();
 </script>
 
@@ -40,26 +42,10 @@ const currentYear = new Date().getFullYear();
 }
 
 .footer-mark {
-  height: 24px;
-  width: auto;
+  width: 34px;
+  height: 34px;
   display: block;
-}
-
-.footer-badge {
-  min-width: 96px;
-  height: 32px;
-  padding: 0 0.95rem;
-  border-radius: 11px;
-  background: #111111;
-  color: #ffffff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.94rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  line-height: 1;
-  text-indent: 0.12em;
+  filter: drop-shadow(0 10px 18px rgba(17, 17, 17, 0.1));
 }
 
 .footer-meta {

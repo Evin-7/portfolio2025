@@ -152,7 +152,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .contact {
   padding: 5.5rem 1.5rem;
-  background: #ffffff;
+  background: transparent;
 }
 
 .contact-shell {
@@ -216,16 +216,18 @@ onBeforeUnmount(() => {
 .form-input {
   width: 100%;
   padding: 1rem 1.1rem;
-  border: none;
+  border: 1px solid rgba(29, 29, 31, 0.12);
   border-radius: 20px;
-  background: #f5f5f7;
+  background: rgba(255, 255, 255, 0.92);
   color: #1d1d1f;
   font-size: 0.98rem;
   font-family: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .form-input:focus {
-  outline: 2px solid rgba(29, 29, 31, 0.12);
+  outline: 2px solid rgba(29, 29, 31, 0.08);
+  border-color: rgba(29, 29, 31, 0.24);
 }
 
 .submit-btn {

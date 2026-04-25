@@ -71,9 +71,12 @@
           </div>
         </div>
 
-        <div class="hero-stage-card hero-card-dashboard" :style="cardStyle(10, 10, -0.35, -0.45, 0.024)">
+      <div class="hero-stage-card hero-card-dashboard" :style="cardStyle(10, 10, -0.35, -0.45, 0.024)">
           <div class="dash-sidebar">
-            <span class="dash-logo">J</span>
+            <span class="dash-logo" aria-hidden="true">
+              <span class="dash-logo-stem"></span>
+              <span class="dash-logo-dot"></span>
+            </span>
             <span></span>
             <span></span>
             <span></span>
@@ -140,8 +143,26 @@ import { ref, onMounted, onUnmounted } from "vue";
 const mouseX = ref(0);
 const mouseY = ref(0);
 const scrollY = ref(0);
+const motionEnabled = ref(true);
+let motionQuery;
+
+const syncMotionPreference = () => {
+  if (!motionQuery) {
+    return;
+  }
+
+  motionEnabled.value = !motionQuery.matches;
+
+  if (!motionEnabled.value) {
+    resetMouse();
+  }
+};
 
 const handleMouseMove = (event) => {
+  if (!motionEnabled.value) {
+    return;
+  }
+
   const rect = event.currentTarget.getBoundingClientRect();
   mouseX.value = (event.clientX - rect.left) / rect.width - 0.5;
   mouseY.value = (event.clientY - rect.top) / rect.height - 0.5;
@@ -153,27 +174,48 @@ const resetMouse = () => {
 };
 
 const handleScroll = () => {
+  if (!motionEnabled.value) {
+    scrollY.value = 0;
+    return;
+  }
+
   scrollY.value = Math.min(window.scrollY, 500);
 };
 
-const layerStyle = (xFactor, yFactor, scrollFactor) => ({
-  transform: `translate3d(${mouseX.value * xFactor}px, ${mouseY.value * yFactor + scrollY.value * scrollFactor}px, 0)`,
-});
+const layerStyle = (xFactor, yFactor, scrollFactor) => {
+  if (!motionEnabled.value) {
+    return { transform: "none" };
+  }
 
-const cardStyle = (xFactor, yFactor, rotateXFactor, rotateYFactor, scrollFactor) => ({
-  transform: `
-    translate3d(${mouseX.value * xFactor}px, ${mouseY.value * yFactor + scrollY.value * 28 * scrollFactor}px, 0)
-    rotateX(${mouseY.value * rotateXFactor * 12}deg)
-    rotateY(${mouseX.value * rotateYFactor * 12}deg)
-  `,
-});
+  return {
+    transform: `translate3d(${mouseX.value * xFactor}px, ${mouseY.value * yFactor + scrollY.value * scrollFactor}px, 0)`,
+  };
+};
+
+const cardStyle = (xFactor, yFactor, rotateXFactor, rotateYFactor, scrollFactor) => {
+  if (!motionEnabled.value) {
+    return { transform: "none" };
+  }
+
+  return {
+    transform: `
+      translate3d(${mouseX.value * xFactor}px, ${mouseY.value * yFactor + scrollY.value * 28 * scrollFactor}px, 0)
+      rotateX(${mouseY.value * rotateXFactor * 12}deg)
+      rotateY(${mouseX.value * rotateYFactor * 12}deg)
+    `,
+  };
+};
 
 onMounted(() => {
+  motionQuery = window.matchMedia("(max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce)");
+  syncMotionPreference();
   window.addEventListener("scroll", handleScroll, { passive: true });
+  motionQuery.addEventListener("change", syncMotionPreference);
 });
 
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
+  motionQuery?.removeEventListener("change", syncMotionPreference);
 });
 </script>
 
@@ -181,38 +223,39 @@ onUnmounted(() => {
 .hero {
   position: relative;
   overflow: hidden;
-  padding: 10rem 1.5rem 5rem;
-  background: #fbfbfd;
+  padding: 9rem 1.5rem 4.5rem;
+  background: transparent;
 }
 
 .hero-shell {
   position: relative;
   z-index: 2;
-  max-width: 1180px;
+  max-width: 1080px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
-  gap: 2rem;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
+  gap: 2.2rem;
   align-items: center;
 }
 
 .hero-copy {
-  max-width: 700px;
+  max-width: 560px;
+  padding-right: 1.6rem;
 }
 
 .hero-title {
-  font-size: clamp(3rem, 8vw, 5.6rem);
-  line-height: 0.98;
+  font-size: clamp(2.7rem, 5.3vw, 4.45rem);
+  line-height: 0.96;
   letter-spacing: -0.05em;
   font-weight: 700;
   color: #1d1d1f;
 }
 
 .hero-subtitle {
-  max-width: 560px;
-  margin: 1.4rem 0 0;
-  font-size: 1rem;
-  line-height: 1.7;
+  max-width: 480px;
+  margin: 1.05rem 0 0;
+  font-size: 0.96rem;
+  line-height: 1.75;
   color: #6e6e73;
 }
 
@@ -220,18 +263,18 @@ onUnmounted(() => {
   display: flex;
   gap: 0.9rem;
   flex-wrap: wrap;
-  margin-top: 2.2rem;
+  margin-top: 1.85rem;
 }
 
 .hero-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 168px;
-  padding: 0.95rem 1.3rem;
+  min-width: 152px;
+  padding: 0.88rem 1.18rem;
   border-radius: 999px;
   text-decoration: none;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 500;
   transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
@@ -279,7 +322,7 @@ onUnmounted(() => {
 }
 
 .hero-grid {
-  inset: 0;
+  display: none;
   background-image:
     linear-gradient(rgba(29, 29, 31, 0.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(29, 29, 31, 0.035) 1px, transparent 1px);
@@ -289,7 +332,9 @@ onUnmounted(() => {
 
 .hero-stage {
   position: relative;
-  min-height: 520px;
+  min-height: 340px;
+  max-width: 280px;
+  margin-left: auto;
   perspective: 1400px;
 }
 
@@ -306,27 +351,27 @@ onUnmounted(() => {
 }
 
 .hero-orbit-one {
-  width: 260px;
-  height: 260px;
-  top: 0.3rem;
-  right: 0.5rem;
+  width: 210px;
+  height: 210px;
+  top: 0.1rem;
+  right: 0.2rem;
 }
 
 .hero-orbit-two {
-  width: 132px;
-  height: 132px;
-  bottom: 2.8rem;
-  left: 1rem;
+  width: 96px;
+  height: 96px;
+  bottom: 2.1rem;
+  left: 0.6rem;
   background:
     radial-gradient(circle at center, rgba(29, 29, 31, 0.055) 0 18%, transparent 19% 100%);
 }
 
 .hero-pattern-grid {
-  top: 3.5rem;
-  right: 2rem;
-  width: 112px;
-  height: 112px;
-  border-radius: 28px;
+  top: 2.8rem;
+  right: 1.15rem;
+  width: 84px;
+  height: 84px;
+  border-radius: 22px;
   opacity: 0.6;
   background-image:
     linear-gradient(rgba(29, 29, 31, 0.07) 1px, transparent 1px),
@@ -335,10 +380,10 @@ onUnmounted(() => {
 }
 
 .hero-pattern-dots {
-  right: 0.3rem;
-  bottom: 6.6rem;
-  width: 90px;
-  height: 64px;
+  right: 0.2rem;
+  bottom: 4.9rem;
+  width: 68px;
+  height: 52px;
   opacity: 0.85;
   background-image: radial-gradient(circle, rgba(29, 29, 31, 0.26) 1.2px, transparent 1.2px);
   background-size: 14px 14px;
@@ -355,24 +400,24 @@ onUnmounted(() => {
 }
 
 .hero-card-mini {
-  top: 4rem;
-  left: 1.4rem;
-  width: 190px;
-  padding: 1rem;
+  top: 2.2rem;
+  left: 0.15rem;
+  width: 124px;
+  padding: 0.68rem;
   display: flex;
-  gap: 0.9rem;
+  gap: 0.55rem;
   align-items: center;
 }
 
 .mini-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
   background: #f5f5f7;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #1d1d1f;
 }
@@ -385,20 +430,20 @@ onUnmounted(() => {
 }
 
 .mini-copy strong {
-  font-size: 0.95rem;
+  font-size: 0.68rem;
 }
 
 .mini-copy span {
-  font-size: 0.72rem;
+  font-size: 0.56rem;
   line-height: 1.45;
   color: #6e6e73;
 }
 
 .hero-card-code {
-  top: 1.6rem;
+  top: 0.4rem;
   right: 0;
-  width: 430px;
-  padding: 1rem 1.05rem 1.1rem;
+  width: 276px;
+  padding: 0.7rem 0.74rem 0.78rem;
   background: #1d1d1f;
   border-color: rgba(255, 255, 255, 0.06);
   box-shadow: 0 28px 60px rgba(29, 29, 31, 0.16);
@@ -408,7 +453,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.55rem;
 }
 
 .code-dots {
@@ -417,8 +462,8 @@ onUnmounted(() => {
 }
 
 .code-dots span {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
 }
 
@@ -427,24 +472,24 @@ onUnmounted(() => {
 .code-dots span:nth-child(3) { background: #28c840; }
 
 .code-tab {
-  padding: 0.25rem 0.5rem;
-  border-radius: 10px;
+  padding: 0.18rem 0.42rem;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
-  font-size: 0.72rem;
+  font-size: 0.64rem;
   color: rgba(255, 255, 255, 0.76);
 }
 
 .code-window {
   display: grid;
-  gap: 0.5rem;
+  gap: 0.36rem;
 }
 
 .code-line {
   display: grid;
-  grid-template-columns: 22px 1fr;
-  gap: 0.7rem;
-  font-size: 0.8rem;
-  line-height: 1.45;
+  grid-template-columns: 16px 1fr;
+  gap: 0.45rem;
+  font-size: 0.58rem;
+  line-height: 1.35;
 }
 
 .line-no {
@@ -460,16 +505,16 @@ onUnmounted(() => {
 }
 
 .line-text.indent {
-  padding-left: 0.9rem;
+  padding-left: 0.45rem;
 }
 
 .hero-card-dashboard {
-  right: 0.8rem;
-  bottom: 0.8rem;
-  width: 408px;
-  height: 286px;
+  right: 0.1rem;
+  bottom: 0.4rem;
+  width: 256px;
+  height: 164px;
   display: grid;
-  grid-template-columns: 56px 1fr;
+  grid-template-columns: 34px 1fr;
   overflow: hidden;
 }
 
@@ -477,28 +522,54 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.95rem;
-  padding: 0.95rem 0.7rem;
+  gap: 0.48rem;
+  padding: 0.58rem 0.38rem;
   border-right: 1px solid rgba(29, 29, 31, 0.06);
 }
 
 .dash-sidebar span {
-  width: 18px;
-  height: 18px;
+  width: 10px;
+  height: 10px;
   border-radius: 999px;
   background: #f1f1f3;
 }
 
 .dash-sidebar .dash-logo {
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
   background: #1d1d1f;
-  color: #ffffff;
-  font-size: 0.7rem;
-  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+
+.dash-logo-stem {
+  width: 8px;
+  height: 12px;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.dash-logo-dot {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #d8b25f;
+}
+
+@media (hover: none), (pointer: coarse), (max-width: 768px) {
+  .hero-ambient,
+  .hero-grid,
+  .hero-orbit,
+  .hero-pattern,
+  .hero-stage-card,
+  .hero-stage-note {
+    transition: none;
+  }
 }
 
 .dash-main {
@@ -509,14 +580,14 @@ onUnmounted(() => {
 
 .dash-search {
   width: 38%;
-  height: 12px;
+  height: 7px;
   border-radius: 999px;
   background: #f2f2f4;
 }
 
 .dash-overview {
-  margin-top: 1rem;
-  font-size: 0.78rem;
+  margin-top: 0.45rem;
+  font-size: 0.58rem;
   font-weight: 600;
   color: #1d1d1f;
 }
@@ -524,26 +595,26 @@ onUnmounted(() => {
 .dash-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.7rem;
-  margin-top: 0.9rem;
+  gap: 0.34rem;
+  margin-top: 0.45rem;
 }
 
 .dash-stat-card {
-  padding: 0.8rem 0.72rem;
-  border-radius: 16px;
+  padding: 0.4rem 0.38rem;
+  border-radius: 10px;
   background: #fafafc;
 }
 
 .dash-stat-label {
-  font-size: 0.56rem;
+  font-size: 0.42rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #8d8d92;
 }
 
 .dash-stat-value {
-  margin-top: 0.45rem;
-  font-size: 1rem;
+  margin-top: 0.18rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: #1d1d1f;
 }
@@ -551,8 +622,8 @@ onUnmounted(() => {
 .dash-chart {
   position: relative;
   flex: 1;
-  margin-top: 0.9rem;
-  border-radius: 18px;
+  margin-top: 0.45rem;
+  border-radius: 12px;
   background:
     linear-gradient(rgba(29, 29, 31, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(29, 29, 31, 0.05) 1px, transparent 1px),
@@ -563,10 +634,10 @@ onUnmounted(() => {
 
 .dash-chart-line {
   position: absolute;
-  left: 1rem;
-  right: 1rem;
-  bottom: 1.1rem;
-  height: 72px;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  height: 34px;
   background:
     radial-gradient(circle at 0% 78%, #9bbcf7 0 3px, transparent 4px),
     radial-gradient(circle at 18% 60%, #9bbcf7 0 3px, transparent 4px),
@@ -588,69 +659,70 @@ onUnmounted(() => {
 
 .hero-card-snapshot {
   left: 0;
-  bottom: 5.6rem;
-  width: 220px;
-  padding: 1rem 1rem 0.9rem;
+  bottom: 3.2rem;
+  width: 138px;
+  padding: 0.64rem 0.64rem 0.58rem;
 }
 
 .snapshot-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.78rem;
+  font-size: 0.58rem;
   font-weight: 700;
   color: #1d1d1f;
 }
 
 .snapshot-head strong {
-  font-size: 1rem;
+  font-size: 0.8rem;
   color: #3b82f6;
 }
 
 .snapshot-row {
   display: grid;
-  grid-template-columns: 28px 1fr;
-  gap: 0.7rem;
+  grid-template-columns: 18px 1fr;
+  gap: 0.4rem;
   align-items: start;
-  margin-top: 0.9rem;
+  margin-top: 0.5rem;
 }
 
 .snapshot-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
   background: #f5f5f7;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.82rem;
+  font-size: 0.6rem;
   color: #1d1d1f;
 }
 
 .snapshot-row strong {
   display: block;
-  font-size: 0.76rem;
+  font-size: 0.58rem;
   color: #1d1d1f;
 }
 
 .snapshot-row small {
   display: block;
   margin-top: 0.18rem;
-  font-size: 0.68rem;
-  line-height: 1.4;
+  font-size: 0.52rem;
+  line-height: 1.3;
   color: #8b8b90;
 }
 
 .hero-stage-note {
-  padding: 1rem 1.1rem;
-  font-size: 0.92rem;
+  padding: 0.58rem 0.68rem;
+  font-size: 0.62rem;
   backdrop-filter: blur(18px);
 }
 
 .note-bottom {
-  left: 8.8rem;
+  left: auto;
+  right: 1rem;
   bottom: 0;
-  width: 180px;
+  width: 112px;
   background: #232325;
   border-color: rgba(35, 35, 37, 0.12);
   color: #ffffff;
@@ -676,6 +748,7 @@ onUnmounted(() => {
     max-width: 820px;
     text-align: center;
     margin: 0 auto;
+    padding-right: 0;
   }
 
   .hero-subtitle {
@@ -688,20 +761,20 @@ onUnmounted(() => {
   }
 
   .hero-stage {
-    max-width: 420px;
+    max-width: 280px;
     width: 100%;
     margin: 0 auto;
-    min-height: 480px;
+    min-height: 340px;
   }
 }
 
 @media (max-width: 640px) {
   .hero {
-    padding-top: 8.5rem;
+    padding-top: 8rem;
   }
 
   .hero-stage {
-    min-height: 340px;
+    min-height: 260px;
   }
 
   .hero-card-mini,
@@ -716,15 +789,15 @@ onUnmounted(() => {
     left: 0.2rem;
     right: 0.2rem;
     width: auto;
-    padding: 0.85rem;
+    padding: 0.78rem;
   }
 
   .hero-card-dashboard {
-    left: 1rem;
+    left: 0.8rem;
     right: 0;
     bottom: 0;
     width: auto;
-    height: 180px;
+    height: 150px;
   }
 
   .dash-stats {

@@ -14,7 +14,7 @@
   </template>
   
   <script setup>
-  import { onMounted, ref } from 'vue'
+  import { onMounted, onUnmounted, ref } from 'vue'
   import Rellax from 'rellax'
   
   const props = defineProps({
@@ -26,14 +26,23 @@
   })
   
   const rellaxRef = ref(null)
+  let rellaxInstance = null
   
   onMounted(() => {
-    if (rellaxRef.value) {
-      new Rellax(rellaxRef.value, {
+    const shouldDisableParallax = window.matchMedia(
+      '(max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce)'
+    ).matches
+
+    if (rellaxRef.value && !shouldDisableParallax) {
+      rellaxInstance = new Rellax(rellaxRef.value, {
         center: true,
         speed: props.speed,
       })
     }
+  })
+
+  onUnmounted(() => {
+    rellaxInstance?.destroy()
   })
   </script>
   

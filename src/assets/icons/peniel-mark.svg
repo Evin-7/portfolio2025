@@ -1,16 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 44" fill="none">
-  <rect x="2" y="2" width="128" height="40" rx="14" fill="#111111"/>
-  <text
-    x="66"
-    y="22"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="20" fill="#111111"/>
+  <path
+    d="M20 17C20 15.8954 20.8954 15 22 15H43C44.1046 15 45 15.8954 45 17V20C45 21.1046 44.1046 22 43 22H28V28H40C41.1046 28 42 28.8954 42 30V32C42 33.1046 41.1046 34 40 34H28V42H43C44.1046 42 45 42.8954 45 44V47C45 48.1046 44.1046 49 43 49H22C20.8954 49 20 48.1046 20 47V17Z"
     fill="white"
-    font-family="SF Pro Display, Inter, system-ui, sans-serif"
-    font-size="18"
-    font-weight="700"
-    letter-spacing="0.14em"
-    text-anchor="middle"
-    dominant-baseline="middle"
-  >
-    JEL
-  </text>
+  />
+  <rect x="28" y="22" width="13" height="6" rx="2" fill="#111111"/>
+  <rect x="28" y="34" width="11" height="8" rx="2" fill="#111111"/>
+  <circle cx="46" cy="46" r="3.5" fill="#d8b25f"/>
 </svg>

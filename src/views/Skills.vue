@@ -11,13 +11,13 @@
 </template>
 
 <script setup>
-const skills = ["Vue", "React", "Git", "Next.js", "Tailwind", "Android"];
+const skills = ["Vue", "React", "Next.js", "React Native", "Git", "Jira"];
 </script>
 
 <style scoped>
 .skills {
   padding: 4.5rem 1.5rem;
-  background: #ffffff;
+  background: transparent;
 }
 
 .skills-shell {
