@@ -3,7 +3,7 @@
     <div class="about-shell">
       <div class="about-copy">
         <p class="about-eyebrow">About</p>
-        <h2 class="about-title">A quiet, product-minded approach to frontend work.</h2>
+        <h2 class="about-title">A software engineer focused on clean systems and scalable product work.</h2>
         <p class="about-text">
           I build clear, scalable interfaces with strong typography, disciplined spacing, and polished interaction details.
         </p>

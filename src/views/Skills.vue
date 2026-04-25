@@ -3,6 +3,9 @@
     <div class="skills-shell">
       <p class="skills-eyebrow">Skills</p>
       <h2 class="skills-title">Focused stack.</h2>
+      <p class="skills-text">
+        Core tools I use across software engineering, product UI, responsive builds, and day-to-day team collaboration.
+      </p>
       <div class="skills-list">
         <span v-for="skill in skills" :key="skill" class="skill-pill">{{ skill }}</span>
       </div>
@@ -11,7 +14,7 @@
 </template>
 
 <script setup>
-const skills = ["Vue", "React", "Next.js", "React Native", "Git", "Jira"];
+const skills = ["Vue", "React", "Next.js", "React Native", "Node.js", "Git", "Jira"];
 </script>
 
 <style scoped>
@@ -39,6 +42,14 @@ const skills = ["Vue", "React", "Next.js", "React Native", "Git", "Jira"];
   line-height: 1.02;
   letter-spacing: -0.04em;
   color: #1d1d1f;
+}
+
+.skills-text {
+  max-width: 620px;
+  margin-top: 1rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #6e6e73;
 }
 
 .skills-list {

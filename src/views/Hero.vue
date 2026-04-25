@@ -12,7 +12,7 @@
       <div class="hero-copy">
         <h1 class="hero-title">Software Engineer crafting clean, scalable experiences.</h1>
         <p class="hero-subtitle">
-          Product-focused frontend work with a calm, premium visual approach.
+          Software engineering work with a calm, premium product approach.
         </p>
         <div class="hero-actions">
           <a href="#works" class="hero-button hero-button-primary interactive">View Projects</a>

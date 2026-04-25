@@ -4,7 +4,7 @@
       <p class="contact-eyebrow">Contact</p>
       <h2 class="contact-title">Let’s work together.</h2>
       <p class="contact-text">
-        For product UI, websites, and frontend-focused work.
+        For software engineering, product UI, and website projects.
       </p>
 
       <div class="contact-links">
