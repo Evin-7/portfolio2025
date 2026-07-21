@@ -150,17 +150,6 @@ const works = [
     tags: ["Attendance", "Mobile", "Analytics"],
   },
   {
-    name: "Elate Time Dashboard",
-    link: "https://app.elatetime.com/dashboard",
-    image: new URL("../assets/images/app.elatetime.png", import.meta.url).href,
-    description:
-      "Team dashboard for daily attendance, employee activity, leave requests, and reporting.",
-    kicker: "Admin Dashboard",
-    year: "2026",
-    focus: "Time Tracking",
-    tags: ["Dashboard", "Leave", "Reporting"],
-  },
-  {
     name: "Elate Time Portal",
     link: "https://app.elatetime.com/login?next=%2F",
     image: new URL("../assets/images/app.elatetime.png", import.meta.url).href,
@@ -346,7 +335,11 @@ const works = [
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.03) 0%, transparent 70%);
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(212, 175, 55, 0.03) 0%,
+    transparent 70%
+  );
   pointer-events: none;
 }
 
@@ -390,7 +383,11 @@ const works = [
   line-height: 0.96;
   letter-spacing: -0.05em;
   color: var(--text-primary);
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--gold-light) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--text-primary) 0%,
+    var(--gold-light) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -409,7 +406,11 @@ const works = [
   min-height: 244px;
   border-radius: 24px;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--bg-surface) 0%, rgba(26, 26, 26, 0.8) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--bg-surface) 0%,
+    rgba(26, 26, 26, 0.8) 100%
+  );
   border: 1.5px solid var(--gold-border);
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
@@ -419,15 +420,33 @@ const works = [
   transform: translateY(50px);
 }
 
-.work-card:nth-child(1) { animation-delay: 0.1s; }
-.work-card:nth-child(2) { animation-delay: 0.2s; }
-.work-card:nth-child(3) { animation-delay: 0.3s; }
-.work-card:nth-child(4) { animation-delay: 0.4s; }
-.work-card:nth-child(5) { animation-delay: 0.5s; }
-.work-card:nth-child(6) { animation-delay: 0.6s; }
-.work-card:nth-child(7) { animation-delay: 0.7s; }
-.work-card:nth-child(8) { animation-delay: 0.8s; }
-.work-card:nth-child(9) { animation-delay: 0.9s; }
+.work-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.work-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.work-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.work-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.work-card:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.work-card:nth-child(6) {
+  animation-delay: 0.6s;
+}
+.work-card:nth-child(7) {
+  animation-delay: 0.7s;
+}
+.work-card:nth-child(8) {
+  animation-delay: 0.8s;
+}
+.work-card:nth-child(9) {
+  animation-delay: 0.9s;
+}
 
 @keyframes cardReveal {
   from {
@@ -444,7 +463,11 @@ const works = [
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.1) 0%,
+    transparent 50%
+  );
   opacity: 0;
   transition: opacity 0.4s ease;
   z-index: 1;
@@ -564,7 +587,12 @@ const works = [
   height: 0.72rem;
   margin-top: -0.02rem;
   border-radius: 0 0 1rem 1rem;
-  background: linear-gradient(to right, #7a6f5f, var(--text-secondary), #7a6f5f);
+  background: linear-gradient(
+    to right,
+    #7a6f5f,
+    var(--text-secondary),
+    #7a6f5f
+  );
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -616,7 +644,11 @@ const works = [
   .work-card:hover {
     transform: translateY(-12px) scale(1.02);
     border-color: var(--gold);
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(26, 26, 26, 0.6) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(26, 26, 26, 0.9) 0%,
+      rgba(26, 26, 26, 0.6) 100%
+    );
   }
 
   .work-card:hover::before {
