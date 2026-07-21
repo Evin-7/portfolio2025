@@ -8,7 +8,10 @@
       </p>
 
       <div class="contact-links">
-        <a href="mailto:yjevin75@gmail.com" class="contact-link contact-link-primary interactive">
+        <a
+          href="mailto:yjevin75@gmail.com"
+          class="contact-link contact-link-primary interactive"
+        >
           yjevin75@gmail.com
         </a>
         <a
@@ -152,13 +155,45 @@ onBeforeUnmount(() => {
 <style scoped>
 .contact {
   padding: 5.5rem 1.5rem;
-  background: transparent;
+  background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.contact::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.08) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  transform: translateX(-50%);
 }
 
 .contact-shell {
   max-width: 760px;
   margin: 0 auto;
   text-align: center;
+  position: relative;
+  z-index: 1;
+  animation: slideInUp 0.8s ease-out 0.1s both;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .contact-eyebrow {
@@ -166,7 +201,8 @@ onBeforeUnmount(() => {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--gold);
+  opacity: 0.8;
 }
 
 .contact-title {
@@ -174,14 +210,21 @@ onBeforeUnmount(() => {
   font-size: clamp(2.2rem, 5vw, 4rem);
   line-height: 1.02;
   letter-spacing: -0.04em;
-  color: #1d1d1f;
+  background: linear-gradient(
+    135deg,
+    var(--text-primary) 0%,
+    var(--gold-light) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .contact-text {
   margin-top: 1rem;
   font-size: 1rem;
   line-height: 1.7;
-  color: #6e6e73;
+  color: var(--text-secondary);
 }
 
 .contact-links {
@@ -195,15 +238,25 @@ onBeforeUnmount(() => {
 .contact-link {
   padding: 0.68rem 1rem;
   border-radius: 999px;
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: linear-gradient(
+    135deg,
+    var(--bg-surface) 0%,
+    rgba(26, 26, 26, 0.5) 100%
+  );
+  border: 1.5px solid var(--gold-border);
+  color: var(--gold);
   text-decoration: none;
   font-size: 0.9rem;
   line-height: 1;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(10px);
 }
+
 .contact-link-primary {
-  background: #1d1d1f;
-  color: #ffffff;
+  background: var(--gold);
+  color: var(--bg-primary);
+  border-color: var(--gold);
 }
 
 .contact-form {
@@ -216,18 +269,33 @@ onBeforeUnmount(() => {
 .form-input {
   width: 100%;
   padding: 1rem 1.1rem;
-  border: 1px solid rgba(29, 29, 31, 0.12);
+  border: 1.5px solid var(--gold-border);
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.92);
-  color: #1d1d1f;
+  background: linear-gradient(
+    135deg,
+    var(--bg-surface) 0%,
+    rgba(26, 26, 26, 0.5) 100%
+  );
+  color: var(--text-primary);
   font-size: 0.98rem;
   font-family: inherit;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.form-input::placeholder {
+  color: var(--text-secondary);
 }
 
 .form-input:focus {
-  outline: 2px solid rgba(29, 29, 31, 0.08);
-  border-color: rgba(29, 29, 31, 0.24);
+  outline: none;
+  border-color: var(--gold);
+  background: linear-gradient(
+    135deg,
+    rgba(26, 26, 26, 0.8) 0%,
+    rgba(26, 26, 26, 0.4) 100%
+  );
+  box-shadow: 0 0 24px rgba(212, 175, 55, 0.2);
 }
 
 .submit-btn {
@@ -236,18 +304,48 @@ onBeforeUnmount(() => {
   padding: 0.95rem 1.25rem;
   border: none;
   border-radius: 999px;
-  background: #1d1d1f;
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  color: var(--bg-primary);
   font-size: 0.95rem;
   font-family: inherit;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(212, 175, 55, 0.3);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .submit-btn:disabled {
   opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .message-display {
   margin-top: 1.5rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
+  animation: slideInUp 0.6s ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contact-link:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+    background: linear-gradient(
+      135deg,
+      rgba(26, 26, 26, 0.9) 0%,
+      rgba(26, 26, 26, 0.6) 100%
+    );
+  }
+
+  .contact-link-primary:hover {
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+  }
 }
 </style>

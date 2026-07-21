@@ -3,7 +3,7 @@
       <div
         ref="rellaxRef"
         class="absolute inset-0 bg-cover bg-center"
-        :style="{ backgroundColor: '#ffffff' }"
+        :style="{ backgroundColor: 'var(--bg-primary)' }"
         :data-rellax-speed="speed"
       ></div>
   

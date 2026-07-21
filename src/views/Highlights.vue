@@ -4,9 +4,13 @@
       <div class="highlights-intro">
         <div class="highlights-copy">
           <p class="highlights-eyebrow">What I Do</p>
-          <h2 class="highlights-title">Software engineering with a sharper product eye.</h2>
-        <p class="highlights-text">
-            I build software that feels clear, usable, and production-ready, balancing engineering discipline with design sensitivity across web products, app experiences, and business platforms.
+          <h2 class="highlights-title">
+            Software engineering with a sharper product eye.
+          </h2>
+          <p class="highlights-text">
+            I build software that feels clear, usable, and production-ready,
+            balancing engineering discipline with design sensitivity across web
+            products, app experiences, and business platforms.
           </p>
         </div>
 
@@ -14,7 +18,8 @@
           <span class="feature-label">Working Style</span>
           <h3>Calm systems. Clear interfaces. Strong execution.</h3>
           <p>
-            The goal is simple: ship work that looks intentional, scales cleanly, and feels reliable in the hands of users and teams.
+            The goal is simple: ship work that looks intentional, scales
+            cleanly, and feels reliable in the hands of users and teams.
           </p>
           <div class="feature-points">
             <span>Web development</span>
@@ -31,19 +36,28 @@
         <article class="highlight-card highlight-card-primary">
           <div class="highlight-icon">01</div>
           <h3>Web Development</h3>
-          <p>Business websites, product sites, and custom web platforms built with clean structure and polished user experience.</p>
+          <p>
+            Business websites, product sites, and custom web platforms built
+            with clean structure and polished user experience.
+          </p>
         </article>
 
         <article class="highlight-card">
           <div class="highlight-icon">02</div>
           <h3>App Development</h3>
-          <p>Software interfaces and application flows designed for clarity, usability, and maintainable frontend systems.</p>
+          <p>
+            Software interfaces and application flows designed for clarity,
+            usability, and maintainable frontend systems.
+          </p>
         </article>
 
         <article class="highlight-card">
           <div class="highlight-icon">03</div>
           <h3>PWA Development</h3>
-          <p>Responsive progressive web apps that feel fast, reliable, and consistent across desktop and mobile devices.</p>
+          <p>
+            Responsive progressive web apps that feel fast, reliable, and
+            consistent across desktop and mobile devices.
+          </p>
         </article>
       </div>
     </div>
@@ -53,12 +67,42 @@
 <style scoped>
 .highlights {
   padding: 4.15rem 1.5rem 2.45rem;
-  background: transparent;
+  background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.highlights::before {
+  content: "";
+  position: absolute;
+  bottom: -20%;
+  right: -15%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.05) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  animation: pulse 8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .highlights-shell {
   max-width: 1060px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .highlights-intro {
@@ -66,23 +110,36 @@
   grid-template-columns: minmax(0, 1.02fr) minmax(230px, 285px);
   gap: 0.9rem;
   align-items: start;
+  animation: slideInUp 0.8s ease-out 0.1s both;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .highlights-copy,
 .highlights-feature,
 .highlight-card {
   border-radius: 28px;
-  border: 1px solid rgba(29, 29, 31, 0.12);
-  box-shadow:
-    0 18px 40px rgba(29, 29, 31, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border: 1.5px solid var(--gold-border);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(10px);
 }
 
 .highlights-copy {
   padding: 1.3rem;
-  background:
-    radial-gradient(circle at top left, rgba(216, 178, 95, 0.12), transparent 26%),
-    rgba(255, 255, 255, 0.92);
+  background: linear-gradient(
+    135deg,
+    var(--bg-surface) 0%,
+    rgba(26, 26, 26, 0.5) 100%
+  );
 }
 
 .highlights-eyebrow {
@@ -90,7 +147,8 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--gold);
+  opacity: 0.8;
 }
 
 .highlights-title {
@@ -99,7 +157,14 @@
   font-size: clamp(1.65rem, 3.7vw, 2.85rem);
   line-height: 0.95;
   letter-spacing: -0.05em;
-  color: #161618;
+  background: linear-gradient(
+    135deg,
+    var(--text-primary) 0%,
+    var(--gold-light) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .highlights-text {
@@ -107,25 +172,30 @@
   margin-top: 0.8rem;
   font-size: 0.9rem;
   line-height: 1.65;
-  color: #6e6e73;
+  color: var(--text-secondary);
 }
 
 .highlights-feature {
   padding: 1.15rem;
-  background:
-    linear-gradient(160deg, rgba(24, 24, 28, 0.98) 0%, rgba(37, 37, 43, 0.96) 100%);
-  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    var(--bg-surface-alt) 0%,
+    rgba(21, 21, 21, 0.6) 100%
+  );
+  color: var(--text-primary);
 }
 
 .feature-label {
   display: inline-flex;
   padding: 0.38rem 0.65rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--gold);
   font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  transition: all 0.3s ease;
 }
 
 .highlights-feature h3 {
@@ -133,13 +203,14 @@
   font-size: 1.12rem;
   line-height: 1.08;
   letter-spacing: -0.04em;
+  color: var(--text-primary);
 }
 
 .highlights-feature p {
   margin-top: 0.7rem;
   font-size: 0.82rem;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--text-secondary);
 }
 
 .feature-points {
@@ -152,9 +223,10 @@
 .feature-points span {
   padding: 0.3rem 0.55rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(212, 175, 55, 0.1);
   font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
 }
 
 .highlights-grid {
@@ -166,13 +238,43 @@
 
 .highlight-card {
   padding: 1.35rem;
-  background: rgba(255, 255, 255, 0.92);
+  background: linear-gradient(
+    135deg,
+    var(--bg-surface) 0%,
+    rgba(26, 26, 26, 0.5) 100%
+  );
+  animation: cardReveal 0.8s ease-out forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.highlight-card:nth-child(1) {
+  animation-delay: 0.2s;
+}
+.highlight-card:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.highlight-card:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .highlight-card-primary {
-  background:
-    radial-gradient(circle at top left, rgba(155, 188, 247, 0.18), transparent 30%),
-    rgba(255, 255, 255, 0.94);
+  background: linear-gradient(
+    135deg,
+    var(--bg-surface) 0%,
+    rgba(26, 26, 26, 0.5) 100%
+  );
 }
 
 .highlight-icon {
@@ -182,24 +284,58 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #1d1d1f;
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  color: var(--bg-primary);
   font-size: 0.8rem;
   font-weight: 700;
+  transition: all 0.3s ease;
 }
 
 .highlight-card h3 {
   margin-top: 1rem;
   font-size: 1.18rem;
   line-height: 1.12;
-  color: #1d1d1f;
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .highlight-card p {
   margin-top: 0.75rem;
   font-size: 0.95rem;
   line-height: 1.68;
-  color: #6e6e73;
+  color: var(--text-secondary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .highlights-copy:hover,
+  .highlights-feature:hover {
+    transform: translateY(-8px);
+    border-color: var(--gold);
+    background: linear-gradient(
+      135deg,
+      rgba(26, 26, 26, 0.9) 0%,
+      rgba(26, 26, 26, 0.4) 100%
+    );
+  }
+
+  .highlight-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    border-color: var(--gold);
+    background: linear-gradient(
+      135deg,
+      rgba(26, 26, 26, 0.9) 0%,
+      rgba(26, 26, 26, 0.4) 100%
+    );
+  }
+
+  .highlight-card:hover .highlight-icon {
+    transform: scale(1.15) rotate(10deg);
+  }
+
+  .feature-points span:hover {
+    background: rgba(212, 175, 55, 0.3);
+    transform: scale(1.1);
+  }
 }
 
 @media (max-width: 980px) {

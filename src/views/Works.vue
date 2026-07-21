@@ -101,12 +101,12 @@ const resetMove = (key) => {
 const workCardStyle = (work) => ({
   ...defaultOffset,
   ...(cardOffsets.value[work.name] || {}),
-  "--work-accent": work.accent,
-  "--work-accent-soft": work.accentSoft,
 });
 
 onMounted(() => {
-  motionQuery = window.matchMedia("(max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce)");
+  motionQuery = window.matchMedia(
+    "(max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce)"
+  );
   syncMotionPreference();
   motionQuery.addEventListener("change", syncMotionPreference);
 });
@@ -117,148 +117,216 @@ onUnmounted(() => {
 
 const works = [
   {
+    name: "Elate HRMS",
+    link: "https://hrms.ae/",
+    image: new URL("../assets/images/hrms.ae.png", import.meta.url).href,
+    description:
+      "AI-powered HRMS platform for UAE businesses, covering payroll, leave, recruitment, and attendance.",
+    kicker: "HRMS Platform",
+    year: "2026",
+    focus: "Human Resources",
+    tags: ["HRMS", "Payroll", "SaaS"],
+  },
+  {
+    name: "Elate HRMS UAE",
+    link: "https://elatehrms.com/",
+    image: new URL("../assets/images/elatehrms.com.png", import.meta.url).href,
+    description:
+      "UAE-focused HR software bringing employee records, workflows, and payroll into one organized system.",
+    kicker: "Business Platform",
+    year: "2026",
+    focus: "HR Operations",
+    tags: ["UAE", "HR", "Workflows"],
+  },
+  {
+    name: "Elate Time",
+    link: "https://elatetime.com/",
+    image: new URL("../assets/images/elatetime.com.png", import.meta.url).href,
+    description:
+      "Attendance and leave management experience for teams across web, mobile, and biometric devices.",
+    kicker: "Attendance Platform",
+    year: "2026",
+    focus: "Workforce Time",
+    tags: ["Attendance", "Mobile", "Analytics"],
+  },
+  {
+    name: "Elate Time Dashboard",
+    link: "https://app.elatetime.com/dashboard",
+    image: new URL("../assets/images/app.elatetime.png", import.meta.url).href,
+    description:
+      "Team dashboard for daily attendance, employee activity, leave requests, and reporting.",
+    kicker: "Admin Dashboard",
+    year: "2026",
+    focus: "Time Tracking",
+    tags: ["Dashboard", "Leave", "Reporting"],
+  },
+  {
+    name: "Elate Time Portal",
+    link: "https://app.elatetime.com/login?next=%2F",
+    image: new URL("../assets/images/app.elatetime.png", import.meta.url).href,
+    description:
+      "Sign-in portal for employee attendance, leave, and workforce-time management.",
+    kicker: "Employee Portal",
+    year: "2026",
+    focus: "Time Tracking",
+    tags: ["Portal", "Attendance", "Employees"],
+  },
+  {
+    name: "Elate HRMS Dashboard",
+    link: "https://app.elatehrms.com/dashboard",
+    image: new URL("../assets/images/app.elatehrms.com.png", import.meta.url)
+      .href,
+    description:
+      "Operations workspace for recruitment, onboarding, employee records, payroll, and HR reporting.",
+    kicker: "Admin Dashboard",
+    year: "2026",
+    focus: "HR Operations",
+    tags: ["Dashboard", "Employees", "Payroll"],
+  },
+  {
+    name: "Abez Auto",
+    link: "https://abezauto.com/",
+    image: new URL("../assets/images/abezauto.com.png", import.meta.url).href,
+    description:
+      "Premium auto-parts storefront with vehicle-specific discovery, products, and conversion kits.",
+    kicker: "E-commerce Platform",
+    year: "2026",
+    focus: "Auto Parts Store",
+    tags: ["E-commerce", "Automotive", "Search"],
+  },
+  {
     name: "Peniel Tech",
     link: "https://www.penieltech.com/",
-    image: new URL("../assets/images/penieltech-shot.png", import.meta.url).href,
-    description: "Corporate site for IT products and solution architecture with a clearer trust-building story.",
+    image: new URL("../assets/images/penieltech-shot.png", import.meta.url)
+      .href,
+    description:
+      "Corporate site for IT products and solution architecture with a clearer trust-building story.",
     kicker: "Flagship Website",
     year: "2026",
     focus: "Company Platform",
     tags: ["Frontend", "Brand", "Responsive"],
-    accent: "#0f172a",
-    accentSoft: "#e8eefc",
   },
   {
     name: "Mezeh App",
     link: "https://mezeh.com/",
     image: new URL("../assets/images/mezehapp.png", import.meta.url).href,
-    description: "Delivery-led experience with stronger product framing and mobile-first commerce flows.",
+    description:
+      "Delivery-led experience with stronger product framing and mobile-first commerce flows.",
     kicker: "Product UI",
     year: "2025",
     focus: "Consumer App",
     tags: ["Product", "Ordering", "Mobile"],
-    accent: "#5b2333",
-    accentSoft: "#f8e6eb",
   },
   {
     name: "Oh Yes World",
     link: "https://ohyesworld.com/",
     image: new URL("../assets/images/ohyesworld.png", import.meta.url).href,
-    description: "Service-led business site with a cleaner narrative rhythm and polished premium feel.",
+    description:
+      "Service-led business site with a cleaner narrative rhythm and polished premium feel.",
     kicker: "Business Website",
     year: "2025",
     focus: "Marketing Site",
     tags: ["Brand", "Service", "CMS"],
-    accent: "#17352c",
-    accentSoft: "#e5f3ed",
   },
   {
     name: "Home Maintenance",
     link: "https://homemaintenance.ohyesworld.com/",
     image: new URL("../assets/images/homemaintaince.png", import.meta.url).href,
-    description: "Conversion-focused service website built for clarity, trust, and quick decision making.",
+    description:
+      "Conversion-focused service website built for clarity, trust, and quick decision making.",
     kicker: "Service Platform",
     year: "2025",
     focus: "Lead Generation",
     tags: ["Services", "Conversion", "UI"],
-    accent: "#7c3a13",
-    accentSoft: "#fff1e8",
   },
   {
     name: "Mezeh Catering",
     link: "https://catering.mezeh.com/",
     image: new URL("../assets/images/mezehcat.png", import.meta.url).href,
-    description: "Ordering experience for large-format catering with cleaner customer journey framing.",
+    description:
+      "Ordering experience for large-format catering with cleaner customer journey framing.",
     kicker: "Food Platform",
     year: "2025",
     focus: "Ordering System",
     tags: ["Catering", "Checkout", "Frontend"],
-    accent: "#5a2b28",
-    accentSoft: "#f8e8e6",
   },
   {
     name: "Mezeh Frontend",
     link: "https://mezeh-frontend-production.azurewebsites.net/",
     image: new URL("../assets/images/mezehmeal.png", import.meta.url).href,
-    description: "Branded customer-facing frontend with consistent product hierarchy and browsing flow.",
+    description:
+      "Branded customer-facing frontend with consistent product hierarchy and browsing flow.",
     kicker: "Frontend System",
     year: "2025",
     focus: "Customer Flow",
     tags: ["Frontend", "UI", "Brand"],
-    accent: "#20423b",
-    accentSoft: "#e7f4f0",
   },
   {
     name: "Access Rooms",
     link: "https://accessrooms.com/",
     image: new URL("../assets/images/9-min.png", import.meta.url).href,
-    description: "Booking experience with a lighter layout and hospitality-first browsing cues.",
+    description:
+      "Booking experience with a lighter layout and hospitality-first browsing cues.",
     kicker: "Travel Product",
     year: "2024",
     focus: "Booking Site",
     tags: ["Travel", "Booking", "Responsive"],
-    accent: "#103b56",
-    accentSoft: "#e6f2fa",
   },
   {
     name: "Periyar Tiger Reserve",
     link: "https://www.periyartigerreserve.org/",
     image: new URL("../assets/images/6-min.png", import.meta.url).href,
-    description: "Destination website shaped around discoverability, scenic storytelling, and simple navigation.",
+    description:
+      "Destination website shaped around discoverability, scenic storytelling, and simple navigation.",
     kicker: "Tourism Website",
     year: "2024",
     focus: "Information Design",
     tags: ["Tourism", "Content", "UI"],
-    accent: "#214b32",
-    accentSoft: "#e6f3ea",
   },
   {
     name: "St George CSI Church",
     link: "https://stgeorgecsichurchofficial.com/",
-    image: new URL("../assets/images/stgeorgecsichurch.png", import.meta.url).href,
-    description: "Church website focused on clarity, community updates, and a more welcoming information flow.",
+    image: new URL("../assets/images/stgeorgecsichurch.png", import.meta.url)
+      .href,
+    description:
+      "Church website focused on clarity, community updates, and a more welcoming information flow.",
     kicker: "Community Website",
     year: "2025",
     focus: "Information Design",
     tags: ["Community", "Content", "UI"],
-    accent: "#5c3b1f",
-    accentSoft: "#f8eee3",
   },
   {
     name: "Mudumalai Tiger Reserve",
     link: "https://www.mudumalaitigerreserve.com/",
     image: new URL("../assets/images/mudumalai.png", import.meta.url).href,
-    description: "Wildlife destination site designed around scenic storytelling and easier visitor exploration.",
+    description:
+      "Wildlife destination site designed around scenic storytelling and easier visitor exploration.",
     kicker: "Tourism Website",
     year: "2025",
     focus: "Visitor Experience",
     tags: ["Tourism", "Wildlife", "Responsive"],
-    accent: "#2a4a2f",
-    accentSoft: "#e7f3e8",
   },
   {
     name: "Parambikulam Tiger Reserve",
     link: "https://parambikulam.org/",
     image: new URL("../assets/images/parambikulam.png", import.meta.url).href,
-    description: "Destination platform shaped for discoverability, bookings, and clearer content hierarchy.",
+    description:
+      "Destination platform shaped for discoverability, bookings, and clearer content hierarchy.",
     kicker: "Reserve Website",
     year: "2025",
     focus: "Visitor Platform",
     tags: ["Tourism", "Booking", "Content"],
-    accent: "#274d3e",
-    accentSoft: "#e6f3ef",
   },
   {
     name: "Admin Panel - Whale Shark",
     link: "https://whaleshark.leopardtechlabs.com",
     image: new URL("../assets/images/2-min.png", import.meta.url).href,
-    description: "Operations dashboard designed around fast scanning, clearer metrics, and admin workflows.",
+    description:
+      "Operations dashboard designed around fast scanning, clearer metrics, and admin workflows.",
     kicker: "Dashboard",
     year: "2024",
     focus: "Admin System",
     tags: ["Dashboard", "Ops", "Data"],
-    accent: "#29235c",
-    accentSoft: "#ece9ff",
   },
 ];
 </script>
@@ -266,19 +334,44 @@ const works = [
 <style scoped>
 .works {
   padding: 5rem 1.5rem;
-  background:
-    radial-gradient(circle at top left, rgba(216, 178, 95, 0.08), transparent 28%),
-    linear-gradient(180deg, #f7f8fb 0%, #ffffff 100%);
+  background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.works::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.03) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .works-shell {
   max-width: 1040px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .works-heading {
   display: block;
   margin-bottom: 2.2rem;
+  animation: slideInUp 0.8s ease-out 0.2s both;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .works-eyebrow {
@@ -286,7 +379,9 @@ const works = [
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--gold);
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
 }
 
 .works-title {
@@ -294,13 +389,17 @@ const works = [
   font-size: clamp(1.8rem, 3vw, 3rem);
   line-height: 0.96;
   letter-spacing: -0.05em;
-  color: #121214;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--gold-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .works-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .work-card {
@@ -308,33 +407,52 @@ const works = [
   text-decoration: none;
   color: inherit;
   min-height: 244px;
-  border-radius: 22px;
+  border-radius: 24px;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 248, 250, 0.94) 100%),
-    var(--work-accent-soft);
-  border: 1px solid rgba(18, 18, 20, 0.06);
-  box-shadow:
-    0 24px 70px rgba(24, 24, 28, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  background: linear-gradient(135deg, var(--bg-surface) 0%, rgba(26, 26, 26, 0.8) 100%);
+  border: 1.5px solid var(--gold-border);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  animation: cardReveal 0.8s ease-out forwards;
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.work-card:nth-child(1) { animation-delay: 0.1s; }
+.work-card:nth-child(2) { animation-delay: 0.2s; }
+.work-card:nth-child(3) { animation-delay: 0.3s; }
+.work-card:nth-child(4) { animation-delay: 0.4s; }
+.work-card:nth-child(5) { animation-delay: 0.5s; }
+.work-card:nth-child(6) { animation-delay: 0.6s; }
+.work-card:nth-child(7) { animation-delay: 0.7s; }
+.work-card:nth-child(8) { animation-delay: 0.8s; }
+.work-card:nth-child(9) { animation-delay: 0.9s; }
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(50px) rotateX(10deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
 }
 
 .work-card::before {
   content: "";
   position: absolute;
-  inset: -20% auto auto -8%;
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--work-accent) 18%, white) 0%, transparent 72%);
-  opacity: 0.8;
-  pointer-events: none;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 1;
 }
 
 .work-card-inner {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   height: 100%;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
@@ -353,12 +471,15 @@ const works = [
   font-size: clamp(0.88rem, 1.15vw, 1.15rem);
   line-height: 1.15;
   letter-spacing: -0.04em;
-  color: #121214;
+  color: var(--text-primary);
+  font-weight: 600;
 }
+
 .work-media {
   min-height: 0;
   display: flex;
   align-items: center;
+  transition: transform 0.4s ease;
 }
 
 .laptop-frame {
@@ -366,7 +487,8 @@ const works = [
   display: flex;
   flex-direction: column;
   align-items: center;
-  filter: drop-shadow(0 18px 30px rgba(17, 17, 20, 0.14));
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+  transition: filter 0.4s ease;
 }
 
 .laptop-screen-shell {
@@ -375,20 +497,13 @@ const works = [
   aspect-ratio: 1.56 / 1;
   padding: 0.42rem 0.42rem 0.32rem;
   border-radius: 16px 16px 10px 10px;
-  background: linear-gradient(180deg, rgba(17, 17, 19, 0.98) 0%, rgba(26, 26, 30, 0.98) 100%);
-  box-shadow:
-    0 18px 40px rgba(17, 17, 20, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, var(--bg-surface-alt) 0%, #0f0f0f 100%);
   overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.1);
 }
 
 .laptop-screen-shell::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0;
-  height: 32%;
-  background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.04) 100%);
-  pointer-events: none;
+  display: none;
 }
 
 .laptop-topbar {
@@ -402,18 +517,19 @@ const works = [
   height: 7px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.24);
+  transition: all 0.3s ease;
 }
 
 .laptop-topbar span:nth-child(1) {
-  background: #ff6b57;
+  background: var(--gold-deep);
 }
 
 .laptop-topbar span:nth-child(2) {
-  background: #febc2e;
+  background: var(--gold);
 }
 
 .laptop-topbar span:nth-child(3) {
-  background: #28c840;
+  background: var(--gold-light);
 }
 
 .laptop-camera {
@@ -431,12 +547,12 @@ const works = [
 .work-image {
   width: 100%;
   height: calc(100% - 13px);
-  object-fit: contain;
-  object-position: center center;
+  object-fit: cover;
+  object-position: center;
   display: block;
   padding: 0.25rem;
   border-radius: 12px;
-  background: #ffffff;
+  background: var(--bg-surface-alt);
   transform: translate3d(var(--image-x), var(--image-y), 0) scale(1.02);
   transform-origin: center;
   transition: transform 0.28s ease;
@@ -448,7 +564,8 @@ const works = [
   height: 0.72rem;
   margin-top: -0.02rem;
   border-radius: 0 0 1rem 1rem;
-  background: linear-gradient(180deg, #d7d9e0 0%, #bcc0c8 100%);
+  background: linear-gradient(to right, #7a6f5f, var(--text-secondary), #7a6f5f);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .laptop-base::before {
@@ -481,9 +598,11 @@ const works = [
   margin-left: auto;
   padding: 0.55rem 0.75rem;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(18, 18, 20, 0.05);
-  color: #22242a;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  transition: all 0.3s ease;
+  font-weight: 600;
 }
 
 .work-cta span,
@@ -495,17 +614,38 @@ const works = [
 
 @media (hover: hover) and (pointer: fine) {
   .work-card:hover {
-    transform: translateY(-5px);
-    border-color: color-mix(in srgb, var(--work-accent) 20%, rgba(18, 18, 20, 0.06));
-    box-shadow:
-      0 32px 80px rgba(24, 24, 28, 0.09),
-      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    transform: translateY(-12px) scale(1.02);
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(26, 26, 26, 0.6) 100%);
+  }
+
+  .work-card:hover::before {
+    opacity: 1;
+  }
+
+  .work-card:hover .work-media {
+    transform: scale(1.08);
+  }
+
+  .work-card:hover .laptop-frame {
+    filter: drop-shadow(0 30px 60px rgba(212, 175, 55, 0.2));
+  }
+
+  .work-card:hover .work-cta {
+    background: var(--gold);
+    color: var(--bg-primary);
+    transform: translateX(4px);
+  }
+
+  .work-card:hover .laptop-topbar span {
+    transform: scale(1.3);
   }
 }
 
 @media (max-width: 1100px) {
   .works-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem;
   }
 }
 

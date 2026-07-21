@@ -16,18 +16,33 @@
 </template>
 
 <script setup>
-import Navbar from './components/Navbar.vue'
-import Footer from './components/Footer.vue'
-import Hero from './views/Hero.vue'
-import Highlights from './views/Highlights.vue'
-import About from './views/About.vue'
-import Skills from './views/Skills.vue'
-import Works from './views/Works.vue'
-import Contact from './views/Contact.vue'
+import Navbar from "./components/Navbar.vue";
+import Footer from "./components/Footer.vue";
+import Hero from "./views/Hero.vue";
+import Highlights from "./views/Highlights.vue";
+import About from "./views/About.vue";
+import Skills from "./views/Skills.vue";
+import Works from "./views/Works.vue";
+import Contact from "./views/Contact.vue";
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+
+:root {
+  --bg-primary: #0d0d0d;
+  --bg-surface: #1a1a1a;
+  --bg-surface-alt: #151515;
+  --gold: #d4af37;
+  --gold-muted: rgba(212, 175, 55, 0.6);
+  --gold-border: rgba(212, 175, 55, 0.2);
+  --gold-glow: rgba(212, 175, 55, 0.15);
+  --text-primary: #f2f2f2;
+  --text-secondary: #9a9a9a;
+  --code-bg: #101010;
+  --gold-deep: #9f7620;
+  --gold-light: #e6cb77;
+}
 
 /* Global Styles */
 * {
@@ -41,16 +56,30 @@ html {
 }
 
 body {
-  font-family: "Montserrat", "SamsungOne", "Samsung One", "SF Pro Display", "SF Pro Text", -apple-system,
-    BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  background: #fbfbfd;
-  color: #1d1d1f;
+  font-family: "Plus Jakarta Sans", "SamsungOne", "Samsung One",
+    "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   overflow-x: hidden;
 }
 
 .app {
   position: relative;
   min-height: 100vh;
+  background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 50%, #0d0d0d 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .page-shell {
@@ -65,34 +94,51 @@ body {
 }
 
 .content-shell::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 14% 12%, rgba(20, 20, 22, 0.065), transparent 22%),
-    radial-gradient(circle at 82% 18%, rgba(20, 20, 22, 0.07), transparent 24%),
-    radial-gradient(circle at 50% 56%, rgba(20, 20, 22, 0.045), transparent 30%),
-    linear-gradient(rgba(20, 20, 22, 0.075) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(20, 20, 22, 0.075) 1px, transparent 1px),
-    linear-gradient(180deg, #f9f9fb 0%, #f4f5f8 100%);
-  background-size: auto, auto, auto, 88px 88px, 88px 88px, auto;
-  background-attachment: fixed, fixed, fixed, fixed, fixed, scroll;
+  display: none;
 }
 
 .content-shell::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0.14) 28%, rgba(255, 255, 255, 0.2) 100%);
+  display: none;
 }
 
 .content-shell > * {
   position: relative;
   z-index: 1;
+  animation: revealOnScroll 0.8s ease-out forwards;
+  opacity: 0;
+  animation-timeline: view();
+  animation-range: entry 0% cover 30%;
+}
+
+@keyframes revealOnScroll {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 3px;
+  border: 1px solid var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-light);
 }
 </style>

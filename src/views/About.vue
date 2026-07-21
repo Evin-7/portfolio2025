@@ -3,9 +3,13 @@
     <div class="about-shell">
       <div class="about-copy">
         <p class="about-eyebrow">About</p>
-        <h2 class="about-title">A software engineer focused on clean systems and scalable product work.</h2>
+        <h2 class="about-title">
+          A software engineer focused on clean systems and scalable product
+          work.
+        </h2>
         <p class="about-text">
-          I build clear, scalable interfaces with strong typography, disciplined spacing, and polished interaction details.
+          I build clear, scalable interfaces with strong typography, disciplined
+          spacing, and polished interaction details.
         </p>
       </div>
 
@@ -39,16 +43,47 @@
 <style scoped>
 .about {
   padding: 5.5rem 1.5rem;
-  background: transparent;
+  background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.about::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 100% 0%,
+    rgba(212, 175, 55, 0.02) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
 }
 
 .about-shell {
   max-width: 1060px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .about-copy {
   max-width: 720px;
+  animation: slideInUp 0.8s ease-out 0.1s both;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .about-eyebrow {
@@ -56,7 +91,8 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--gold);
+  opacity: 0.8;
 }
 
 .about-title {
@@ -64,7 +100,14 @@
   font-size: clamp(2.2rem, 5vw, 4rem);
   line-height: 1.02;
   letter-spacing: -0.04em;
-  color: #1d1d1f;
+  background: linear-gradient(
+    135deg,
+    var(--text-primary) 0%,
+    var(--gold-light) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .about-text {
@@ -72,22 +115,39 @@
   margin-top: 1.2rem;
   font-size: 1.05rem;
   line-height: 1.75;
-  color: #6e6e73;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 .experience-item {
   padding: 1.4rem;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(29, 29, 31, 0.12);
-  box-shadow:
-    0 12px 30px rgba(29, 29, 31, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  background: linear-gradient(
+    135deg,
+    var(--bg-surface) 0%,
+    rgba(26, 26, 26, 0.6) 100%
+  );
+  border: 1.5px solid var(--gold-border);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: slideInUp 0.8s ease-out forwards;
+  opacity: 0;
+  backdrop-filter: blur(10px);
 }
+
+.experience-item:nth-child(1) {
+  animation-delay: 0.2s;
+}
+.experience-item:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.experience-item:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
 .experience-item h3 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .experience {
@@ -107,7 +167,19 @@
 .experience-item p,
 .experience-item span {
   margin-top: 0.35rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .experience-item:hover {
+    transform: translateY(-8px);
+    border-color: var(--gold);
+    background: linear-gradient(
+      135deg,
+      rgba(26, 26, 26, 0.8) 0%,
+      rgba(26, 26, 26, 0.4) 100%
+    );
+  }
 }
 
 @media (max-width: 768px) {

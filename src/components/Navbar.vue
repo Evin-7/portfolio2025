@@ -25,9 +25,9 @@ import logoMark from "../assets/icons/peniel-mark.svg";
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(251, 251, 253, 0.86);
+  background: rgba(13, 13, 13, 0.9);
   backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid rgba(29, 29, 31, 0.06);
+  border-bottom: 1px solid var(--gold-border);
 }
 
 .nav-shell {
@@ -43,13 +43,16 @@ import logoMark from "../assets/icons/peniel-mark.svg";
   display: inline-flex;
   align-items: center;
   text-decoration: none;
+  padding: 0.2rem;
+  border: 1px solid var(--gold-border);
+  border-radius: 50%;
 }
 
 .logo-mark {
   width: 38px;
   height: 38px;
   display: block;
-  filter: drop-shadow(0 10px 18px rgba(17, 17, 17, 0.12));
+  filter: sepia(1) saturate(1.2) hue-rotate(2deg) drop-shadow(0 8px 14px var(--gold-glow));
 }
 
 .nav-links {
@@ -59,10 +62,28 @@ import logoMark from "../assets/icons/peniel-mark.svg";
 }
 
 .nav-links a {
-  color: #1d1d1f;
+  position: relative;
+  color: var(--text-primary);
   text-decoration: none;
   font-size: 0.95rem;
 }
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -0.4rem;
+  left: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transition: transform 0.24s ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible { color: var(--gold); }
+.nav-links a:hover::after,
+.nav-links a:focus-visible::after { transform: scaleX(1); }
 
 @media (max-width: 768px) {
   .nav-links {

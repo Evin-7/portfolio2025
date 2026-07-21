@@ -1,16 +1,18 @@
 <template>
-  <section
+  <motion.section
     class="hero"
     @mousemove="handleMouseMove"
     @mouseleave="resetMouse"
+    :initial="{ opacity: 0 }"
+    :animate="{ opacity: 1 }"
+    :transition="{ duration: 0.45, ease: 'easeOut' }"
   >
-    <div class="hero-ambient ambient-one" :style="layerStyle(18, -12, 0.03)"></div>
-    <div class="hero-ambient ambient-two" :style="layerStyle(-14, 16, 0.02)"></div>
     <div class="hero-grid" :style="layerStyle(10, 8, 0.01)"></div>
 
-    <div class="hero-shell">
-      <div class="hero-copy">
-        <h1 class="hero-title">Software Engineer crafting clean, scalable experiences.</h1>
+    <motion.div class="hero-shell" :initial="{ y: 28, opacity: 0 }" :animate="{ y: 0, opacity: 1 }" :transition="{ duration: 0.55, ease: 'easeOut' }">
+      <motion.div class="hero-copy" :initial="{ x: -24, opacity: 0 }" :animate="{ x: 0, opacity: 1 }" :transition="{ duration: 0.5, delay: 0.1, ease: 'easeOut' }">
+        <p class="hero-kicker">Software Engineer</p>
+        <h1 class="hero-title">Software Engineer crafting clean, <span>scalable experiences.</span></h1>
         <p class="hero-subtitle">
           Software engineering work with a calm, premium product approach.
         </p>
@@ -18,9 +20,9 @@
           <a href="#works" class="hero-button hero-button-primary interactive">View Projects</a>
           <a href="#contact" class="hero-button hero-button-secondary interactive">Contact</a>
         </div>
-      </div>
+      </motion.div>
 
-      <div class="hero-stage">
+      <motion.div class="hero-stage" :initial="{ x: 24, opacity: 0 }" :animate="{ x: 0, opacity: 1 }" :transition="{ duration: 0.6, delay: 0.16, ease: 'easeOut' }">
         <div
           class="hero-orbit hero-orbit-one"
           :style="layerStyle(-16, 10, 0.02)"
@@ -132,13 +134,14 @@
           <strong>Built for impact.</strong>
           <span>Designed to scale.</span>
         </div>
-      </div>
-    </div>
-  </section>
+      </motion.div>
+    </motion.div>
+  </motion.section>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+import { motion } from "motion-v";
 
 const mouseX = ref(0);
 const mouseY = ref(0);
@@ -224,7 +227,7 @@ onUnmounted(() => {
   position: relative;
   overflow: hidden;
   padding: 9rem 1.5rem 4.5rem;
-  background: transparent;
+  background: var(--bg-primary);
 }
 
 .hero-shell {
@@ -243,20 +246,41 @@ onUnmounted(() => {
   padding-right: 1.6rem;
 }
 
-.hero-title {
-  font-size: clamp(2.7rem, 5.3vw, 4.45rem);
-  line-height: 0.96;
-  letter-spacing: -0.05em;
+.hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+  color: var(--gold);
+  font-size: 0.74rem;
   font-weight: 700;
-  color: #1d1d1f;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
+
+.hero-kicker::before {
+  content: "";
+  width: 2.3rem;
+  height: 1px;
+  background: var(--gold);
+}
+
+.hero-title {
+  font-size: clamp(3rem, 5.6vw, 4.8rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.hero-title span { color: var(--gold); }
 
 .hero-subtitle {
   max-width: 480px;
   margin: 1.05rem 0 0;
   font-size: 0.96rem;
   line-height: 1.75;
-  color: #6e6e73;
+  color: var(--text-secondary);
 }
 
 .hero-actions {
@@ -284,14 +308,17 @@ onUnmounted(() => {
 }
 
 .hero-button-primary {
-  background: #1d1d1f;
-  color: #ffffff;
+  background: var(--gold);
+  color: var(--bg-primary);
 }
 
 .hero-button-secondary {
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: transparent;
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
 }
+
+.hero-button-secondary:hover { background: rgba(212, 175, 55, 0.12); }
 
 .hero-ambient,
 .hero-grid {
@@ -302,9 +329,9 @@ onUnmounted(() => {
 
 .hero-ambient {
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(29, 29, 31, 0.05);
-  box-shadow: 0 24px 80px rgba(29, 29, 31, 0.04);
+  background: rgba(212, 175, 55, 0.035);
+  border: 1px solid rgba(212, 175, 55, 0.12);
+  box-shadow: none;
 }
 
 .ambient-one {
@@ -322,12 +349,13 @@ onUnmounted(() => {
 }
 
 .hero-grid {
-  display: none;
+  inset: 0;
   background-image:
-    linear-gradient(rgba(29, 29, 31, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(29, 29, 31, 0.035) 1px, transparent 1px);
+    linear-gradient(rgba(212, 175, 55, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.08) 1px, transparent 1px);
   background-size: 96px 96px;
-  mask-image: radial-gradient(circle at center, black 42%, transparent 92%);
+  opacity: 0.5;
+  mask-image: linear-gradient(90deg, black, transparent 72%);
 }
 
 .hero-stage {
@@ -347,7 +375,7 @@ onUnmounted(() => {
 
 .hero-orbit {
   border-radius: 999px;
-  border: 1px solid rgba(29, 29, 31, 0.08);
+  border: 1px solid var(--gold-border);
 }
 
 .hero-orbit-one {
@@ -363,7 +391,7 @@ onUnmounted(() => {
   bottom: 2.1rem;
   left: 0.6rem;
   background:
-    radial-gradient(circle at center, rgba(29, 29, 31, 0.055) 0 18%, transparent 19% 100%);
+    radial-gradient(circle at center, rgba(212, 175, 55, 0.1) 0 18%, transparent 19% 100%);
 }
 
 .hero-pattern-grid {
@@ -374,8 +402,8 @@ onUnmounted(() => {
   border-radius: 22px;
   opacity: 0.6;
   background-image:
-    linear-gradient(rgba(29, 29, 31, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(29, 29, 31, 0.07) 1px, transparent 1px);
+    linear-gradient(rgba(212, 175, 55, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.14) 1px, transparent 1px);
   background-size: 14px 14px;
 }
 
@@ -385,7 +413,7 @@ onUnmounted(() => {
   width: 68px;
   height: 52px;
   opacity: 0.85;
-  background-image: radial-gradient(circle, rgba(29, 29, 31, 0.26) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(circle, rgba(212, 175, 55, 0.35) 1.2px, transparent 1.2px);
   background-size: 14px 14px;
 }
 
@@ -393,9 +421,9 @@ onUnmounted(() => {
 .hero-stage-note {
   position: absolute;
   border-radius: 30px;
-  background: rgba(255, 255, 255, 0.94);
-  border: 1px solid rgba(29, 29, 31, 0.06);
-  box-shadow: 0 20px 50px rgba(29, 29, 31, 0.06);
+  background: var(--bg-surface);
+  border: 1px solid var(--gold-border);
+  box-shadow: none;
   transition: transform 0.16s ease-out;
 }
 
@@ -413,20 +441,20 @@ onUnmounted(() => {
   width: 30px;
   height: 30px;
   border-radius: 10px;
-  background: #f5f5f7;
+  background: rgba(212, 175, 55, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--gold);
 }
 
 .mini-copy {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .mini-copy strong {
@@ -436,7 +464,7 @@ onUnmounted(() => {
 .mini-copy span {
   font-size: 0.56rem;
   line-height: 1.45;
-  color: #6e6e73;
+  color: var(--text-secondary);
 }
 
 .hero-card-code {
@@ -444,9 +472,9 @@ onUnmounted(() => {
   right: 0;
   width: 276px;
   padding: 0.7rem 0.74rem 0.78rem;
-  background: #1d1d1f;
-  border-color: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 28px 60px rgba(29, 29, 31, 0.16);
+  background: var(--code-bg);
+  border-color: var(--gold-border);
+  box-shadow: none;
 }
 
 .code-topbar {
@@ -467,16 +495,16 @@ onUnmounted(() => {
   border-radius: 50%;
 }
 
-.code-dots span:nth-child(1) { background: #ff6b57; }
-.code-dots span:nth-child(2) { background: #febc2e; }
-.code-dots span:nth-child(3) { background: #28c840; }
+.code-dots span:nth-child(1) { background: var(--gold-deep); }
+.code-dots span:nth-child(2) { background: var(--gold); }
+.code-dots span:nth-child(3) { background: var(--gold-light); }
 
 .code-tab {
   padding: 0.18rem 0.42rem;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
   font-size: 0.64rem;
-  color: rgba(255, 255, 255, 0.76);
+  color: var(--gold-muted);
 }
 
 .code-window {
@@ -497,7 +525,7 @@ onUnmounted(() => {
 }
 
 .line-text {
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--text-primary);
 }
 
 .line-text.soft {
@@ -524,20 +552,20 @@ onUnmounted(() => {
   align-items: center;
   gap: 0.48rem;
   padding: 0.58rem 0.38rem;
-  border-right: 1px solid rgba(29, 29, 31, 0.06);
+  border-right: 1px solid var(--gold-border);
 }
 
 .dash-sidebar span {
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  background: #f1f1f3;
+  background: rgba(212, 175, 55, 0.18);
 }
 
 .dash-sidebar .dash-logo {
   width: 16px;
   height: 16px;
-  background: #1d1d1f;
+  background: var(--gold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -548,7 +576,7 @@ onUnmounted(() => {
   width: 8px;
   height: 12px;
   border-radius: 999px;
-  background: #ffffff;
+  background: var(--bg-primary);
 }
 
 .dash-logo-dot {
@@ -558,7 +586,7 @@ onUnmounted(() => {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #d8b25f;
+  background: var(--gold);
 }
 
 @media (hover: none), (pointer: coarse), (max-width: 768px) {
@@ -582,14 +610,14 @@ onUnmounted(() => {
   width: 38%;
   height: 7px;
   border-radius: 999px;
-  background: #f2f2f4;
+  background: rgba(212, 175, 55, 0.12);
 }
 
 .dash-overview {
   margin-top: 0.45rem;
   font-size: 0.58rem;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .dash-stats {
@@ -602,21 +630,21 @@ onUnmounted(() => {
 .dash-stat-card {
   padding: 0.4rem 0.38rem;
   border-radius: 10px;
-  background: #fafafc;
+  background: var(--bg-surface-alt);
 }
 
 .dash-stat-label {
   font-size: 0.42rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #8d8d92;
+  color: var(--text-secondary);
 }
 
 .dash-stat-value {
   margin-top: 0.18rem;
   font-size: 0.62rem;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--gold);
 }
 
 .dash-chart {
@@ -625,9 +653,9 @@ onUnmounted(() => {
   margin-top: 0.45rem;
   border-radius: 12px;
   background:
-    linear-gradient(rgba(29, 29, 31, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(29, 29, 31, 0.05) 1px, transparent 1px),
-    #fafafc;
+    linear-gradient(rgba(212, 175, 55, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.08) 1px, transparent 1px),
+    var(--bg-surface-alt);
   background-size: 26px 26px, 26px 26px, auto;
   overflow: hidden;
 }
@@ -639,20 +667,20 @@ onUnmounted(() => {
   bottom: 0.5rem;
   height: 34px;
   background:
-    radial-gradient(circle at 0% 78%, #9bbcf7 0 3px, transparent 4px),
-    radial-gradient(circle at 18% 60%, #9bbcf7 0 3px, transparent 4px),
-    radial-gradient(circle at 34% 70%, #9bbcf7 0 3px, transparent 4px),
-    radial-gradient(circle at 52% 36%, #9bbcf7 0 3px, transparent 4px),
-    radial-gradient(circle at 68% 54%, #9bbcf7 0 3px, transparent 4px),
-    radial-gradient(circle at 84% 46%, #9bbcf7 0 3px, transparent 4px),
-    radial-gradient(circle at 100% 20%, #9bbcf7 0 3px, transparent 4px);
+    radial-gradient(circle at 0% 78%, var(--gold) 0 3px, transparent 4px),
+    radial-gradient(circle at 18% 60%, var(--gold) 0 3px, transparent 4px),
+    radial-gradient(circle at 34% 70%, var(--gold) 0 3px, transparent 4px),
+    radial-gradient(circle at 52% 36%, var(--gold) 0 3px, transparent 4px),
+    radial-gradient(circle at 68% 54%, var(--gold) 0 3px, transparent 4px),
+    radial-gradient(circle at 84% 46%, var(--gold) 0 3px, transparent 4px),
+    radial-gradient(circle at 100% 20%, var(--gold) 0 3px, transparent 4px);
 }
 
 .dash-chart-line::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, transparent 0 5%, #9bbcf7 6% 7%, transparent 8% 21%, #9bbcf7 22% 23%, transparent 24% 37%, #9bbcf7 38% 39%, transparent 40% 53%, #9bbcf7 54% 55%, transparent 56% 69%, #9bbcf7 70% 71%, transparent 72% 85%, #9bbcf7 86% 87%, transparent 88% 100%);
+  background: linear-gradient(135deg, transparent 0 5%, var(--gold) 6% 7%, transparent 8% 21%, var(--gold) 22% 23%, transparent 24% 37%, var(--gold) 38% 39%, transparent 40% 53%, var(--gold) 54% 55%, transparent 56% 69%, var(--gold) 70% 71%, transparent 72% 85%, var(--gold) 86% 87%, transparent 88% 100%);
   opacity: 0.5;
   mask: linear-gradient(to bottom, transparent 0, black 25%, black 100%);
 }
@@ -670,12 +698,12 @@ onUnmounted(() => {
   align-items: center;
   font-size: 0.58rem;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .snapshot-head strong {
   font-size: 0.8rem;
-  color: #3b82f6;
+  color: var(--gold);
 }
 
 .snapshot-row {
@@ -690,18 +718,18 @@ onUnmounted(() => {
   width: 18px;
   height: 18px;
   border-radius: 6px;
-  background: #f5f5f7;
+  background: rgba(212, 175, 55, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.6rem;
-  color: #1d1d1f;
+  color: var(--gold);
 }
 
 .snapshot-row strong {
   display: block;
   font-size: 0.58rem;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .snapshot-row small {
@@ -709,7 +737,7 @@ onUnmounted(() => {
   margin-top: 0.18rem;
   font-size: 0.52rem;
   line-height: 1.3;
-  color: #8b8b90;
+  color: var(--text-secondary);
 }
 
 .hero-stage-note {
@@ -723,10 +751,10 @@ onUnmounted(() => {
   right: 1rem;
   bottom: 0;
   width: 112px;
-  background: #232325;
-  border-color: rgba(35, 35, 37, 0.12);
-  color: #ffffff;
-  box-shadow: 0 22px 46px rgba(29, 29, 31, 0.14);
+  background: var(--bg-surface-alt);
+  border-color: var(--gold-border);
+  color: var(--text-primary);
+  box-shadow: none;
 }
 
 .note-bottom strong,
@@ -736,7 +764,7 @@ onUnmounted(() => {
 
 .note-bottom span {
   margin-top: 0.2rem;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--gold);
 }
 
 @media (max-width: 980px) {
