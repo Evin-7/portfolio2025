@@ -110,6 +110,13 @@ body {
   animation-range: entry 0% cover 30%;
 }
 
+.content-shell > #works {
+  animation: none;
+  filter: none;
+  opacity: 1;
+  transform: none;
+}
+
 @keyframes revealOnScroll {
   from {
     opacity: 0;
