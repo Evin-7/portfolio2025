@@ -783,7 +783,7 @@
 
 @media (min-width: 981px) {
   .hero-stage {
-    right: clamp(2rem, 3vw, 4rem);
+    right: clamp(5rem, 9vw, 11rem);
   }
 }
 
