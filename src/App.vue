@@ -106,19 +106,7 @@ body {
 .app {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 50%, #0d0d0d 100%);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
-}
-
-@keyframes gradientShift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+  background: linear-gradient(135deg, #0d0d0d 0%, #171717 50%, #0d0d0d 100%);
 }
 
 .page-shell {
@@ -143,10 +131,15 @@ body {
 .content-shell > * {
   position: relative;
   z-index: 1;
-  animation: revealOnScroll 0.8s ease-out forwards;
+  animation: revealOnScroll 0.5s ease-out forwards;
   opacity: 0;
   animation-timeline: view();
-  animation-range: entry 0% cover 30%;
+  animation-range: entry 0% cover 22%;
+}
+
+.content-shell > *:not(#home) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
 }
 
 .content-shell > #works {
@@ -159,13 +152,23 @@ body {
 @keyframes revealOnScroll {
   from {
     opacity: 0;
-    transform: translateY(60px);
-    filter: blur(10px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .content-shell > * {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
 

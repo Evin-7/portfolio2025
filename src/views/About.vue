@@ -129,7 +129,6 @@
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   animation: slideInUp 0.8s ease-out forwards;
   opacity: 0;
-  backdrop-filter: blur(10px);
 }
 
 .experience-item:nth-child(1) {

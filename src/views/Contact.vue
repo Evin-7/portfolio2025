@@ -252,7 +252,6 @@ onBeforeUnmount(() => {
   line-height: 1;
   font-weight: 500;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  backdrop-filter: blur(10px);
 }
 
 .contact-link-primary {
@@ -282,7 +281,6 @@ onBeforeUnmount(() => {
   font-size: 0.98rem;
   font-family: inherit;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
 }
 
 .form-input::placeholder {

@@ -1,16 +1,20 @@
 <template>
-  <motion.section
-    class="hero"
-    @mousemove="handleMouseMove"
-    @mouseleave="resetMouse"
-    :initial="{ opacity: 0 }"
-    :animate="{ opacity: 1 }"
-    :transition="{ duration: 0.45, ease: 'easeOut' }"
-  >
-    <div class="hero-grid" :style="layerStyle(10, 8, 0.01)"></div>
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-motif hero-motif-code" aria-hidden="true">
+      <span>01</span>
+      <span>&lt;/&gt;</span>
+      <span>{ }</span>
+    </div>
+    <div class="hero-motif hero-motif-dots" aria-hidden="true"></div>
+    <div class="hero-motif hero-motif-circuit" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
 
-    <motion.div class="hero-shell site-container" :initial="{ y: 28, opacity: 0 }" :animate="{ y: 0, opacity: 1 }" :transition="{ duration: 0.55, ease: 'easeOut' }">
-      <motion.div class="hero-copy" :initial="{ x: -24, opacity: 0 }" :animate="{ x: 0, opacity: 1 }" :transition="{ duration: 0.5, delay: 0.1, ease: 'easeOut' }">
+    <div class="hero-shell site-container">
+      <div class="hero-copy">
         <p class="hero-kicker">Software Engineer</p>
         <h1 class="hero-title">Software Engineer crafting clean, <span>scalable experiences.</span></h1>
         <p class="hero-subtitle">
@@ -20,27 +24,15 @@
           <a href="#works" class="hero-button hero-button-primary interactive">View Projects</a>
           <a href="#contact" class="hero-button hero-button-secondary interactive">Contact</a>
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div class="hero-stage" :initial="{ x: 24, opacity: 0 }" :animate="{ x: 0, opacity: 1 }" :transition="{ duration: 0.6, delay: 0.16, ease: 'easeOut' }">
-        <div
-          class="hero-orbit hero-orbit-one"
-          :style="layerStyle(-16, 10, 0.02)"
-        ></div>
-        <div
-          class="hero-orbit hero-orbit-two"
-          :style="layerStyle(10, -14, 0.018)"
-        ></div>
-        <div
-          class="hero-pattern hero-pattern-grid"
-          :style="layerStyle(12, 9, 0.015)"
-        ></div>
-        <div
-          class="hero-pattern hero-pattern-dots"
-          :style="layerStyle(-10, 8, 0.012)"
-        ></div>
+      <div class="hero-stage">
+        <div class="hero-orbit hero-orbit-one"></div>
+        <div class="hero-orbit hero-orbit-two"></div>
+        <div class="hero-pattern hero-pattern-grid"></div>
+        <div class="hero-pattern hero-pattern-dots"></div>
 
-        <div class="hero-stage-card hero-card-mini" :style="cardStyle(-6, 9, -0.25, 0.28, 0.018)">
+        <div class="hero-stage-card hero-card-mini">
           <div class="mini-icon">&lt;/&gt;</div>
           <div class="mini-copy">
             <strong>Clean code.</strong>
@@ -48,7 +40,7 @@
           </div>
         </div>
 
-        <div class="hero-stage-card hero-card-code" :style="cardStyle(12, -14, 0.45, 0.55, 0.03)">
+        <div class="hero-stage-card hero-card-code">
           <div class="code-topbar">
             <div class="code-dots">
               <span></span>
@@ -73,7 +65,7 @@
           </div>
         </div>
 
-      <div class="hero-stage-card hero-card-dashboard" :style="cardStyle(10, 10, -0.35, -0.45, 0.024)">
+      <div class="hero-stage-card hero-card-dashboard">
           <div class="dash-sidebar">
             <span class="dash-logo" aria-hidden="true">
               <span class="dash-logo-stem"></span>
@@ -107,7 +99,7 @@
           </div>
         </div>
 
-        <div class="hero-stage-card hero-card-snapshot" :style="cardStyle(-8, 12, -0.25, 0.35, 0.02)">
+        <div class="hero-stage-card hero-card-snapshot">
           <div class="snapshot-head">
             <span>Project Snapshot</span>
             <strong>↗</strong>
@@ -130,97 +122,14 @@
           </div>
         </div>
 
-        <div class="hero-stage-note note-bottom" :style="cardStyle(-4, 9, 0.2, -0.25, 0.018)">
+        <div class="hero-stage-note note-bottom">
           <strong>Built for impact.</strong>
           <span>Designed to scale.</span>
         </div>
-      </motion.div>
-    </motion.div>
-  </motion.section>
+      </div>
+    </div>
+  </section>
 </template>
-
-<script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-import { motion } from "motion-v";
-
-const mouseX = ref(0);
-const mouseY = ref(0);
-const scrollY = ref(0);
-const motionEnabled = ref(true);
-let motionQuery;
-
-const syncMotionPreference = () => {
-  if (!motionQuery) {
-    return;
-  }
-
-  motionEnabled.value = !motionQuery.matches;
-
-  if (!motionEnabled.value) {
-    resetMouse();
-  }
-};
-
-const handleMouseMove = (event) => {
-  if (!motionEnabled.value) {
-    return;
-  }
-
-  const rect = event.currentTarget.getBoundingClientRect();
-  mouseX.value = (event.clientX - rect.left) / rect.width - 0.5;
-  mouseY.value = (event.clientY - rect.top) / rect.height - 0.5;
-};
-
-const resetMouse = () => {
-  mouseX.value = 0;
-  mouseY.value = 0;
-};
-
-const handleScroll = () => {
-  if (!motionEnabled.value) {
-    scrollY.value = 0;
-    return;
-  }
-
-  scrollY.value = Math.min(window.scrollY, 500);
-};
-
-const layerStyle = (xFactor, yFactor, scrollFactor) => {
-  if (!motionEnabled.value) {
-    return { transform: "none" };
-  }
-
-  return {
-    transform: `translate3d(${mouseX.value * xFactor}px, ${mouseY.value * yFactor + scrollY.value * scrollFactor}px, 0)`,
-  };
-};
-
-const cardStyle = (xFactor, yFactor, rotateXFactor, rotateYFactor, scrollFactor) => {
-  if (!motionEnabled.value) {
-    return { transform: "none" };
-  }
-
-  return {
-    transform: `
-      translate3d(${mouseX.value * xFactor}px, ${mouseY.value * yFactor + scrollY.value * 28 * scrollFactor}px, 0)
-      rotateX(${mouseY.value * rotateXFactor * 12}deg)
-      rotateY(${mouseX.value * rotateYFactor * 12}deg)
-    `,
-  };
-};
-
-onMounted(() => {
-  motionQuery = window.matchMedia("(max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce)");
-  syncMotionPreference();
-  window.addEventListener("scroll", handleScroll, { passive: true });
-  motionQuery.addEventListener("change", syncMotionPreference);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll);
-  motionQuery?.removeEventListener("change", syncMotionPreference);
-});
-</script>
 
 <style scoped>
 .hero {
@@ -228,6 +137,7 @@ onUnmounted(() => {
   overflow: hidden;
   padding: 9rem 0 4.5rem;
   background: var(--bg-primary);
+  animation: hero-fade-in 0.35s ease-out both;
 }
 
 .hero-shell {
@@ -237,11 +147,13 @@ onUnmounted(() => {
   grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
   gap: 2.2rem;
   align-items: center;
+  animation: hero-rise-in 0.45s ease-out 0.04s both;
 }
 
 .hero-copy {
   max-width: 560px;
   padding-right: 1.6rem;
+  animation: hero-copy-in 0.42s ease-out 0.08s both;
 }
 
 .hero-kicker {
@@ -356,12 +268,117 @@ onUnmounted(() => {
   mask-image: linear-gradient(90deg, black, transparent 72%);
 }
 
+.hero-motif {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  color: var(--gold);
+}
+
+.hero-motif-code {
+  top: 8.75rem;
+  left: 51%;
+  display: flex;
+  gap: 0.8rem;
+  padding: 0.45rem 0.65rem;
+  border-block: 1px solid rgba(212, 175, 55, 0.12);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  opacity: 0.18;
+}
+
+.hero-motif-dots {
+  left: 47%;
+  top: 47%;
+  width: 72px;
+  height: 56px;
+  opacity: 0.12;
+  background-image: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.75) 1px,
+    transparent 1.2px
+  );
+  background-size: 12px 12px;
+}
+
+.hero-motif-circuit {
+  left: 52%;
+  bottom: 5.5rem;
+  width: 104px;
+  height: 42px;
+  opacity: 0.14;
+  border-left: 1px solid var(--gold);
+  border-bottom: 1px solid var(--gold);
+}
+
+.hero-motif-circuit::before {
+  content: "";
+  position: absolute;
+  top: 11px;
+  left: 0;
+  width: 70%;
+  border-top: 1px solid var(--gold);
+}
+
+.hero-motif-circuit span {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  background: var(--bg-primary);
+}
+
+.hero-motif-circuit span:nth-child(1) {
+  top: 8px;
+  left: -3px;
+}
+
+.hero-motif-circuit span:nth-child(2) {
+  top: 8px;
+  left: 70%;
+}
+
+.hero-motif-circuit span:nth-child(3) {
+  right: -3px;
+  bottom: -3px;
+}
+
 .hero-stage {
   position: relative;
   min-height: 340px;
   max-width: 280px;
   margin-left: auto;
   perspective: 1400px;
+  animation: hero-stage-in 0.48s ease-out 0.12s both;
+}
+
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+}
+
+@keyframes hero-copy-in {
+  from {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+}
+
+@keyframes hero-stage-in {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
 }
 
 .hero-orbit,
@@ -741,7 +758,6 @@ onUnmounted(() => {
 .hero-stage-note {
   padding: 0.58rem 0.68rem;
   font-size: 0.62rem;
-  backdrop-filter: blur(18px);
 }
 
 .note-bottom {
@@ -765,7 +781,17 @@ onUnmounted(() => {
   color: var(--gold);
 }
 
+@media (min-width: 981px) {
+  .hero-stage {
+    right: clamp(2rem, 3vw, 4rem);
+  }
+}
+
 @media (max-width: 980px) {
+  .hero-motif {
+    display: none;
+  }
+
   .hero-shell {
     grid-template-columns: 1fr;
   }
@@ -833,6 +859,15 @@ onUnmounted(() => {
   .dash-stat-card:nth-child(2),
   .dash-stat-card:nth-child(3) {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero,
+  .hero-shell,
+  .hero-copy,
+  .hero-stage {
+    animation: none;
   }
 }
 </style>

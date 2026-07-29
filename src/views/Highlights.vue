@@ -85,17 +85,6 @@
     transparent 70%
   );
   pointer-events: none;
-  animation: pulse 8s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
 }
 
 .highlights-shell {
@@ -128,7 +117,6 @@
   border-radius: 28px;
   border: 1.5px solid var(--gold-border);
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  backdrop-filter: blur(10px);
 }
 
 .highlights-copy {

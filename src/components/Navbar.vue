@@ -25,8 +25,7 @@ import logoMark from "../assets/icons/peniel-mark.svg";
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(13, 13, 13, 0.9);
-  backdrop-filter: saturate(180%) blur(20px);
+  background: rgba(13, 13, 13, 0.97);
   border-bottom: 1px solid var(--gold-border);
 }
 
