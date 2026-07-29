@@ -16,9 +16,9 @@
           target="_blank"
           rel="noopener noreferrer"
           class="work-card interactive"
-          @pointerenter="handleEnter"
-          @pointermove="handleMove"
-          @pointerleave="resetMove"
+          :style="workCardStyle(work)"
+          @mousemove="handleMove(work.name, $event)"
+          @mouseleave="resetMove(work.name)"
         >
           <div class="work-card-inner">
             <div class="work-copy">
@@ -34,13 +34,7 @@
                     <span></span>
                   </div>
                   <div class="laptop-camera"></div>
-                  <img
-                    :src="work.image"
-                    :alt="work.name"
-                    class="work-image"
-                    decoding="async"
-                    loading="lazy"
-                  />
+                  <img :src="work.image" :alt="work.name" class="work-image" />
                 </div>
                 <div class="laptop-base">
                   <div class="laptop-trackpad"></div>
@@ -62,49 +56,52 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 
-const cardRects = new WeakMap();
-let motionEnabled = true;
+const cardOffsets = ref({});
+const motionEnabled = ref(true);
 let motionQuery;
+
+const defaultOffset = {
+  "--image-x": "0px",
+  "--image-y": "0px",
+};
 
 const syncMotionPreference = () => {
   if (!motionQuery) {
     return;
   }
 
-  motionEnabled = !motionQuery.matches;
+  motionEnabled.value = !motionQuery.matches;
+
+  if (!motionEnabled.value) {
+    cardOffsets.value = {};
+  }
 };
 
-const handleEnter = (event) => {
-  if (!motionEnabled) {
+const handleMove = (key, event) => {
+  if (!motionEnabled.value) {
     return;
   }
 
-  cardRects.set(event.currentTarget, event.currentTarget.getBoundingClientRect());
-};
-
-const handleMove = (event) => {
-  if (!motionEnabled) {
-    return;
-  }
-
-  const card = event.currentTarget;
-  const rect = cardRects.get(card) || card.getBoundingClientRect();
+  const rect = event.currentTarget.getBoundingClientRect();
   const x = (event.clientX - rect.left) / rect.width - 0.5;
   const y = (event.clientY - rect.top) / rect.height - 0.5;
 
-  card.style.setProperty("--image-x", `${x * 10}px`);
-  card.style.setProperty("--image-y", `${y * 10}px`);
+  cardOffsets.value[key] = {
+    "--image-x": `${x * 14}px`,
+    "--image-y": `${y * 14}px`,
+  };
 };
 
-const resetMove = (event) => {
-  const card = event.currentTarget;
-
-  cardRects.delete(card);
-  card.style.setProperty("--image-x", "0px");
-  card.style.setProperty("--image-y", "0px");
+const resetMove = (key) => {
+  cardOffsets.value[key] = defaultOffset;
 };
+
+const workCardStyle = (work) => ({
+  ...defaultOffset,
+  ...(cardOffsets.value[work.name] || {}),
+});
 
 onMounted(() => {
   motionQuery = window.matchMedia(
@@ -122,7 +119,7 @@ const works = [
   {
     name: "Elate HRMS",
     link: "https://hrms.ae/",
-    image: new URL("../assets/images/hrms.ae.webp", import.meta.url).href,
+    image: new URL("../assets/images/hrms.ae.png", import.meta.url).href,
     description:
       "AI-powered HRMS platform for UAE businesses, covering payroll, leave, recruitment, and attendance.",
     kicker: "HRMS Platform",
@@ -133,7 +130,7 @@ const works = [
   {
     name: "Elate HRMS UAE",
     link: "https://elatehrms.com/",
-    image: new URL("../assets/images/elatehrms.com.webp", import.meta.url).href,
+    image: new URL("../assets/images/elatehrms.com.png", import.meta.url).href,
     description:
       "UAE-focused HR software bringing employee records, workflows, and payroll into one organized system.",
     kicker: "Business Platform",
@@ -144,7 +141,7 @@ const works = [
   {
     name: "Elate Time",
     link: "https://elatetime.com/",
-    image: new URL("../assets/images/elatetime.com.webp", import.meta.url).href,
+    image: new URL("../assets/images/elatetime.com.png", import.meta.url).href,
     description:
       "Attendance and leave management experience for teams across web, mobile, and biometric devices.",
     kicker: "Attendance Platform",
@@ -155,7 +152,7 @@ const works = [
   {
     name: "Elate Time Portal",
     link: "https://app.elatetime.com/login?next=%2F",
-    image: new URL("../assets/images/app.elatetime.webp", import.meta.url).href,
+    image: new URL("../assets/images/app.elatetime.png", import.meta.url).href,
     description:
       "Sign-in portal for employee attendance, leave, and workforce-time management.",
     kicker: "Employee Portal",
@@ -166,7 +163,7 @@ const works = [
   {
     name: "Elate HRMS Dashboard",
     link: "https://app.elatehrms.com/dashboard",
-    image: new URL("../assets/images/app.elatehrms.com.webp", import.meta.url)
+    image: new URL("../assets/images/app.elatehrms.com.png", import.meta.url)
       .href,
     description:
       "Operations workspace for recruitment, onboarding, employee records, payroll, and HR reporting.",
@@ -178,7 +175,7 @@ const works = [
   {
     name: "Abez Auto",
     link: "https://abezauto.com/",
-    image: new URL("../assets/images/abezauto.com.webp", import.meta.url).href,
+    image: new URL("../assets/images/abezauto.com.png", import.meta.url).href,
     description:
       "Premium auto-parts storefront with vehicle-specific discovery, products, and conversion kits.",
     kicker: "E-commerce Platform",
@@ -189,7 +186,7 @@ const works = [
   {
     name: "Peniel Tech",
     link: "https://www.penieltech.com/",
-    image: new URL("../assets/images/penieltech-shot.webp", import.meta.url)
+    image: new URL("../assets/images/penieltech-shot.png", import.meta.url)
       .href,
     description:
       "Corporate site for IT products and solution architecture with a clearer trust-building story.",
@@ -201,7 +198,7 @@ const works = [
   {
     name: "Mezeh App",
     link: "https://mezeh.com/",
-    image: new URL("../assets/images/mezehapp.webp", import.meta.url).href,
+    image: new URL("../assets/images/mezehapp.png", import.meta.url).href,
     description:
       "Delivery-led experience with stronger product framing and mobile-first commerce flows.",
     kicker: "Product UI",
@@ -212,7 +209,7 @@ const works = [
   {
     name: "Oh Yes World",
     link: "https://ohyesworld.com/",
-    image: new URL("../assets/images/ohyesworld.webp", import.meta.url).href,
+    image: new URL("../assets/images/ohyesworld.png", import.meta.url).href,
     description:
       "Service-led business site with a cleaner narrative rhythm and polished premium feel.",
     kicker: "Business Website",
@@ -223,7 +220,7 @@ const works = [
   {
     name: "Home Maintenance",
     link: "https://homemaintenance.ohyesworld.com/",
-    image: new URL("../assets/images/homemaintaince.webp", import.meta.url).href,
+    image: new URL("../assets/images/homemaintaince.png", import.meta.url).href,
     description:
       "Conversion-focused service website built for clarity, trust, and quick decision making.",
     kicker: "Service Platform",
@@ -234,7 +231,7 @@ const works = [
   {
     name: "Mezeh Catering",
     link: "https://catering.mezeh.com/",
-    image: new URL("../assets/images/mezehcat.webp", import.meta.url).href,
+    image: new URL("../assets/images/mezehcat.png", import.meta.url).href,
     description:
       "Ordering experience for large-format catering with cleaner customer journey framing.",
     kicker: "Food Platform",
@@ -245,7 +242,7 @@ const works = [
   {
     name: "Mezeh Frontend",
     link: "https://mezeh-frontend-production.azurewebsites.net/",
-    image: new URL("../assets/images/mezehmeal.webp", import.meta.url).href,
+    image: new URL("../assets/images/mezehmeal.png", import.meta.url).href,
     description:
       "Branded customer-facing frontend with consistent product hierarchy and browsing flow.",
     kicker: "Frontend System",
@@ -256,7 +253,7 @@ const works = [
   {
     name: "Access Rooms",
     link: "https://accessrooms.com/",
-    image: new URL("../assets/images/9-min.webp", import.meta.url).href,
+    image: new URL("../assets/images/9-min.png", import.meta.url).href,
     description:
       "Booking experience with a lighter layout and hospitality-first browsing cues.",
     kicker: "Travel Product",
@@ -267,7 +264,7 @@ const works = [
   {
     name: "Periyar Tiger Reserve",
     link: "https://www.periyartigerreserve.org/",
-    image: new URL("../assets/images/6-min.webp", import.meta.url).href,
+    image: new URL("../assets/images/6-min.png", import.meta.url).href,
     description:
       "Destination website shaped around discoverability, scenic storytelling, and simple navigation.",
     kicker: "Tourism Website",
@@ -278,7 +275,7 @@ const works = [
   {
     name: "St George CSI Church",
     link: "https://stgeorgecsichurchofficial.com/",
-    image: new URL("../assets/images/stgeorgecsichurch.webp", import.meta.url)
+    image: new URL("../assets/images/stgeorgecsichurch.png", import.meta.url)
       .href,
     description:
       "Church website focused on clarity, community updates, and a more welcoming information flow.",
@@ -290,7 +287,7 @@ const works = [
   {
     name: "Mudumalai Tiger Reserve",
     link: "https://www.mudumalaitigerreserve.com/",
-    image: new URL("../assets/images/mudumalai.webp", import.meta.url).href,
+    image: new URL("../assets/images/mudumalai.png", import.meta.url).href,
     description:
       "Wildlife destination site designed around scenic storytelling and easier visitor exploration.",
     kicker: "Tourism Website",
@@ -301,7 +298,7 @@ const works = [
   {
     name: "Parambikulam Tiger Reserve",
     link: "https://parambikulam.org/",
-    image: new URL("../assets/images/parambikulam.webp", import.meta.url).href,
+    image: new URL("../assets/images/parambikulam.png", import.meta.url).href,
     description:
       "Destination platform shaped for discoverability, bookings, and clearer content hierarchy.",
     kicker: "Reserve Website",
@@ -312,7 +309,7 @@ const works = [
   {
     name: "Admin Panel - Whale Shark",
     link: "https://whaleshark.leopardtechlabs.com",
-    image: new URL("../assets/images/2-min.webp", import.meta.url).href,
+    image: new URL("../assets/images/2-min.png", import.meta.url).href,
     description:
       "Operations dashboard designed around fast scanning, clearer metrics, and admin workflows.",
     kicker: "Dashboard",
@@ -325,7 +322,7 @@ const works = [
 
 <style scoped>
 .works {
-  padding: 5rem clamp(0.75rem, 1.5vw, 1.25rem);
+  padding: 5rem 1.5rem;
   background: var(--bg-primary);
   position: relative;
   overflow: hidden;
@@ -347,7 +344,7 @@ const works = [
 }
 
 .works-shell {
-  max-width: 1320px;
+  max-width: 1040px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -403,8 +400,6 @@ const works = [
 }
 
 .work-card {
-  --image-x: 0px;
-  --image-y: 0px;
   position: relative;
   text-decoration: none;
   color: inherit;
@@ -417,14 +412,51 @@ const works = [
     rgba(26, 26, 26, 0.8) 100%
   );
   border: 1.5px solid var(--gold-border);
-  transition:
-    transform 0.22s ease-out,
-    border-color 0.22s ease,
-    background-color 0.22s ease;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
-  contain: layout paint style;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 244px;
+  backdrop-filter: blur(10px);
+  animation: cardReveal 0.8s ease-out forwards;
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.work-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.work-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.work-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.work-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.work-card:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.work-card:nth-child(6) {
+  animation-delay: 0.6s;
+}
+.work-card:nth-child(7) {
+  animation-delay: 0.7s;
+}
+.work-card:nth-child(8) {
+  animation-delay: 0.8s;
+}
+.work-card:nth-child(9) {
+  animation-delay: 0.9s;
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(50px) rotateX(10deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
 }
 
 .work-card::before {
@@ -478,6 +510,8 @@ const works = [
   display: flex;
   flex-direction: column;
   align-items: center;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+  transition: filter 0.4s ease;
 }
 
 .laptop-screen-shell {
@@ -544,7 +578,7 @@ const works = [
   background: var(--bg-surface-alt);
   transform: translate3d(var(--image-x), var(--image-y), 0) scale(1.02);
   transform-origin: center;
-  transition: transform 0.14s ease-out;
+  transition: transform 0.28s ease;
 }
 
 .laptop-base {
@@ -608,7 +642,7 @@ const works = [
 
 @media (hover: hover) and (pointer: fine) {
   .work-card:hover {
-    transform: translateY(-6px) scale(1.01);
+    transform: translateY(-12px) scale(1.02);
     border-color: var(--gold);
     background: linear-gradient(
       135deg,
@@ -622,7 +656,11 @@ const works = [
   }
 
   .work-card:hover .work-media {
-    transform: scale(1.035);
+    transform: scale(1.08);
+  }
+
+  .work-card:hover .laptop-frame {
+    filter: drop-shadow(0 30px 60px rgba(212, 175, 55, 0.2));
   }
 
   .work-card:hover .work-cta {
@@ -633,10 +671,6 @@ const works = [
 
   .work-card:hover .laptop-topbar span {
     transform: scale(1.3);
-  }
-
-  .work-card:hover .work-image {
-    will-change: transform;
   }
 }
 
@@ -649,7 +683,7 @@ const works = [
 
 @media (max-width: 780px) {
   .works {
-    padding: 4.4rem 0.75rem;
+    padding: 4.4rem 1.2rem;
   }
 
   .works-grid {
