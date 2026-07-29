@@ -1,6 +1,6 @@
 <template>
   <section class="about">
-    <div class="about-shell">
+    <div class="about-shell site-container">
       <div class="about-copy">
         <p class="about-eyebrow">About</p>
         <h2 class="about-title">
@@ -42,7 +42,7 @@
 
 <style scoped>
 .about {
-  padding: 5.5rem 1.5rem;
+  padding: 5.5rem 0;
   background: var(--bg-primary);
   position: relative;
   overflow: hidden;
@@ -64,8 +64,6 @@
 }
 
 .about-shell {
-  max-width: 1060px;
-  margin: 0 auto;
   position: relative;
   z-index: 1;
 }

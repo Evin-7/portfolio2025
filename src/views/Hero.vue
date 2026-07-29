@@ -9,7 +9,7 @@
   >
     <div class="hero-grid" :style="layerStyle(10, 8, 0.01)"></div>
 
-    <motion.div class="hero-shell" :initial="{ y: 28, opacity: 0 }" :animate="{ y: 0, opacity: 1 }" :transition="{ duration: 0.55, ease: 'easeOut' }">
+    <motion.div class="hero-shell site-container" :initial="{ y: 28, opacity: 0 }" :animate="{ y: 0, opacity: 1 }" :transition="{ duration: 0.55, ease: 'easeOut' }">
       <motion.div class="hero-copy" :initial="{ x: -24, opacity: 0 }" :animate="{ x: 0, opacity: 1 }" :transition="{ duration: 0.5, delay: 0.1, ease: 'easeOut' }">
         <p class="hero-kicker">Software Engineer</p>
         <h1 class="hero-title">Software Engineer crafting clean, <span>scalable experiences.</span></h1>
@@ -226,15 +226,13 @@ onUnmounted(() => {
 .hero {
   position: relative;
   overflow: hidden;
-  padding: 9rem 1.5rem 4.5rem;
+  padding: 9rem 0 4.5rem;
   background: var(--bg-primary);
 }
 
 .hero-shell {
   position: relative;
   z-index: 2;
-  max-width: 1080px;
-  margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
   gap: 2.2rem;

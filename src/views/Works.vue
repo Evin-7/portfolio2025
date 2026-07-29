@@ -1,6 +1,6 @@
 <template>
   <section class="works">
-    <div class="works-shell">
+    <div class="works-shell site-container">
       <div class="works-heading">
         <div>
           <p class="works-eyebrow">Projects</p>
@@ -325,7 +325,7 @@ const works = [
 
 <style scoped>
 .works {
-  padding: 5rem clamp(0.75rem, 1.5vw, 1.25rem);
+  padding: 5rem 0;
   background: var(--bg-primary);
   position: relative;
   overflow: hidden;
@@ -347,8 +347,6 @@ const works = [
 }
 
 .works-shell {
-  max-width: 1320px;
-  margin: 0 auto;
   position: relative;
   z-index: 1;
 }
@@ -649,7 +647,7 @@ const works = [
 
 @media (max-width: 780px) {
   .works {
-    padding: 4.4rem 0.75rem;
+    padding-block: 4.4rem;
   }
 
   .works-grid {

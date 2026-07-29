@@ -1,74 +1,76 @@
 <template>
   <section class="contact">
-    <div class="contact-shell">
-      <p class="contact-eyebrow">Contact</p>
-      <h2 class="contact-title">Let’s work together.</h2>
-      <p class="contact-text">
-        For software engineering, product UI, and website projects.
-      </p>
+    <div class="site-container">
+      <div class="contact-shell">
+        <p class="contact-eyebrow">Contact</p>
+        <h2 class="contact-title">Let’s work together.</h2>
+        <p class="contact-text">
+          For software engineering, product UI, and website projects.
+        </p>
 
-      <div class="contact-links">
-        <a
-          href="mailto:yjevin75@gmail.com"
-          class="contact-link contact-link-primary interactive"
-        >
-          yjevin75@gmail.com
-        </a>
-        <a
-          href="https://www.linkedin.com/feed/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="contact-link interactive"
-        >
-          LinkedIn
-        </a>
-        <a
-          href="https://github.com/Evin-7"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="contact-link interactive"
-        >
-          GitHub
-        </a>
-        <a href="tel:+917510255897" class="contact-link interactive">
-          +91 7510255897
-        </a>
+        <div class="contact-links">
+          <a
+            href="mailto:yjevin75@gmail.com"
+            class="contact-link contact-link-primary interactive"
+          >
+            yjevin75@gmail.com
+          </a>
+          <a
+            href="https://www.linkedin.com/feed/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-link interactive"
+          >
+            LinkedIn
+          </a>
+          <a
+            href="https://github.com/Evin-7"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-link interactive"
+          >
+            GitHub
+          </a>
+          <a href="tel:+917510255897" class="contact-link interactive">
+            +91 7510255897
+          </a>
+        </div>
+
+        <div v-if="messageText" class="message-display">
+          {{ messageText }}
+        </div>
+
+        <form class="contact-form" @submit.prevent="submitForm">
+          <input
+            v-model="form.name"
+            type="text"
+            placeholder="Name"
+            required
+            class="form-input"
+          />
+          <input
+            v-model="form.email"
+            type="email"
+            placeholder="Email"
+            required
+            class="form-input"
+          />
+          <textarea
+            v-model="form.message"
+            placeholder="Tell me about your project"
+            rows="5"
+            required
+            class="form-input"
+          ></textarea>
+          <button
+            type="submit"
+            class="submit-btn interactive"
+            :disabled="isSubmitting"
+          >
+            {{ submitText }}
+          </button>
+        </form>
       </div>
-
-      <div v-if="messageText" class="message-display">
-        {{ messageText }}
-      </div>
-
-      <form class="contact-form" @submit.prevent="submitForm">
-        <input
-          v-model="form.name"
-          type="text"
-          placeholder="Name"
-          required
-          class="form-input"
-        />
-        <input
-          v-model="form.email"
-          type="email"
-          placeholder="Email"
-          required
-          class="form-input"
-        />
-        <textarea
-          v-model="form.message"
-          placeholder="Tell me about your project"
-          rows="5"
-          required
-          class="form-input"
-        ></textarea>
-        <button
-          type="submit"
-          class="submit-btn interactive"
-          :disabled="isSubmitting"
-        >
-          {{ submitText }}
-        </button>
-      </form>
     </div>
   </section>
 </template>
@@ -154,7 +156,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .contact {
-  padding: 5.5rem 1.5rem;
+  padding: 5.5rem 0;
   background: var(--bg-primary);
   position: relative;
   overflow: hidden;

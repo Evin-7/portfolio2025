@@ -1,6 +1,6 @@
 <template>
   <section class="highlights">
-    <div class="highlights-shell">
+    <div class="highlights-shell site-container">
       <div class="highlights-intro">
         <div class="highlights-copy">
           <p class="highlights-eyebrow">What I Do</p>
@@ -66,7 +66,7 @@
 
 <style scoped>
 .highlights {
-  padding: 4.15rem 1.5rem 2.45rem;
+  padding: 4.15rem 0 2.45rem;
   background: var(--bg-primary);
   position: relative;
   overflow: hidden;
@@ -99,8 +99,6 @@
 }
 
 .highlights-shell {
-  max-width: 1060px;
-  margin: 0 auto;
   position: relative;
   z-index: 1;
 }

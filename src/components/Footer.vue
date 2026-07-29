@@ -1,6 +1,6 @@
 <template>
   <footer class="footer">
-    <div class="footer-shell">
+    <div class="footer-shell site-container">
       <div class="footer-brand">
         <img :src="logoMark" alt="Evin logo" class="footer-mark" />
       </div>
@@ -35,14 +35,12 @@ const currentYear = new Date().getFullYear();
 
 <style scoped>
 .footer {
-  padding: 3rem 1.5rem 4rem;
+  padding: 3rem 0 4rem;
   background: var(--bg-surface-alt);
   border-top: 1px solid var(--gold-border);
 }
 
 .footer-shell {
-  max-width: 1180px;
-  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   gap: 1rem;

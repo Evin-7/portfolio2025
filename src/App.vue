@@ -44,6 +44,45 @@ import Contact from "./views/Contact.vue";
   --gold-light: #e6cb77;
 }
 
+.site-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 6vw, 1.5rem);
+}
+
+@media (min-width: 640px) {
+  .site-container {
+    padding-inline: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .site-container {
+    padding-inline: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .site-container {
+    padding-inline: 5rem;
+  }
+}
+
+@media (min-width: 1440px) and (max-width: 1535.98px) {
+  .site-container {
+    max-width: none;
+  }
+}
+
+@media (min-width: 1536px) {
+  .site-container {
+    max-width: none;
+    padding-inline: clamp(6rem, 7vw, 13.75rem);
+  }
+}
+
 /* Global Styles */
 * {
   margin: 0;

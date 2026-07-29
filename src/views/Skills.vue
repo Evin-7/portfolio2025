@@ -1,6 +1,6 @@
 <template>
   <section class="skills">
-    <div class="skills-shell">
+    <div class="skills-shell site-container">
       <p class="skills-eyebrow">Skills</p>
       <h2 class="skills-title">Focused stack.</h2>
       <p class="skills-text">
@@ -30,7 +30,7 @@ const skills = [
 
 <style scoped>
 .skills {
-  padding: 4.5rem 1.5rem;
+  padding: 4.5rem 0;
   background: var(--bg-primary);
   position: relative;
   overflow: hidden;
@@ -69,8 +69,6 @@ const skills = [
 }
 
 .skills-shell {
-  max-width: 1060px;
-  margin: 0 auto;
   position: relative;
   z-index: 1;
   animation: slideInUp 0.8s ease-out 0.1s both;

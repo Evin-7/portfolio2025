@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar">
-    <div class="nav-shell">
+    <div class="nav-shell site-container">
       <a href="#home" class="logo">
         <img :src="logoMark" alt="Evin logo" class="logo-mark" />
       </a>
@@ -31,9 +31,7 @@ import logoMark from "../assets/icons/peniel-mark.svg";
 }
 
 .nav-shell {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 1rem 1.5rem;
+  padding-block: 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
