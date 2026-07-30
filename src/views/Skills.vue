@@ -23,6 +23,8 @@ const skills = [
   "Next.js",
   "React Native",
   "Node.js",
+  "Java",
+  "Spring Boot",
   "Git",
   "Jira",
 ];
@@ -146,6 +148,12 @@ const skills = [
 }
 .skill-pill:nth-child(7) {
   animation-delay: 0.4s;
+}
+.skill-pill:nth-child(8) {
+  animation-delay: 0.45s;
+}
+.skill-pill:nth-child(9) {
+  animation-delay: 0.5s;
 }
 
 @keyframes pillReveal {
