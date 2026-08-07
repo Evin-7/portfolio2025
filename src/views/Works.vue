@@ -1,5 +1,9 @@
 <template>
-  <section class="works">
+  <section
+    ref="worksSection"
+    class="works"
+    :class="{ 'motion-ready': motionEnabled }"
+  >
     <div class="works-shell site-container">
       <div class="works-heading">
         <div>
@@ -10,18 +14,22 @@
 
       <div class="works-grid">
         <a
-          v-for="work in works"
+          v-for="(work, index) in works"
           :key="work.name"
           :href="work.link"
           target="_blank"
           rel="noopener noreferrer"
           class="work-card interactive"
+          :style="{ '--reveal-delay': `${index * 55}ms` }"
           @pointerenter="handleEnter"
           @pointermove="handleMove"
           @pointerleave="resetMove"
         >
           <div class="work-card-inner">
             <div class="work-copy">
+              <p class="work-kicker">
+                <span>{{ formatIndex(index) }}</span>{{ work.kicker }}
+              </p>
               <h3 class="work-title">{{ work.name }}</h3>
             </div>
 
@@ -49,8 +57,12 @@
             </div>
 
             <div class="work-footer">
+              <div class="work-meta">
+                <span>{{ work.focus }}</span>
+                <span>{{ work.year }}</span>
+              </div>
               <div class="work-cta">
-                <span>Visit</span>
+                <span>Explore</span>
                 <strong>↗</strong>
               </div>
             </div>
@@ -62,30 +74,74 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 
 const cardRects = new WeakMap();
-let motionEnabled = true;
+const worksSection = ref(null);
+const motionEnabled = ref(true);
 let motionQuery;
+let cardObserver;
+
+const formatIndex = (index) => String(index + 1).padStart(2, "0");
+
+const revealAllCards = () => {
+  worksSection.value
+    ?.querySelectorAll(".work-card")
+    .forEach((card) => card.classList.add("is-revealed"));
+};
+
+const setupRevealObserver = () => {
+  const cards = worksSection.value?.querySelectorAll(".work-card");
+
+  if (!cards?.length || !motionEnabled.value || !("IntersectionObserver" in window)) {
+    revealAllCards();
+    return;
+  }
+
+  cardObserver?.disconnect();
+  cardObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+
+        entry.target.classList.add("is-revealed");
+        cardObserver?.unobserve(entry.target);
+      });
+    },
+    { rootMargin: "0px 0px -8%", threshold: 0.12 }
+  );
+
+  cards.forEach((card) => cardObserver.observe(card));
+};
 
 const syncMotionPreference = () => {
   if (!motionQuery) {
     return;
   }
 
-  motionEnabled = !motionQuery.matches;
+  const wasEnabled = motionEnabled.value;
+  motionEnabled.value = !motionQuery.matches;
+
+  if (!motionEnabled.value) {
+    cardObserver?.disconnect();
+    revealAllCards();
+  } else if (!wasEnabled) {
+    setupRevealObserver();
+  }
 };
 
 const handleEnter = (event) => {
-  if (!motionEnabled) {
+  if (!motionEnabled.value) {
     return;
   }
 
-  cardRects.set(event.currentTarget, event.currentTarget.getBoundingClientRect());
+  const card = event.currentTarget;
+  cardRects.set(card, card.getBoundingClientRect());
+  card.style.setProperty("--card-lift", "-9px");
 };
 
 const handleMove = (event) => {
-  if (!motionEnabled) {
+  if (!motionEnabled.value) {
     return;
   }
 
@@ -96,6 +152,10 @@ const handleMove = (event) => {
 
   card.style.setProperty("--image-x", `${x * 10}px`);
   card.style.setProperty("--image-y", `${y * 10}px`);
+  card.style.setProperty("--card-rotate-x", `${y * -4.5}deg`);
+  card.style.setProperty("--card-rotate-y", `${x * 5.5}deg`);
+  card.style.setProperty("--spotlight-x", `${(x + 0.5) * 100}%`);
+  card.style.setProperty("--spotlight-y", `${(y + 0.5) * 100}%`);
 };
 
 const resetMove = (event) => {
@@ -104,6 +164,11 @@ const resetMove = (event) => {
   cardRects.delete(card);
   card.style.setProperty("--image-x", "0px");
   card.style.setProperty("--image-y", "0px");
+  card.style.setProperty("--card-lift", "0px");
+  card.style.setProperty("--card-rotate-x", "0deg");
+  card.style.setProperty("--card-rotate-y", "0deg");
+  card.style.setProperty("--spotlight-x", "50%");
+  card.style.setProperty("--spotlight-y", "50%");
 };
 
 onMounted(() => {
@@ -111,10 +176,12 @@ onMounted(() => {
     "(max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce)"
   );
   syncMotionPreference();
+  setupRevealObserver();
   motionQuery.addEventListener("change", syncMotionPreference);
 });
 
 onUnmounted(() => {
+  cardObserver?.disconnect();
   motionQuery?.removeEventListener("change", syncMotionPreference);
 });
 
@@ -346,6 +413,21 @@ const works = [
   pointer-events: none;
 }
 
+.works::after {
+  content: "";
+  position: absolute;
+  inset: 12% 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.18) 35%,
+    rgba(212, 175, 55, 0.07) 65%,
+    transparent
+  );
+  pointer-events: none;
+}
+
 .works-shell {
   position: relative;
   z-index: 1;
@@ -403,6 +485,11 @@ const works = [
 .work-card {
   --image-x: 0px;
   --image-y: 0px;
+  --card-lift: 0px;
+  --card-rotate-x: 0deg;
+  --card-rotate-y: 0deg;
+  --spotlight-x: 50%;
+  --spotlight-y: 50%;
   position: relative;
   text-decoration: none;
   color: inherit;
@@ -415,10 +502,11 @@ const works = [
     rgba(26, 26, 26, 0.8) 100%
   );
   border: 1.5px solid var(--gold-border);
-  transition:
-    transform 0.22s ease-out,
-    border-color 0.22s ease,
-    background-color 0.22s ease;
+  transform: perspective(1200px) translateY(var(--card-lift))
+    rotateX(var(--card-rotate-x)) rotateY(var(--card-rotate-y));
+  transform-style: preserve-3d;
+  transition: transform 180ms ease-out, border-color 220ms ease,
+    background-color 220ms ease, box-shadow 220ms ease;
   cursor: pointer;
   contain: layout paint style;
   content-visibility: auto;
@@ -429,14 +517,32 @@ const works = [
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(212, 175, 55, 0.1) 0%,
-    transparent 50%
+  background: radial-gradient(
+    circle at var(--spotlight-x) var(--spotlight-y),
+    rgba(243, 221, 147, 0.19),
+    transparent 34%
   );
   opacity: 0;
   transition: opacity 0.4s ease;
   z-index: 1;
+  pointer-events: none;
+}
+
+.work-card::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: -20% auto -20% -60%;
+  width: 38%;
+  background: linear-gradient(
+    105deg,
+    transparent,
+    rgba(255, 245, 209, 0.16),
+    transparent
+  );
+  transform: translateX(-155%) skewX(-16deg);
+  transition: transform 700ms cubic-bezier(0.2, 0.75, 0.2, 1);
+  pointer-events: none;
 }
 
 .work-card-inner {
@@ -449,11 +555,66 @@ const works = [
   padding: 1rem;
 }
 
+.work-copy {
+  transform: translateZ(18px);
+  transition: transform 300ms cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+
+.work-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.48rem;
+  color: var(--text-secondary);
+  font-size: 0.61rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.work-kicker span {
+  color: var(--gold-light);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.58rem;
+  transition: color 220ms ease, transform 300ms ease;
+}
+
 .work-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.8rem;
+}
+
+.work-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 0.64rem;
+}
+
+.work-meta span:first-child {
+  overflow: hidden;
+  max-width: 13ch;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-meta span + span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.work-meta span + span::before {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  content: "";
+  background: var(--gold-muted);
 }
 
 .work-title {
@@ -468,7 +629,8 @@ const works = [
   min-height: 0;
   display: flex;
   align-items: center;
-  transition: transform 0.4s ease;
+  transform: translateZ(18px);
+  transition: transform 320ms cubic-bezier(0.2, 0.75, 0.2, 1);
 }
 
 .laptop-frame {
@@ -476,6 +638,7 @@ const works = [
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: transform 360ms cubic-bezier(0.2, 0.75, 0.2, 1);
 }
 
 .laptop-screen-shell {
@@ -595,6 +758,7 @@ const works = [
   color: var(--gold);
   transition: all 0.3s ease;
   font-weight: 600;
+  transform: translateZ(24px);
 }
 
 .work-cta span,
@@ -604,23 +768,63 @@ const works = [
   font-weight: 700;
 }
 
+.motion-ready .work-card {
+  opacity: 0;
+  translate: 0 2rem;
+}
+
+.motion-ready .work-card.is-revealed {
+  animation: work-card-reveal 760ms cubic-bezier(0.2, 0.78, 0.25, 1)
+    var(--reveal-delay) both;
+}
+
+@keyframes work-card-reveal {
+  from {
+    opacity: 0;
+    translate: 0 2rem;
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    filter: blur(0);
+  }
+}
+
 @media (hover: hover) and (pointer: fine) {
   .work-card:hover {
-    transform: translateY(-6px) scale(1.01);
     border-color: var(--gold);
     background: linear-gradient(
       135deg,
       rgba(26, 26, 26, 0.9) 0%,
       rgba(26, 26, 26, 0.6) 100%
     );
+    box-shadow: 0 1.5rem 3.5rem rgba(0, 0, 0, 0.32);
   }
 
   .work-card:hover::before {
     opacity: 1;
   }
 
+  .work-card:hover::after {
+    transform: translateX(440%) skewX(-16deg);
+  }
+
+  .work-card:hover .work-copy {
+    transform: translate3d(0, -2px, 24px);
+  }
+
+  .work-card:hover .work-kicker span {
+    color: #f0d783;
+    transform: translateX(3px);
+  }
+
   .work-card:hover .work-media {
-    transform: scale(1.035);
+    transform: translate3d(0, -2px, 24px) scale(1.025);
+  }
+
+  .work-card:hover .laptop-frame {
+    transform: translateY(-2px) rotateX(1deg);
   }
 
   .work-card:hover .work-cta {
@@ -683,8 +887,42 @@ const works = [
 }
 
 @media (hover: none), (pointer: coarse), (max-width: 768px) {
+  .motion-ready .work-card {
+    opacity: 1;
+    translate: none;
+    animation: none;
+  }
+
+  .work-card {
+    transform: none;
+  }
+
   .work-image {
     transform: none;
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .works-heading,
+  .motion-ready .work-card.is-revealed {
+    animation: none;
+  }
+
+  .motion-ready .work-card {
+    opacity: 1;
+    translate: none;
+    filter: none;
+  }
+
+  .work-card,
+  .work-card::before,
+  .work-card::after,
+  .work-copy,
+  .work-media,
+  .laptop-frame,
+  .work-kicker span,
+  .work-cta {
     transition: none;
   }
 }

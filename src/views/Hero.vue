@@ -14,8 +14,8 @@
       <div class="hero-copy">
         <p class="hero-eyebrow"><span></span>Independent software engineer</p>
         <h1>
-          Products that stay
-          <em>sharp under pressure.</em>
+          <span class="hero-title-line">Products that stay</span>
+          <em class="hero-title-line">sharp under pressure.</em>
         </h1>
         <p class="hero-intro">
           I turn complex product ideas into thoughtful web experiences and
@@ -47,9 +47,10 @@
         </div>
       </div>
 
-      <div class="hero-visual" aria-hidden="true">
-        <div class="visual-aura"></div>
-        <div class="visual-system">
+      <div class="hero-visual-scroll">
+        <div class="hero-visual" aria-hidden="true">
+          <div class="visual-aura"></div>
+          <div class="visual-system">
           <svg
             class="fracture-map"
             viewBox="0 0 600 620"
@@ -104,13 +105,20 @@
             <strong>to impact.</strong>
           </div>
 
-          <div class="glass-chip chip-index">2026</div>
-          <div class="glass-shard shard-top"></div>
-          <div class="glass-shard shard-bottom"></div>
-          <div class="visual-crosshair crosshair-top"></div>
-          <div class="visual-crosshair crosshair-bottom"></div>
+            <div class="glass-chip chip-index">2026</div>
+            <div class="glass-shard shard-top"></div>
+            <div class="glass-shard shard-bottom"></div>
+            <div class="visual-crosshair crosshair-top"></div>
+            <div class="visual-crosshair crosshair-bottom"></div>
+          </div>
         </div>
       </div>
+    </div>
+
+    <div class="hero-scroll-index" aria-hidden="true">
+      <span>01</span>
+      <i></i>
+      <span>04</span>
     </div>
 
     <a class="scroll-prompt interactive" href="#about">
@@ -126,7 +134,14 @@ import { ref } from "vue";
 const hero = ref(null);
 
 const handlePointerMove = (event) => {
-  if (!hero.value || !window.matchMedia("(pointer: fine)").matches) return;
+  if (
+    !hero.value ||
+    !window.matchMedia(
+      "(pointer: fine) and (prefers-reduced-motion: no-preference)"
+    ).matches
+  ) {
+    return;
+  }
 
   const rect = hero.value.getBoundingClientRect();
   const pointerX = (event.clientX - rect.left) / rect.width - 0.5;
@@ -202,7 +217,12 @@ const resetPointer = () => {
   position: relative;
   z-index: 2;
   max-width: 43rem;
-  animation: copy-enter 800ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+}
+
+.hero-visual-scroll {
+  position: relative;
+  min-width: 0;
+  transform-origin: 68% 50%;
 }
 
 .hero-eyebrow {
@@ -214,6 +234,7 @@ const resetPointer = () => {
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  animation: soft-rise 700ms cubic-bezier(0.2, 0.75, 0.2, 1) 90ms both;
 }
 
 .hero-eyebrow span {
@@ -232,12 +253,21 @@ const resetPointer = () => {
   line-height: 0.91;
 }
 
-.hero h1 em {
+.hero-title-line {
   display: block;
+  animation: title-reveal 850ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+}
+
+.hero-title-line:first-child {
+  animation-delay: 150ms;
+}
+
+.hero h1 em {
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 400;
   letter-spacing: -0.085em;
   color: var(--gold-light);
+  animation-delay: 260ms;
 }
 
 .hero-intro {
@@ -246,6 +276,7 @@ const resetPointer = () => {
   color: #b9b7af;
   font-size: clamp(0.95rem, 1.1vw, 1.06rem);
   line-height: 1.75;
+  animation: soft-rise 720ms cubic-bezier(0.2, 0.75, 0.2, 1) 380ms both;
 }
 
 .hero-actions {
@@ -253,6 +284,7 @@ const resetPointer = () => {
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 2.05rem;
+  animation: soft-rise 720ms cubic-bezier(0.2, 0.75, 0.2, 1) 460ms both;
 }
 
 .hero-button {
@@ -294,6 +326,15 @@ const resetPointer = () => {
   box-shadow: 0 1.2rem 2.7rem rgba(192, 156, 66, 0.3);
 }
 
+.hero-button-primary span {
+  transition: transform 220ms ease;
+}
+
+.hero-button-primary:hover span,
+.hero-button-primary:focus-visible span {
+  transform: translate(2px, -2px);
+}
+
 .hero-button-secondary {
   border-color: rgba(232, 218, 178, 0.24);
   background: rgba(255, 255, 255, 0.025);
@@ -311,6 +352,7 @@ const resetPointer = () => {
   flex-wrap: wrap;
   gap: 1.1rem 1.8rem;
   margin-top: clamp(2.9rem, 5vw, 4.75rem);
+  animation: soft-rise 720ms cubic-bezier(0.2, 0.75, 0.2, 1) 560ms both;
 }
 
 .hero-meta div {
@@ -337,6 +379,19 @@ const resetPointer = () => {
   perspective: 1400px;
 }
 
+.hero-visual::after {
+  position: absolute;
+  z-index: 0;
+  inset: 6% 3% 4%;
+  content: "";
+  border: 1px solid rgba(233, 210, 142, 0.12);
+  clip-path: polygon(18% 0, 100% 12%, 82% 100%, 0 77%);
+  opacity: 0.72;
+  transform: rotate(-5deg);
+  animation: visual-trace 11s ease-in-out infinite;
+  pointer-events: none;
+}
+
 .visual-aura {
   position: absolute;
   inset: 8% -16% 0 -12%;
@@ -344,10 +399,12 @@ const resetPointer = () => {
   background: radial-gradient(ellipse, rgba(220, 184, 89, 0.14), transparent 65%);
   filter: blur(4px);
   opacity: 0.8;
+  animation: aura-breathe 7s ease-in-out infinite;
 }
 
 .visual-system {
   position: absolute;
+  z-index: 1;
   inset: 0;
   transform: translate3d(var(--visual-x), var(--visual-y), 0)
     rotateX(var(--visual-rotate-x)) rotateY(var(--visual-rotate-y));
@@ -363,6 +420,7 @@ const resetPointer = () => {
   height: 96%;
   overflow: visible;
   pointer-events: none;
+  animation: fracture-pulse 6s ease-in-out infinite;
 }
 
 .fracture-map path {
@@ -415,7 +473,7 @@ const resetPointer = () => {
   height: 62%;
   clip-path: polygon(19% 0, 100% 10%, 87% 77%, 28% 100%, 0 55%);
   opacity: 0.58;
-  transform: rotate(7deg) translateZ(-20px);
+  animation: plane-drift-back 9s ease-in-out infinite;
 }
 
 .glass-plane-left {
@@ -426,7 +484,7 @@ const resetPointer = () => {
   height: 48%;
   clip-path: polygon(0 7%, 100% 0, 76% 77%, 16% 100%);
   opacity: 0.8;
-  transform: rotate(-5deg) translateZ(16px);
+  animation: plane-drift-left 8s ease-in-out -1.2s infinite;
 }
 
 .glass-plane-right {
@@ -438,7 +496,7 @@ const resetPointer = () => {
   clip-path: polygon(25% 0, 100% 32%, 89% 100%, 0 76%);
   background: linear-gradient(145deg, rgba(230, 194, 105, 0.14), rgba(255, 255, 255, 0.04));
   opacity: 0.72;
-  transform: rotate(10deg) translateZ(-6px);
+  animation: plane-drift-right 10s ease-in-out -2s infinite;
 }
 
 .shard-ui {
@@ -481,7 +539,7 @@ const resetPointer = () => {
   padding: 1.1rem 1.2rem 1.4rem;
   clip-path: polygon(14% 0, 100% 17%, 88% 100%, 0 73%);
   background: linear-gradient(132deg, rgba(45, 45, 37, 0.86), rgba(23, 23, 20, 0.74));
-  transform: translateZ(22px) rotate(2deg);
+  animation: shard-ui-top-drift 7s ease-in-out -0.8s infinite;
 }
 
 .shard-ui-side {
@@ -495,7 +553,7 @@ const resetPointer = () => {
   padding: 1.2rem 1rem 1.25rem 1.45rem;
   clip-path: polygon(0 8%, 100% 0, 76% 100%, 13% 83%);
   background: linear-gradient(144deg, rgba(57, 54, 42, 0.86), rgba(21, 21, 18, 0.76));
-  transform: translateZ(44px) rotate(-5deg);
+  animation: shard-ui-side-drift 8s ease-in-out -2.4s infinite;
 }
 
 .shard-ui-bottom {
@@ -508,7 +566,7 @@ const resetPointer = () => {
   padding: 1.25rem 1.15rem 1rem;
   clip-path: polygon(22% 0, 100% 25%, 74% 100%, 0 79%);
   background: linear-gradient(134deg, rgba(58, 52, 37, 0.8), rgba(20, 20, 17, 0.76));
-  transform: translateZ(54px) rotate(4deg);
+  animation: shard-ui-bottom-drift 9s ease-in-out -4s infinite;
 }
 
 .shard-label,
@@ -695,7 +753,7 @@ const resetPointer = () => {
 .glass-shard {
   z-index: 5;
   background: linear-gradient(125deg, rgba(255, 255, 255, 0.2), rgba(226, 190, 98, 0.07));
-  transform: translateZ(56px);
+  animation: loose-shard-drift 8.5s ease-in-out infinite;
 }
 
 .shard-top {
@@ -764,6 +822,7 @@ const resetPointer = () => {
   background-size: 6rem 6rem;
   mask-image: radial-gradient(ellipse at 72% 50%, black, transparent 67%);
   opacity: 0.48;
+  animation: grid-drift 22s linear infinite;
 }
 
 .hero-grain {
@@ -783,6 +842,7 @@ const resetPointer = () => {
   border: 1px solid rgba(232, 207, 133, 0.075);
   border-radius: 50%;
   pointer-events: none;
+  animation: halo-turn 18s linear infinite;
 }
 
 .halo-left {
@@ -811,11 +871,39 @@ const resetPointer = () => {
   letter-spacing: 0.14em;
   text-decoration: none;
   text-transform: uppercase;
-  transition: color 200ms ease;
+  transition: color 200ms ease, transform 200ms ease;
+  animation: scroll-hint 2.8s ease-in-out 1.2s infinite;
+}
+
+.hero-scroll-index {
+  position: absolute;
+  z-index: 3;
+  right: max(1.25rem, calc((100vw - 90rem) / 2 + 1.5rem));
+  bottom: 1.45rem;
+  display: grid;
+  justify-items: center;
+  gap: 0.45rem;
+  color: rgba(218, 207, 173, 0.65);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.hero-scroll-index i {
+  display: block;
+  width: 1px;
+  height: 3.35rem;
+  background: linear-gradient(
+    to bottom,
+    var(--gold-light),
+    rgba(229, 203, 125, 0.12)
+  );
+  transform-origin: top;
 }
 
 .scroll-prompt:hover {
   color: var(--gold-light);
+  transform: translateX(4px);
 }
 
 .scroll-line {
@@ -825,10 +913,18 @@ const resetPointer = () => {
   background: currentColor;
 }
 
-@keyframes copy-enter {
+@keyframes soft-rise {
   from {
     opacity: 0;
-    transform: translateY(1.5rem);
+    transform: translateY(1.15rem);
+  }
+}
+
+@keyframes title-reveal {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 105% 0);
+    transform: translateY(1.2rem);
   }
 }
 
@@ -839,6 +935,18 @@ const resetPointer = () => {
   }
 }
 
+@keyframes visual-trace {
+  0%,
+  100% {
+    opacity: 0.24;
+    transform: rotate(-5deg) scale(0.96);
+  }
+  50% {
+    opacity: 0.82;
+    transform: rotate(-2deg) scale(1.02);
+  }
+}
+
 @keyframes glint {
   15%,
   100% {
@@ -846,9 +954,173 @@ const resetPointer = () => {
   }
 }
 
+@keyframes aura-breathe {
+  50% {
+    opacity: 1;
+    transform: scale(1.09);
+  }
+}
+
+@keyframes fracture-pulse {
+  50% {
+    opacity: 0.68;
+    transform: scale(1.012);
+  }
+}
+
+@keyframes plane-drift-back {
+  0%,
+  100% {
+    transform: rotate(7deg) translate3d(0, 0, -20px);
+  }
+  50% {
+    transform: rotate(5deg) translate3d(0.25rem, -0.45rem, -20px);
+  }
+}
+
+@keyframes plane-drift-left {
+  0%,
+  100% {
+    transform: rotate(-5deg) translate3d(0, 0, 16px);
+  }
+  50% {
+    transform: rotate(-3deg) translate3d(-0.3rem, -0.5rem, 16px);
+  }
+}
+
+@keyframes plane-drift-right {
+  0%,
+  100% {
+    transform: rotate(10deg) translate3d(0, 0, -6px);
+  }
+  50% {
+    transform: rotate(12deg) translate3d(0.25rem, -0.4rem, -6px);
+  }
+}
+
+@keyframes shard-ui-top-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 22px) rotate(2deg);
+  }
+  50% {
+    transform: translate3d(0.25rem, -0.35rem, 22px) rotate(0.8deg);
+  }
+}
+
+@keyframes shard-ui-side-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 44px) rotate(-5deg);
+  }
+  50% {
+    transform: translate3d(-0.3rem, 0.3rem, 44px) rotate(-3.4deg);
+  }
+}
+
+@keyframes shard-ui-bottom-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 54px) rotate(4deg);
+  }
+  50% {
+    transform: translate3d(0.35rem, -0.25rem, 54px) rotate(2.7deg);
+  }
+}
+
+@keyframes loose-shard-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 56px) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0.4rem, -0.5rem, 56px) rotate(3deg);
+  }
+}
+
+@keyframes grid-drift {
+  to {
+    background-position: 6rem 6rem;
+  }
+}
+
+@keyframes halo-turn {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@keyframes scroll-hint {
+  50% {
+    transform: translateX(0.35rem);
+  }
+}
+
+@keyframes hero-copy-exit {
+  to {
+    opacity: 0.08;
+    transform: translate3d(0, -16vh, 0);
+  }
+}
+
+@keyframes hero-visual-exit {
+  to {
+    opacity: 0.16;
+    transform: translate3d(7vw, -9vh, 0) scale(1.12);
+  }
+}
+
+@keyframes hero-grid-exit {
+  to {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes scroll-index-fill {
+  from {
+    transform: scaleY(0.12);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (min-width: 769px) {
+    .hero-copy {
+      animation: hero-copy-exit linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+
+    .hero-visual-scroll {
+      animation: hero-visual-exit linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+
+    .hero-grid {
+      animation: grid-drift 22s linear infinite, hero-grid-exit linear both;
+      animation-timeline: auto, view();
+      animation-range: normal, exit 0% exit 100%;
+    }
+
+    .hero-scroll-index i {
+      animation: scroll-index-fill linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 85%;
+    }
+  }
+}
+
 @media (min-width: 1536px) {
   .scroll-prompt {
     left: clamp(6rem, 7vw, 13.75rem);
+  }
+
+  .hero-scroll-index {
+    right: clamp(6rem, 7vw, 13.75rem);
   }
 }
 
@@ -874,6 +1146,10 @@ const resetPointer = () => {
   }
 
   .scroll-prompt {
+    display: none;
+  }
+
+  .hero-scroll-index {
     display: none;
   }
 }
@@ -976,11 +1252,23 @@ const resetPointer = () => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-copy,
+  .hero-eyebrow,
+  .hero-title-line,
+  .hero-intro,
+  .hero-actions,
+  .hero-meta,
   .hero-visual,
+  .visual-aura,
+  .fracture-map,
+  .hero-grid,
+  .hero-halo,
+  .scroll-prompt,
+  .glass-plane,
+  .shard-ui,
+  .glass-shard,
   .glass-plane::after,
   .glass-shard::after {
-    animation: none;
+    animation: none !important;
   }
 
   .visual-system {
