@@ -25,8 +25,31 @@ import logoMark from "../assets/icons/peniel-mark.svg";
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(13, 13, 13, 0.97);
-  border-bottom: 1px solid var(--gold-border);
+  background: linear-gradient(
+    90deg,
+    rgba(7, 8, 7, 0.82),
+    rgba(17, 17, 15, 0.66)
+  );
+  border-bottom: 1px solid rgba(232, 218, 178, 0.12);
+  box-shadow: 0 0.8rem 2.6rem rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(18px) saturate(0.8);
+  -webkit-backdrop-filter: blur(18px) saturate(0.8);
+}
+
+.navbar::after {
+  content: "";
+  position: absolute;
+  right: 9%;
+  bottom: -1px;
+  left: 9%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(229, 203, 125, 0.5),
+    transparent
+  );
+  opacity: 0.75;
 }
 
 .nav-shell {
@@ -40,9 +63,24 @@ import logoMark from "../assets/icons/peniel-mark.svg";
   display: inline-flex;
   align-items: center;
   text-decoration: none;
-  padding: 0.2rem;
-  border: 1px solid var(--gold-border);
-  border-radius: 50%;
+  padding: 0.24rem;
+  border: 1px solid rgba(232, 218, 178, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.035);
+  transition: border-color 180ms ease, background-color 180ms ease,
+    transform 180ms ease;
+}
+
+.logo:hover,
+.logo:focus-visible {
+  border-color: rgba(229, 203, 125, 0.65);
+  background: rgba(229, 203, 125, 0.08);
+  transform: translateY(-1px);
+}
+
+.logo:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 3px;
 }
 
 .logo-mark {
@@ -60,9 +98,11 @@ import logoMark from "../assets/icons/peniel-mark.svg";
 
 .nav-links a {
   position: relative;
-  color: var(--text-primary);
+  color: #d8d4c9;
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 0.77rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .nav-links a::after {
@@ -78,7 +118,7 @@ import logoMark from "../assets/icons/peniel-mark.svg";
 }
 
 .nav-links a:hover,
-.nav-links a:focus-visible { color: var(--gold); }
+.nav-links a:focus-visible { color: var(--gold-light); }
 .nav-links a:hover::after,
 .nav-links a:focus-visible::after { transform: scaleX(1); }
 
