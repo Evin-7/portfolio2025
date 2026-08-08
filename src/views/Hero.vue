@@ -2,6 +2,7 @@
   <section
     ref="hero"
     class="hero"
+    :class="{ 'scroll-scene': sceneEnabled }"
     @pointermove="handlePointerMove"
     @pointerleave="resetPointer"
   >
@@ -10,119 +11,123 @@
     <div class="hero-halo halo-left" aria-hidden="true"></div>
     <div class="hero-halo halo-right" aria-hidden="true"></div>
 
-    <div class="hero-shell site-container">
-      <div class="hero-copy">
-        <p class="hero-eyebrow"><span></span>Product engineer / independent studio</p>
-        <h1>
-          <span class="hero-title-line">Build with intent.</span>
-          <em class="hero-title-line">Ship with staying power.</em>
-        </h1>
-        <p class="hero-intro">
-          I turn complex product ideas into clear interfaces, reliable systems,
-          and digital experiences people want to return to.
-        </p>
+    <div class="hero-stage">
+      <div class="hero-shell site-container">
+        <div class="hero-copy">
+          <p class="hero-eyebrow"><span></span>Product engineer / independent studio</p>
+          <h1>
+            <span class="hero-title-line">Build with intent.</span>
+            <em class="hero-title-line">Ship with staying power.</em>
+          </h1>
+          <p class="hero-intro">
+            I turn complex product ideas into clear interfaces, reliable systems,
+            and digital experiences people want to return to.
+          </p>
 
-        <div class="hero-signal-row" aria-label="Current availability">
-          <span class="hero-availability"><i></i> Open for focused builds</span>
-          <span class="hero-signal-code">Web / Mobile / Systems</span>
-        </div>
-
-        <div class="hero-actions">
-          <a class="hero-button hero-button-primary interactive" href="#works">
-            View selected work <span aria-hidden="true">↗</span>
-          </a>
-          <a class="hero-button hero-button-secondary interactive" href="#contact">
-            Start a project
-          </a>
-        </div>
-
-        <div class="hero-meta" aria-label="Professional focus">
-          <div>
-            <strong>01</strong>
-            <span>Product thinking</span>
+          <div class="hero-signal-row" aria-label="Current availability">
+            <span class="hero-availability"><i></i> Open for focused builds</span>
+            <span class="hero-signal-code">Web / Mobile / Systems</span>
           </div>
-          <div>
-            <strong>02</strong>
-            <span>Interface systems</span>
-          </div>
-          <div>
-            <strong>03</strong>
-            <span>Reliable delivery</span>
-          </div>
-        </div>
-      </div>
 
-      <div class="hero-visual-scroll">
-        <div class="hero-visual" aria-hidden="true">
-          <div class="visual-aura"></div>
-          <div class="hero-orbit orbit-one">
-            <span class="orbit-dot"></span>
-            <span>Build signal</span>
-            <strong>01</strong>
+          <div class="hero-actions">
+            <a class="hero-button hero-button-primary interactive" href="#works">
+              View selected work <span aria-hidden="true">↗</span>
+            </a>
+            <a class="hero-button hero-button-secondary interactive" href="#contact">
+              Start a project
+            </a>
           </div>
-          <div class="hero-orbit orbit-two">
-            <span>Web · Mobile · Product</span>
-          </div>
-          <div class="visual-system">
-          <svg
-            class="fracture-map"
-            viewBox="0 0 600 620"
-            fill="none"
-            preserveAspectRatio="none"
-          >
-            <path d="M31 48L230 205L184 389L468 574" />
-            <path d="M230 205L526 62" />
-            <path d="M230 205L449 302L578 456" />
-            <path d="M184 389L18 495" />
-            <path d="M184 389L349 498L543 608" />
-            <path d="M449 302L493 175" />
-            <path d="M349 498L394 616" />
-            <circle cx="230" cy="205" r="5" />
-            <circle cx="184" cy="389" r="4" />
-          </svg>
 
-          <div class="glass-plane glass-plane-back"></div>
-          <div class="glass-plane glass-plane-left"></div>
-          <div class="glass-plane glass-plane-right"></div>
-
-          <div class="shard-ui shard-ui-main">
-            <div class="panel-topline">
-              <span>01 / Build</span>
-              <span class="panel-live"><i></i> Live</span>
+          <div class="hero-meta" aria-label="Professional focus">
+            <div>
+              <strong>01</strong>
+              <span>Product thinking</span>
             </div>
-            <div class="panel-main">
-              <p>Make it clear.</p>
-              <h2>Ideas into impact.</h2>
-              <div class="panel-rule"></div>
-              <div class="panel-stats">
-                <div><span>Design</span><strong>Clear</strong></div>
-                <div><span>Code</span><strong>Solid</strong></div>
+            <div>
+              <strong>02</strong>
+              <span>Interface systems</span>
+            </div>
+            <div>
+              <strong>03</strong>
+              <span>Reliable delivery</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual-scroll">
+          <div class="hero-visual" aria-hidden="true">
+            <div class="visual-aura"></div>
+            <div class="visual-beam visual-beam-one"></div>
+            <div class="visual-beam visual-beam-two"></div>
+            <div class="hero-orbit orbit-one">
+              <span class="orbit-dot"></span>
+              <span>Build signal</span>
+              <strong>01</strong>
+            </div>
+            <div class="hero-orbit orbit-two">
+              <span>Web · Mobile · Product</span>
+            </div>
+            <div class="visual-system">
+              <svg
+                class="fracture-map"
+                viewBox="0 0 600 620"
+                fill="none"
+                preserveAspectRatio="none"
+              >
+                <path d="M31 48L230 205L184 389L468 574" />
+                <path d="M230 205L526 62" />
+                <path d="M230 205L449 302L578 456" />
+                <path d="M184 389L18 495" />
+                <path d="M184 389L349 498L543 608" />
+                <path d="M449 302L493 175" />
+                <path d="M349 498L394 616" />
+                <circle cx="230" cy="205" r="5" />
+                <circle cx="184" cy="389" r="4" />
+              </svg>
+
+              <div class="glass-plane glass-plane-back"></div>
+              <div class="glass-plane glass-plane-left"></div>
+              <div class="glass-plane glass-plane-right"></div>
+
+              <div class="shard-ui shard-ui-main">
+                <div class="panel-topline">
+                  <span>01 / Build</span>
+                  <span class="panel-live"><i></i> Live</span>
+                </div>
+                <div class="panel-main">
+                  <p>Make it clear.</p>
+                  <h2>Ideas into impact.</h2>
+                  <div class="panel-rule"></div>
+                  <div class="panel-stats">
+                    <div><span>Design</span><strong>Clear</strong></div>
+                    <div><span>Code</span><strong>Solid</strong></div>
+                  </div>
+                </div>
               </div>
+
+              <div class="shard-ui shard-ui-top">
+                <span class="shard-label">System</span>
+                <strong>Make it clear.</strong>
+                <span class="shard-detail">Built to last.</span>
+              </div>
+
+              <div class="shard-ui shard-ui-side">
+                <span class="shard-label">Signal</span>
+                <div class="signal-bars"><i></i><i></i><i></i><i></i></div>
+                <strong>Clarity</strong>
+              </div>
+
+              <div class="shard-ui shard-ui-bottom">
+                <span>From idea</span>
+                <strong>to shipped.</strong>
+              </div>
+
+              <div class="glass-chip chip-index">2026</div>
+              <div class="glass-shard shard-top"></div>
+              <div class="glass-shard shard-bottom"></div>
+              <div class="visual-crosshair crosshair-top"></div>
+              <div class="visual-crosshair crosshair-bottom"></div>
             </div>
-          </div>
-
-          <div class="shard-ui shard-ui-top">
-            <span class="shard-label">System</span>
-            <strong>Make it clear.</strong>
-            <span class="shard-detail">Built to last.</span>
-          </div>
-
-          <div class="shard-ui shard-ui-side">
-            <span class="shard-label">Signal</span>
-            <div class="signal-bars"><i></i><i></i><i></i><i></i></div>
-            <strong>Clarity</strong>
-          </div>
-
-          <div class="shard-ui shard-ui-bottom">
-            <span>From idea</span>
-            <strong>to shipped.</strong>
-          </div>
-
-            <div class="glass-chip chip-index">2026</div>
-            <div class="glass-shard shard-top"></div>
-            <div class="glass-shard shard-bottom"></div>
-            <div class="visual-crosshair crosshair-top"></div>
-            <div class="visual-crosshair crosshair-bottom"></div>
           </div>
         </div>
       </div>
@@ -142,9 +147,134 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 
 const hero = ref(null);
+const sceneEnabled = ref(false);
+let scrollFrame = null;
+let pointerFrame = null;
+const sceneMetrics = { top: 0, range: 1 };
+const pointerTarget = { x: 0, y: 0 };
+
+const clamp = (value, min = 0, max = 1) => Math.min(Math.max(value, min), max);
+const smoothstep = (value) => value * value * (3 - 2 * value);
+
+const supportsScrollScene = () =>
+  window.matchMedia(
+    "(min-width: 1024px) and (prefers-reduced-motion: no-preference)"
+  ).matches;
+
+const updateSceneMetrics = () => {
+  if (!hero.value) return;
+
+  sceneMetrics.top = hero.value.getBoundingClientRect().top + window.scrollY;
+  sceneMetrics.range = Math.max(hero.value.offsetHeight - window.innerHeight, 1);
+};
+
+const resetScrollScene = () => {
+  if (!hero.value) return;
+
+  hero.value.style.setProperty("--scene-scale", "1");
+  hero.value.style.setProperty("--scene-y", "0px");
+  hero.value.style.setProperty("--scene-rotate", "0deg");
+  hero.value.style.setProperty("--scene-progress", "0");
+};
+
+const updateScrollScene = () => {
+  scrollFrame = null;
+
+  if (!hero.value || !sceneEnabled.value) return;
+
+  const progress = clamp(
+    (window.scrollY - sceneMetrics.top) / sceneMetrics.range
+  );
+  const revealProgress = smoothstep(clamp(progress / 0.18));
+  const zoomInProgress = smoothstep(clamp((progress - 0.18) / 0.24));
+  const zoomOutProgress = smoothstep(clamp((progress - 0.42) / 0.24));
+  const zoomProgress = progress < 0.42 ? zoomInProgress : 1 - zoomOutProgress;
+
+  hero.value.style.setProperty(
+    "--scene-scale",
+    (1.16 - revealProgress * 0.16 + zoomProgress * 0.12).toFixed(4)
+  );
+  hero.value.style.setProperty(
+    "--scene-y",
+    `${(18 - revealProgress * 18 - zoomProgress * 7).toFixed(2)}px`
+  );
+  hero.value.style.setProperty(
+    "--scene-rotate",
+    `${(-1.2 + revealProgress * 1.2 + zoomProgress * 1.3).toFixed(2)}deg`
+  );
+  hero.value.style.setProperty("--scene-progress", progress.toFixed(4));
+};
+
+const requestScrollSceneUpdate = () => {
+  if (sceneEnabled.value && scrollFrame === null) {
+    scrollFrame = requestAnimationFrame(updateScrollScene);
+  }
+};
+
+const syncScrollScene = async () => {
+  const enabled = supportsScrollScene();
+  sceneEnabled.value = enabled;
+
+  if (enabled) {
+    await nextTick();
+    if (!sceneEnabled.value) return;
+    updateSceneMetrics();
+    requestScrollSceneUpdate();
+  } else {
+    resetScrollScene();
+  }
+};
+
+const handleWindowResize = () => {
+  syncScrollScene();
+};
+
+onMounted(() => {
+  syncScrollScene();
+  window.addEventListener("scroll", requestScrollSceneUpdate, { passive: true });
+  window.addEventListener("resize", handleWindowResize, { passive: true });
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", requestScrollSceneUpdate);
+  window.removeEventListener("resize", handleWindowResize);
+
+  if (scrollFrame !== null) {
+    cancelAnimationFrame(scrollFrame);
+  }
+
+  if (pointerFrame !== null) {
+    cancelAnimationFrame(pointerFrame);
+  }
+});
+
+const renderPointer = () => {
+  pointerFrame = null;
+
+  if (!hero.value) return;
+
+  hero.value.style.setProperty(
+    "--pointer-x",
+    `${(pointerTarget.x + 0.5) * 100}%`
+  );
+  hero.value.style.setProperty(
+    "--pointer-y",
+    `${(pointerTarget.y + 0.5) * 100}%`
+  );
+  hero.value.style.setProperty("--visual-x", `${pointerTarget.x * 12}px`);
+  hero.value.style.setProperty("--visual-y", `${pointerTarget.y * 10}px`);
+  hero.value.style.setProperty(
+    "--visual-rotate-x",
+    `${pointerTarget.y * -4}deg`
+  );
+  hero.value.style.setProperty(
+    "--visual-rotate-y",
+    `${pointerTarget.x * 5}deg`
+  );
+};
 
 const handlePointerMove = (event) => {
   if (
@@ -160,23 +290,23 @@ const handlePointerMove = (event) => {
   const pointerX = (event.clientX - rect.left) / rect.width - 0.5;
   const pointerY = (event.clientY - rect.top) / rect.height - 0.5;
 
-  hero.value.style.setProperty("--pointer-x", `${(pointerX + 0.5) * 100}%`);
-  hero.value.style.setProperty("--pointer-y", `${(pointerY + 0.5) * 100}%`);
-  hero.value.style.setProperty("--visual-x", `${pointerX * 12}px`);
-  hero.value.style.setProperty("--visual-y", `${pointerY * 10}px`);
-  hero.value.style.setProperty("--visual-rotate-x", `${pointerY * -4}deg`);
-  hero.value.style.setProperty("--visual-rotate-y", `${pointerX * 5}deg`);
+  pointerTarget.x = pointerX;
+  pointerTarget.y = pointerY;
+
+  if (pointerFrame === null) {
+    pointerFrame = requestAnimationFrame(renderPointer);
+  }
 };
 
 const resetPointer = () => {
   if (!hero.value) return;
 
-  hero.value.style.setProperty("--pointer-x", "50%");
-  hero.value.style.setProperty("--pointer-y", "50%");
-  hero.value.style.setProperty("--visual-x", "0px");
-  hero.value.style.setProperty("--visual-y", "0px");
-  hero.value.style.setProperty("--visual-rotate-x", "0deg");
-  hero.value.style.setProperty("--visual-rotate-y", "0deg");
+  pointerTarget.x = 0;
+  pointerTarget.y = 0;
+
+  if (pointerFrame === null) {
+    pointerFrame = requestAnimationFrame(renderPointer);
+  }
 };
 </script>
 
@@ -188,15 +318,37 @@ const resetPointer = () => {
   --visual-y: 0px;
   --visual-rotate-x: 0deg;
   --visual-rotate-y: 0deg;
+  --scene-scale: 1;
+  --scene-y: 0px;
+  --scene-rotate: 0deg;
+  --scene-progress: 0;
   position: relative;
   isolation: isolate;
-  overflow: hidden;
+  overflow: clip;
   min-height: max(44rem, 100svh);
   padding: clamp(8.2rem, 12vw, 10.5rem) 0 4rem;
   background:
     radial-gradient(circle at 75% 49%, rgba(226, 193, 106, 0.12), transparent 19rem),
     radial-gradient(circle at 4% 98%, rgba(124, 87, 21, 0.22), transparent 26rem),
     linear-gradient(122deg, #060706 0%, #0a0b0a 46%, #11110f 100%);
+}
+
+.hero-stage {
+  position: relative;
+}
+
+.hero.scroll-scene {
+  min-height: max(44rem, 150svh);
+  padding: 0;
+}
+
+.hero.scroll-scene .hero-stage {
+  position: sticky;
+  top: 0;
+  display: grid;
+  min-height: 100svh;
+  padding: clamp(8.2rem, 12vw, 10.5rem) 0 4rem;
+  align-items: center;
 }
 
 .hero::before,
@@ -448,7 +600,6 @@ const resetPointer = () => {
   clip-path: polygon(18% 0, 100% 12%, 82% 100%, 0 77%);
   opacity: 0.72;
   transform: rotate(-5deg);
-  animation: visual-trace 11s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -461,7 +612,6 @@ const resetPointer = () => {
   clip-path: polygon(5% 12%, 76% 0, 100% 42%, 78% 100%, 0 82%);
   opacity: 0.7;
   transform: rotate(4deg);
-  animation: visual-frame 13s ease-in-out infinite reverse;
   pointer-events: none;
 }
 
@@ -470,9 +620,37 @@ const resetPointer = () => {
   inset: 8% -16% 0 -12%;
   border-radius: 50%;
   background: radial-gradient(ellipse, rgba(220, 184, 89, 0.14), transparent 65%);
-  filter: blur(4px);
   opacity: 0.8;
-  animation: aura-breathe 7s ease-in-out infinite;
+}
+
+.visual-beam {
+  position: absolute;
+  z-index: 4;
+  width: 74%;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(244, 220, 147, 0.72) 48%,
+    transparent
+  );
+  filter: drop-shadow(0 0 0.45rem rgba(231, 201, 116, 0.42));
+  opacity: 0.18;
+  transform-origin: center;
+}
+
+.visual-beam-one {
+  top: 35%;
+  left: 4%;
+  transform: rotate(-25deg);
+}
+
+.visual-beam-two {
+  right: -2%;
+  bottom: 27%;
+  width: 56%;
+  transform: rotate(28deg);
 }
 
 .hero-orbit {
@@ -487,8 +665,6 @@ const resetPointer = () => {
   color: rgba(239, 231, 206, 0.78);
   background: rgba(22, 22, 18, 0.42);
   box-shadow: 0 1rem 2.8rem rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -506,14 +682,12 @@ const resetPointer = () => {
 .orbit-one {
   top: 13%;
   left: -1%;
-  animation: orbit-float 6.5s ease-in-out infinite;
 }
 
 .orbit-two {
   right: 1%;
   bottom: 8%;
   color: rgba(226, 215, 184, 0.6);
-  animation: orbit-float 7.5s ease-in-out -2.1s infinite reverse;
 }
 
 .orbit-dot {
@@ -522,17 +696,22 @@ const resetPointer = () => {
   border-radius: 50%;
   background: #e8cf83;
   box-shadow: 0 0 0 0.28rem rgba(232, 207, 131, 0.11), 0 0 1rem rgba(232, 207, 131, 0.72);
-  animation: orbit-pulse 2.6s ease-in-out infinite;
 }
 
 .visual-system {
   position: absolute;
   z-index: 1;
   inset: 0;
-  transform: translate3d(var(--visual-x), var(--visual-y), 0)
+  transform: translate3d(
+      var(--visual-x),
+      calc(var(--visual-y) + var(--scene-y)),
+      0
+    )
+    scale(var(--scene-scale))
+    rotate(var(--scene-rotate))
     rotateX(var(--visual-rotate-x)) rotateY(var(--visual-rotate-y));
   transform-style: preserve-3d;
-  transition: transform 280ms cubic-bezier(0.2, 0.75, 0.2, 1);
+  will-change: transform;
 }
 
 .fracture-map {
@@ -543,7 +722,6 @@ const resetPointer = () => {
   height: 96%;
   overflow: visible;
   pointer-events: none;
-  animation: fracture-pulse 6s ease-in-out infinite;
 }
 
 .fracture-map path {
@@ -567,8 +745,6 @@ const resetPointer = () => {
   border: 1px solid rgba(255, 249, 227, 0.18);
   background: linear-gradient(125deg, rgba(255, 255, 255, 0.19), rgba(255, 255, 255, 0.025) 45%, rgba(231, 191, 95, 0.08));
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.18), 0 2.2rem 4.7rem rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(15px) saturate(0.8);
-  -webkit-backdrop-filter: blur(15px) saturate(0.8);
 }
 
 .glass-plane::after,
@@ -584,8 +760,6 @@ const resetPointer = () => {
   inset: 0;
   background: linear-gradient(118deg, transparent 21%, rgba(255, 255, 255, 0.21) 36%, transparent 51%);
   opacity: 0.7;
-  transform: translateX(-130%);
-  animation: glint 8s ease-in-out infinite;
 }
 
 .glass-plane-back {
@@ -596,7 +770,6 @@ const resetPointer = () => {
   height: 62%;
   clip-path: polygon(19% 0, 100% 10%, 87% 77%, 28% 100%, 0 55%);
   opacity: 0.58;
-  animation: plane-drift-back 9s ease-in-out infinite;
 }
 
 .glass-plane-left {
@@ -607,7 +780,6 @@ const resetPointer = () => {
   height: 48%;
   clip-path: polygon(0 7%, 100% 0, 76% 77%, 16% 100%);
   opacity: 0.8;
-  animation: plane-drift-left 8s ease-in-out -1.2s infinite;
 }
 
 .glass-plane-right {
@@ -619,7 +791,6 @@ const resetPointer = () => {
   clip-path: polygon(25% 0, 100% 32%, 89% 100%, 0 76%);
   background: linear-gradient(145deg, rgba(230, 194, 105, 0.14), rgba(255, 255, 255, 0.04));
   opacity: 0.72;
-  animation: plane-drift-right 10s ease-in-out -2s infinite;
 }
 
 .shard-ui {
@@ -662,7 +833,6 @@ const resetPointer = () => {
   padding: 1.1rem 1.2rem 1.4rem;
   clip-path: polygon(14% 0, 100% 17%, 88% 100%, 0 73%);
   background: linear-gradient(132deg, rgba(45, 45, 37, 0.86), rgba(23, 23, 20, 0.74));
-  animation: shard-ui-top-drift 7s ease-in-out -0.8s infinite;
 }
 
 .shard-ui-side {
@@ -676,7 +846,6 @@ const resetPointer = () => {
   padding: 1.2rem 1rem 1.25rem 1.45rem;
   clip-path: polygon(0 8%, 100% 0, 76% 100%, 13% 83%);
   background: linear-gradient(144deg, rgba(57, 54, 42, 0.86), rgba(21, 21, 18, 0.76));
-  animation: shard-ui-side-drift 8s ease-in-out -2.4s infinite;
 }
 
 .shard-ui-bottom {
@@ -689,7 +858,6 @@ const resetPointer = () => {
   padding: 1.25rem 1.15rem 1rem;
   clip-path: polygon(22% 0, 100% 25%, 74% 100%, 0 79%);
   background: linear-gradient(134deg, rgba(58, 52, 37, 0.8), rgba(20, 20, 17, 0.76));
-  animation: shard-ui-bottom-drift 9s ease-in-out -4s infinite;
 }
 
 .shard-label,
@@ -876,7 +1044,6 @@ const resetPointer = () => {
 .glass-shard {
   z-index: 5;
   background: linear-gradient(125deg, rgba(255, 255, 255, 0.2), rgba(226, 190, 98, 0.07));
-  animation: loose-shard-drift 8.5s ease-in-out infinite;
 }
 
 .shard-top {
@@ -885,7 +1052,6 @@ const resetPointer = () => {
   width: 9rem;
   height: 6.3rem;
   clip-path: polygon(12% 0, 100% 20%, 79% 100%, 0 64%);
-  animation-delay: -2.8s;
 }
 
 .shard-bottom {
@@ -894,7 +1060,6 @@ const resetPointer = () => {
   width: 6.6rem;
   height: 5.3rem;
   clip-path: polygon(21% 0, 100% 16%, 75% 100%, 0 72%);
-  animation-delay: -5.6s;
 }
 
 .visual-crosshair {
@@ -934,6 +1099,109 @@ const resetPointer = () => {
   transform: scale(0.62) translateZ(60px);
 }
 
+.hero.scroll-scene .visual-system {
+  transition: none;
+}
+
+.hero.scroll-scene .fracture-map {
+  --piece-progress: clamp(
+    0,
+    calc((var(--scene-progress) - 0.04) / 0.52),
+    1
+  );
+  opacity: calc(0.46 + 0.54 * var(--piece-progress));
+}
+
+.hero.scroll-scene .shard-ui-main {
+  --piece-progress: clamp(0, calc(var(--scene-progress) / 0.14), 1);
+  opacity: calc(0.88 + 0.12 * var(--piece-progress));
+  translate: 0 calc(1.1rem - 1.1rem * var(--piece-progress));
+  scale: calc(0.94 + 0.06 * var(--piece-progress));
+}
+
+.hero.scroll-scene .glass-plane-back {
+  --piece-progress: clamp(
+    0,
+    calc((var(--scene-progress) - 0.06) / 0.24),
+    1
+  );
+  opacity: calc(0.24 + 0.34 * var(--piece-progress));
+  translate: calc(2.8rem - 2.8rem * var(--piece-progress))
+    calc(-1.8rem + 1.8rem * var(--piece-progress));
+  scale: calc(0.84 + 0.16 * var(--piece-progress));
+}
+
+.hero.scroll-scene .shard-ui-top {
+  --piece-progress: clamp(0, calc((var(--scene-progress) - 0.1) / 0.2), 1);
+  opacity: calc(0.38 + 0.62 * var(--piece-progress));
+  translate: calc(2.4rem - 2.4rem * var(--piece-progress))
+    calc(-2.3rem + 2.3rem * var(--piece-progress));
+  scale: calc(0.82 + 0.18 * var(--piece-progress));
+}
+
+.hero.scroll-scene .glass-plane-left {
+  --piece-progress: clamp(
+    0,
+    calc((var(--scene-progress) - 0.14) / 0.24),
+    1
+  );
+  opacity: calc(0.3 + 0.5 * var(--piece-progress));
+  translate: calc(-3.3rem + 3.3rem * var(--piece-progress))
+    calc(1.8rem - 1.8rem * var(--piece-progress));
+  scale: calc(0.82 + 0.18 * var(--piece-progress));
+}
+
+.hero.scroll-scene .shard-ui-side {
+  --piece-progress: clamp(0, calc((var(--scene-progress) - 0.2) / 0.24), 1);
+  opacity: calc(0.38 + 0.62 * var(--piece-progress));
+  translate: calc(-2.5rem + 2.5rem * var(--piece-progress))
+    calc(1.8rem - 1.8rem * var(--piece-progress));
+  scale: calc(0.84 + 0.16 * var(--piece-progress));
+}
+
+.hero.scroll-scene .glass-plane-right {
+  --piece-progress: clamp(
+    0,
+    calc((var(--scene-progress) - 0.25) / 0.24),
+    1
+  );
+  opacity: calc(0.3 + 0.42 * var(--piece-progress));
+  translate: calc(3.2rem - 3.2rem * var(--piece-progress))
+    calc(1.6rem - 1.6rem * var(--piece-progress));
+  scale: calc(0.8 + 0.2 * var(--piece-progress));
+}
+
+.hero.scroll-scene .glass-chip {
+  --piece-progress: clamp(0, calc((var(--scene-progress) - 0.28) / 0.2), 1);
+  opacity: calc(0.34 + 0.66 * var(--piece-progress));
+  translate: calc(-2rem + 2rem * var(--piece-progress))
+    calc(-1.8rem + 1.8rem * var(--piece-progress));
+  scale: calc(0.78 + 0.22 * var(--piece-progress));
+}
+
+.hero.scroll-scene .shard-ui-bottom {
+  --piece-progress: clamp(0, calc((var(--scene-progress) - 0.32) / 0.2), 1);
+  opacity: calc(0.34 + 0.66 * var(--piece-progress));
+  translate: calc(2.4rem - 2.4rem * var(--piece-progress))
+    calc(2rem - 2rem * var(--piece-progress));
+  scale: calc(0.82 + 0.18 * var(--piece-progress));
+}
+
+.hero.scroll-scene .glass-shard {
+  --piece-progress: clamp(0, calc((var(--scene-progress) - 0.35) / 0.28), 1);
+  opacity: calc(0.3 + 0.7 * var(--piece-progress));
+  translate: calc(2rem - 2rem * var(--piece-progress))
+    calc(-1.4rem + 1.4rem * var(--piece-progress));
+  scale: calc(0.8 + 0.2 * var(--piece-progress));
+}
+
+.hero.scroll-scene .visual-crosshair {
+  --piece-progress: clamp(0, calc((var(--scene-progress) - 0.25) / 0.3), 1);
+  opacity: calc(0.3 + 0.7 * var(--piece-progress));
+  translate: calc(-1rem + 1rem * var(--piece-progress))
+    calc(1.2rem - 1.2rem * var(--piece-progress));
+}
+
 .hero-grid {
   position: absolute;
   z-index: -1;
@@ -945,7 +1213,6 @@ const resetPointer = () => {
   background-size: 6rem 6rem;
   mask-image: radial-gradient(ellipse at 72% 50%, black, transparent 67%);
   opacity: 0.48;
-  animation: grid-drift 22s linear infinite;
 }
 
 .hero-grain {
@@ -954,7 +1221,8 @@ const resetPointer = () => {
   inset: 0;
   pointer-events: none;
   opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+  background-image: radial-gradient(rgba(255, 255, 255, 0.22) 0.5px, transparent 0.5px);
+  background-size: 4px 4px;
 }
 
 .hero-halo {
@@ -965,7 +1233,6 @@ const resetPointer = () => {
   border: 1px solid rgba(232, 207, 133, 0.075);
   border-radius: 50%;
   pointer-events: none;
-  animation: halo-turn 18s linear infinite;
 }
 
 .halo-left {
@@ -1096,6 +1363,21 @@ const resetPointer = () => {
   }
 }
 
+@keyframes beam-sweep {
+  0%,
+  100% {
+    opacity: 0;
+    translate: -2rem 1.2rem;
+  }
+  28%,
+  68% {
+    opacity: 0.46;
+  }
+  50% {
+    translate: 2rem -1.1rem;
+  }
+}
+
 @keyframes orbit-float {
   0%,
   100% {
@@ -1208,64 +1490,6 @@ const resetPointer = () => {
   }
 }
 
-@keyframes hero-copy-exit {
-  to {
-    opacity: 0.08;
-    transform: translate3d(0, -16vh, 0);
-  }
-}
-
-@keyframes hero-visual-exit {
-  to {
-    opacity: 0.16;
-    transform: translate3d(7vw, -9vh, 0) scale(1.12);
-  }
-}
-
-@keyframes hero-grid-exit {
-  to {
-    opacity: 0;
-    transform: scale(1.08);
-  }
-}
-
-@keyframes scroll-index-fill {
-  from {
-    transform: scaleY(0.12);
-  }
-  to {
-    transform: scaleY(1);
-  }
-}
-
-@supports (animation-timeline: view()) {
-  @media (min-width: 769px) {
-    .hero-copy {
-      animation: hero-copy-exit linear both;
-      animation-timeline: view();
-      animation-range: exit 0% exit 100%;
-    }
-
-    .hero-visual-scroll {
-      animation: hero-visual-exit linear both;
-      animation-timeline: view();
-      animation-range: exit 0% exit 100%;
-    }
-
-    .hero-grid {
-      animation: grid-drift 22s linear infinite, hero-grid-exit linear both;
-      animation-timeline: auto, view();
-      animation-range: normal, exit 0% exit 100%;
-    }
-
-    .hero-scroll-index i {
-      animation: scroll-index-fill linear both;
-      animation-timeline: view();
-      animation-range: entry 0% exit 85%;
-    }
-  }
-}
-
 @media (min-width: 1536px) {
   .scroll-prompt {
     left: clamp(6rem, 7vw, 13.75rem);
@@ -1280,6 +1504,10 @@ const resetPointer = () => {
   .hero {
     min-height: auto;
     padding-bottom: 5.2rem;
+  }
+
+  .hero.scroll-scene .hero-stage {
+    padding: 7rem 0 2.5rem;
   }
 
   .hero-shell {
@@ -1312,6 +1540,10 @@ const resetPointer = () => {
     min-height: auto;
     padding-top: 7.7rem;
     padding-bottom: 2.4rem;
+  }
+
+  .hero.scroll-scene .hero-stage {
+    padding: 6.4rem 0 1.5rem;
   }
 
   .hero h1 {
@@ -1419,6 +1651,7 @@ const resetPointer = () => {
   .hero-visual::before,
   .hero-orbit,
   .visual-aura,
+  .visual-beam,
   .fracture-map,
   .hero-grid,
   .hero-halo,

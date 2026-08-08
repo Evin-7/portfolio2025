@@ -129,33 +129,11 @@ body {
 .content-shell > * {
   position: relative;
   z-index: 1;
-  animation: revealOnScroll 0.5s ease-out forwards;
-  opacity: 0;
-  animation-timeline: view();
-  animation-range: entry 0% cover 22%;
 }
 
 .content-shell > *:not(#home) {
   content-visibility: auto;
   contain-intrinsic-size: auto 700px;
-}
-
-.content-shell > #works {
-  animation: none;
-  filter: none;
-  opacity: 1;
-  transform: none;
-}
-
-@keyframes revealOnScroll {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -164,8 +142,6 @@ body {
   }
 
   .content-shell > * {
-    animation: none;
-    opacity: 1;
     transform: none;
   }
 }

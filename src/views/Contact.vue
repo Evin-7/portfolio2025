@@ -15,25 +15,6 @@
           >
             yjevin75@gmail.com
           </a>
-          <a
-            href="https://www.linkedin.com/feed/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="contact-link interactive"
-          >
-            LinkedIn
-          </a>
-          <a
-            href="https://github.com/Evin-7"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="contact-link interactive"
-          >
-            GitHub
-          </a>
-          <a href="tel:+917510255897" class="contact-link interactive">
-            +91 7510255897
-          </a>
         </div>
 
         <div v-if="messageText" class="message-display">
