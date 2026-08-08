@@ -12,6 +12,18 @@
     <div class="hero-halo halo-right" aria-hidden="true"></div>
 
     <div class="hero-stage">
+      <div class="scatter-field" aria-hidden="true">
+        <span class="scatter-particle particle-a"></span>
+        <span class="scatter-particle particle-b"></span>
+        <span class="scatter-particle particle-c"></span>
+        <span class="scatter-particle particle-d"></span>
+        <span class="scatter-particle particle-e"></span>
+        <span class="scatter-particle particle-f"></span>
+        <span class="scatter-particle particle-g"></span>
+        <span class="scatter-particle particle-h"></span>
+        <span class="scatter-particle particle-i"></span>
+      </div>
+
       <div class="hero-shell site-container">
         <div class="hero-copy">
           <p class="hero-eyebrow"><span></span>Product engineer / independent studio</p>
@@ -335,6 +347,158 @@ const resetPointer = () => {
 
 .hero-stage {
   position: relative;
+}
+
+.scatter-field {
+  display: none;
+}
+
+.hero.scroll-scene .scatter-field {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scatter-particle {
+  position: absolute;
+  display: block;
+  width: var(--particle-width, 2.6rem);
+  height: var(--particle-height, 1.6rem);
+  border: 1px solid rgba(242, 224, 161, 0.42);
+  clip-path: polygon(13% 0, 100% 17%, 81% 100%, 0 76%);
+  background: linear-gradient(
+    135deg,
+    rgba(246, 232, 185, 0.35),
+    rgba(185, 145, 62, 0.1) 55%,
+    rgba(255, 255, 255, 0.04)
+  );
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.26),
+    0 1.2rem 2.4rem rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
+  rotate: var(--particle-rotation, 0deg);
+}
+
+.scatter-particle::after {
+  position: absolute;
+  inset: 1px;
+  content: "";
+  background: linear-gradient(118deg, transparent 24%, rgba(255, 255, 255, 0.46), transparent 48%);
+  opacity: 0.62;
+}
+
+.hero.scroll-scene .scatter-particle {
+  --particle-progress: clamp(
+    0,
+    calc((var(--scene-progress) - var(--particle-start, 0)) / 0.58),
+    1
+  );
+  translate: calc(var(--travel-x) * var(--particle-progress))
+    calc(var(--travel-y) * var(--particle-progress));
+  scale: calc(1 - 0.45 * var(--particle-progress));
+  opacity: calc(0.9 - 0.75 * var(--particle-progress));
+  will-change: translate, scale, opacity;
+}
+
+.particle-a {
+  top: 9%;
+  left: 3.5%;
+  --particle-width: 3.2rem;
+  --particle-height: 1.5rem;
+  --particle-rotation: -21deg;
+  --travel-x: 63vw;
+  --travel-y: 30svh;
+  --particle-start: 0;
+}
+
+.particle-b {
+  top: 17%;
+  left: 30%;
+  --particle-width: 1.25rem;
+  --particle-height: 3.5rem;
+  --particle-rotation: 18deg;
+  --travel-x: 38vw;
+  --travel-y: 21svh;
+  --particle-start: 0.04;
+}
+
+.particle-c {
+  top: 56%;
+  left: 4%;
+  --particle-width: 2rem;
+  --particle-height: 2.8rem;
+  --particle-rotation: 28deg;
+  --travel-x: 61vw;
+  --travel-y: -14svh;
+  --particle-start: 0.08;
+}
+
+.particle-d {
+  right: 7%;
+  bottom: 12%;
+  --particle-width: 3.1rem;
+  --particle-height: 1.25rem;
+  --particle-rotation: -14deg;
+  --travel-x: -24vw;
+  --travel-y: -28svh;
+  --particle-start: 0.12;
+}
+
+.particle-e {
+  top: 78%;
+  left: 44%;
+  --particle-width: 1.45rem;
+  --particle-height: 3rem;
+  --particle-rotation: 32deg;
+  --travel-x: 25vw;
+  --travel-y: -26svh;
+  --particle-start: 0.02;
+}
+
+.particle-f {
+  top: 16%;
+  right: 5%;
+  --particle-width: 1.5rem;
+  --particle-height: 2.2rem;
+  --particle-rotation: -31deg;
+  --travel-x: -18vw;
+  --travel-y: 22svh;
+  --particle-start: 0.1;
+}
+
+.particle-g {
+  top: 48%;
+  right: 3%;
+  --particle-width: 2.7rem;
+  --particle-height: 1.2rem;
+  --particle-rotation: 16deg;
+  --travel-x: -23vw;
+  --travel-y: 0svh;
+  --particle-start: 0.06;
+}
+
+.particle-h {
+  top: 7%;
+  left: 59%;
+  --particle-width: 2.2rem;
+  --particle-height: 1.1rem;
+  --particle-rotation: 25deg;
+  --travel-x: 11vw;
+  --travel-y: 32svh;
+  --particle-start: 0.14;
+}
+
+.particle-i {
+  top: 72%;
+  left: 8%;
+  --particle-width: 1.1rem;
+  --particle-height: 1.1rem;
+  --particle-rotation: -18deg;
+  --travel-x: 60vw;
+  --travel-y: -24svh;
+  --particle-start: 0.1;
 }
 
 .hero.scroll-scene {
