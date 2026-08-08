@@ -37,8 +37,6 @@
           </p>
 
           <div class="hero-signal-row" aria-label="Current availability">
-            <span class="hero-availability"><i></i> Open for focused builds</span>
-            <span class="hero-signal-code">Web / Mobile / Systems</span>
           </div>
 
           <div class="hero-actions">
@@ -71,14 +69,6 @@
             <div class="visual-aura"></div>
             <div class="visual-beam visual-beam-one"></div>
             <div class="visual-beam visual-beam-two"></div>
-            <div class="hero-orbit orbit-one">
-              <span class="orbit-dot"></span>
-              <span>Build signal</span>
-              <strong>01</strong>
-            </div>
-            <div class="hero-orbit orbit-two">
-              <span>Web · Mobile · Product</span>
-            </div>
             <div class="visual-system">
               <svg
                 class="fracture-map"
@@ -103,12 +93,12 @@
 
               <div class="shard-ui shard-ui-main">
                 <div class="panel-topline">
-                  <span>01 / Build</span>
+                  <span>Build</span>
                   <span class="panel-live"><i></i> Live</span>
                 </div>
                 <div class="panel-main">
-                  <p>Make it clear.</p>
-                  <h2>Ideas into impact.</h2>
+                  <p>Clear.</p>
+                  <h2>Ship it.</h2>
                   <div class="panel-rule"></div>
                   <div class="panel-stats">
                     <div><span>Design</span><strong>Clear</strong></div>
@@ -131,10 +121,8 @@
 
               <div class="shard-ui shard-ui-bottom">
                 <span>From idea</span>
-                <strong>to shipped.</strong>
               </div>
 
-              <div class="glass-chip chip-index">2026</div>
               <div class="glass-shard shard-top"></div>
               <div class="glass-shard shard-bottom"></div>
               <div class="visual-crosshair crosshair-top"></div>
@@ -341,7 +329,7 @@ const resetPointer = () => {
   padding: clamp(8.2rem, 12vw, 10.5rem) 0 4rem;
   background:
     radial-gradient(circle at 75% 49%, rgba(226, 193, 106, 0.12), transparent 19rem),
-    radial-gradient(circle at 4% 98%, rgba(124, 87, 21, 0.22), transparent 26rem),
+    radial-gradient(circle at 4% 98%, rgba(124, 87, 21, 0.08), transparent 18rem),
     linear-gradient(122deg, #060706 0%, #0a0b0a 46%, #11110f 100%);
 }
 
@@ -367,16 +355,16 @@ const resetPointer = () => {
   display: block;
   width: var(--particle-width, 2.6rem);
   height: var(--particle-height, 1.6rem);
-  border: 1px solid rgba(242, 224, 161, 0.42);
+  border: 1px solid rgba(242, 224, 161, 0.26);
   clip-path: polygon(13% 0, 100% 17%, 81% 100%, 0 76%);
   background: linear-gradient(
     135deg,
-    rgba(246, 232, 185, 0.35),
-    rgba(185, 145, 62, 0.1) 55%,
+    rgba(246, 232, 185, 0.22),
+    rgba(185, 145, 62, 0.06) 55%,
     rgba(255, 255, 255, 0.04)
   );
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.26),
-    0 1.2rem 2.4rem rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.15),
+    0 1rem 2rem rgba(0, 0, 0, 0.15);
   opacity: 0.9;
   rotate: var(--particle-rotation, 0deg);
 }
@@ -385,8 +373,8 @@ const resetPointer = () => {
   position: absolute;
   inset: 1px;
   content: "";
-  background: linear-gradient(118deg, transparent 24%, rgba(255, 255, 255, 0.46), transparent 48%);
-  opacity: 0.62;
+  background: linear-gradient(118deg, transparent 24%, rgba(255, 255, 255, 0.24), transparent 48%);
+  opacity: 0.45;
 }
 
 .hero.scroll-scene .scatter-particle {
@@ -397,8 +385,8 @@ const resetPointer = () => {
   );
   translate: calc(var(--travel-x) * var(--particle-progress))
     calc(var(--travel-y) * var(--particle-progress));
-  scale: calc(1 - 0.45 * var(--particle-progress));
-  opacity: calc(0.9 - 0.75 * var(--particle-progress));
+  scale: calc(1 - 0.22 * var(--particle-progress));
+  opacity: calc(0.9 - 0.24 * var(--particle-progress));
   will-change: translate, scale, opacity;
 }
 
@@ -906,9 +894,9 @@ const resetPointer = () => {
 .glass-chip {
   position: absolute;
   overflow: hidden;
-  border: 1px solid rgba(255, 249, 227, 0.18);
-  background: linear-gradient(125deg, rgba(255, 255, 255, 0.19), rgba(255, 255, 255, 0.025) 45%, rgba(231, 191, 95, 0.08));
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.18), 0 2.2rem 4.7rem rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 249, 227, 0.12);
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 45%, rgba(231, 191, 95, 0.04));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 1.2rem 2.8rem rgba(0, 0, 0, 0.18);
 }
 
 .glass-plane::after,
@@ -922,8 +910,8 @@ const resetPointer = () => {
 .glass-plane::after,
 .glass-shard::after {
   inset: 0;
-  background: linear-gradient(118deg, transparent 21%, rgba(255, 255, 255, 0.21) 36%, transparent 51%);
-  opacity: 0.7;
+  background: linear-gradient(118deg, transparent 21%, rgba(255, 255, 255, 0.1) 36%, transparent 51%);
+  opacity: 0.4;
 }
 
 .glass-plane-back {
@@ -967,10 +955,10 @@ const resetPointer = () => {
   inset: 0;
   background: linear-gradient(
     120deg,
-    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.08),
     transparent 28%,
     transparent 70%,
-    rgba(239, 211, 131, 0.08)
+    rgba(239, 211, 131, 0.04)
   );
 }
 
