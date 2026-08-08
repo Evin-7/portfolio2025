@@ -12,15 +12,20 @@
 
     <div class="hero-shell site-container">
       <div class="hero-copy">
-        <p class="hero-eyebrow"><span></span>Independent software engineer</p>
+        <p class="hero-eyebrow"><span></span>Product engineer / independent studio</p>
         <h1>
-          <span class="hero-title-line">Products that stay</span>
-          <em class="hero-title-line">sharp under pressure.</em>
+          <span class="hero-title-line">Build with intent.</span>
+          <em class="hero-title-line">Ship with staying power.</em>
         </h1>
         <p class="hero-intro">
-          I turn complex product ideas into thoughtful web experiences and
-          dependable software systems.
+          I turn complex product ideas into clear interfaces, reliable systems,
+          and digital experiences people want to return to.
         </p>
+
+        <div class="hero-signal-row" aria-label="Current availability">
+          <span class="hero-availability"><i></i> Open for focused builds</span>
+          <span class="hero-signal-code">Web / Mobile / Systems</span>
+        </div>
 
         <div class="hero-actions">
           <a class="hero-button hero-button-primary interactive" href="#works">
@@ -34,15 +39,15 @@
         <div class="hero-meta" aria-label="Professional focus">
           <div>
             <strong>01</strong>
-            <span>Web platforms</span>
+            <span>Product thinking</span>
           </div>
           <div>
             <strong>02</strong>
-            <span>Product systems</span>
+            <span>Interface systems</span>
           </div>
           <div>
             <strong>03</strong>
-            <span>Focused delivery</span>
+            <span>Reliable delivery</span>
           </div>
         </div>
       </div>
@@ -50,6 +55,14 @@
       <div class="hero-visual-scroll">
         <div class="hero-visual" aria-hidden="true">
           <div class="visual-aura"></div>
+          <div class="hero-orbit orbit-one">
+            <span class="orbit-dot"></span>
+            <span>Build signal</span>
+            <strong>01</strong>
+          </div>
+          <div class="hero-orbit orbit-two">
+            <span>Web · Mobile · Product</span>
+          </div>
           <div class="visual-system">
           <svg
             class="fracture-map"
@@ -74,24 +87,24 @@
 
           <div class="shard-ui shard-ui-main">
             <div class="panel-topline">
-              <span>01 / Selected build</span>
-              <span class="panel-live"><i></i> Live systems</span>
+              <span>01 / Build</span>
+              <span class="panel-live"><i></i> Live</span>
             </div>
             <div class="panel-main">
-              <p>Build clarity.</p>
-              <h2>Thoughtful interfaces for ambitious ideas.</h2>
+              <p>Make it clear.</p>
+              <h2>Ideas into impact.</h2>
               <div class="panel-rule"></div>
               <div class="panel-stats">
-                <div><span>Design</span><strong>Intent</strong></div>
-                <div><span>Code</span><strong>Structure</strong></div>
+                <div><span>Design</span><strong>Clear</strong></div>
+                <div><span>Code</span><strong>Solid</strong></div>
               </div>
             </div>
           </div>
 
           <div class="shard-ui shard-ui-top">
-            <span class="shard-label">System / 07</span>
-            <strong>Break the ordinary.</strong>
-            <span class="shard-detail">Sharp ideas, structured well.</span>
+            <span class="shard-label">System</span>
+            <strong>Make it clear.</strong>
+            <span class="shard-detail">Built to last.</span>
           </div>
 
           <div class="shard-ui shard-ui-side">
@@ -101,8 +114,8 @@
           </div>
 
           <div class="shard-ui shard-ui-bottom">
-            <span>From concept</span>
-            <strong>to impact.</strong>
+            <span>From idea</span>
+            <strong>to shipped.</strong>
           </div>
 
             <div class="glass-chip chip-index">2026</div>
@@ -147,6 +160,8 @@ const handlePointerMove = (event) => {
   const pointerX = (event.clientX - rect.left) / rect.width - 0.5;
   const pointerY = (event.clientY - rect.top) / rect.height - 0.5;
 
+  hero.value.style.setProperty("--pointer-x", `${(pointerX + 0.5) * 100}%`);
+  hero.value.style.setProperty("--pointer-y", `${(pointerY + 0.5) * 100}%`);
   hero.value.style.setProperty("--visual-x", `${pointerX * 12}px`);
   hero.value.style.setProperty("--visual-y", `${pointerY * 10}px`);
   hero.value.style.setProperty("--visual-rotate-x", `${pointerY * -4}deg`);
@@ -156,6 +171,8 @@ const handlePointerMove = (event) => {
 const resetPointer = () => {
   if (!hero.value) return;
 
+  hero.value.style.setProperty("--pointer-x", "50%");
+  hero.value.style.setProperty("--pointer-y", "50%");
   hero.value.style.setProperty("--visual-x", "0px");
   hero.value.style.setProperty("--visual-y", "0px");
   hero.value.style.setProperty("--visual-rotate-x", "0deg");
@@ -165,6 +182,8 @@ const resetPointer = () => {
 
 <style scoped>
 .hero {
+  --pointer-x: 50%;
+  --pointer-y: 50%;
   --visual-x: 0px;
   --visual-y: 0px;
   --visual-rotate-x: 0deg;
@@ -190,7 +209,9 @@ const resetPointer = () => {
 
 .hero::before {
   inset: 0;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background:
+    radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(229, 203, 125, 0.11), transparent 19rem),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
   background-size: min(25vw, 24rem) 100%;
   opacity: 0.35;
   mask-image: linear-gradient(90deg, black, transparent 84%);
@@ -216,6 +237,7 @@ const resetPointer = () => {
 .hero-copy {
   position: relative;
   z-index: 2;
+  top: clamp(1rem, 2.5vw, 2.25rem);
   max-width: 43rem;
 }
 
@@ -244,10 +266,10 @@ const resetPointer = () => {
 }
 
 .hero h1 {
-  max-width: 9.6ch;
+  max-width: 11.6ch;
   margin-top: 1.25rem;
   color: #f6f5f1;
-  font-size: clamp(3.25rem, 6.05vw, 6.15rem);
+  font-size: clamp(2.9rem, 5.2vw, 5.35rem);
   font-weight: 600;
   letter-spacing: -0.078em;
   line-height: 0.91;
@@ -277,6 +299,44 @@ const resetPointer = () => {
   font-size: clamp(0.95rem, 1.1vw, 1.06rem);
   line-height: 1.75;
   animation: soft-rise 720ms cubic-bezier(0.2, 0.75, 0.2, 1) 380ms both;
+}
+
+.hero-signal-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem 1.1rem;
+  margin-top: 1.2rem;
+  color: #8e8b82;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  animation: soft-rise 720ms cubic-bezier(0.2, 0.75, 0.2, 1) 420ms both;
+}
+
+.hero-availability,
+.hero-signal-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.hero-availability {
+  color: #d8c47e;
+}
+
+.hero-availability i {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: #d8c47e;
+  box-shadow: 0 0 0 0.24rem rgba(216, 196, 126, 0.1), 0 0 0.7rem rgba(216, 196, 126, 0.6);
+  animation: orbit-pulse 2.6s ease-in-out infinite;
+}
+
+.hero-signal-code {
+  color: #77756e;
 }
 
 .hero-actions {
@@ -392,6 +452,19 @@ const resetPointer = () => {
   pointer-events: none;
 }
 
+.hero-visual::before {
+  position: absolute;
+  z-index: 0;
+  inset: 11% 8% 8% 4%;
+  content: "";
+  border: 1px solid rgba(233, 210, 142, 0.08);
+  clip-path: polygon(5% 12%, 76% 0, 100% 42%, 78% 100%, 0 82%);
+  opacity: 0.7;
+  transform: rotate(4deg);
+  animation: visual-frame 13s ease-in-out infinite reverse;
+  pointer-events: none;
+}
+
 .visual-aura {
   position: absolute;
   inset: 8% -16% 0 -12%;
@@ -400,6 +473,56 @@ const resetPointer = () => {
   filter: blur(4px);
   opacity: 0.8;
   animation: aura-breathe 7s ease-in-out infinite;
+}
+
+.hero-orbit {
+  position: absolute;
+  z-index: 8;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.72rem 0.85rem;
+  border: 1px solid rgba(239, 216, 146, 0.2);
+  border-radius: 999px;
+  color: rgba(239, 231, 206, 0.78);
+  background: rgba(22, 22, 18, 0.42);
+  box-shadow: 0 1rem 2.8rem rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.hero-orbit strong {
+  color: var(--gold-light);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.58rem;
+}
+
+.orbit-one {
+  top: 13%;
+  left: -1%;
+  animation: orbit-float 6.5s ease-in-out infinite;
+}
+
+.orbit-two {
+  right: 1%;
+  bottom: 8%;
+  color: rgba(226, 215, 184, 0.6);
+  animation: orbit-float 7.5s ease-in-out -2.1s infinite reverse;
+}
+
+.orbit-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: #e8cf83;
+  box-shadow: 0 0 0 0.28rem rgba(232, 207, 131, 0.11), 0 0 1rem rgba(232, 207, 131, 0.72);
+  animation: orbit-pulse 2.6s ease-in-out infinite;
 }
 
 .visual-system {
@@ -947,6 +1070,18 @@ const resetPointer = () => {
   }
 }
 
+@keyframes visual-frame {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: rotate(4deg) scale(0.97);
+  }
+  50% {
+    opacity: 0.72;
+    transform: rotate(1deg) scale(1.015);
+  }
+}
+
 @keyframes glint {
   15%,
   100% {
@@ -958,6 +1093,23 @@ const resetPointer = () => {
   50% {
     opacity: 1;
     transform: scale(1.09);
+  }
+}
+
+@keyframes orbit-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-2deg);
+  }
+  50% {
+    transform: translate3d(0.35rem, -0.5rem, 0) rotate(1deg);
+  }
+}
+
+@keyframes orbit-pulse {
+  50% {
+    opacity: 0.5;
+    transform: scale(0.78);
   }
 }
 
@@ -1136,6 +1288,7 @@ const resetPointer = () => {
   }
 
   .hero-copy {
+    top: 0;
     max-width: 42rem;
   }
 
@@ -1162,8 +1315,8 @@ const resetPointer = () => {
   }
 
   .hero h1 {
-    max-width: 9.4ch;
-    font-size: clamp(3.1rem, 15vw, 4.15rem);
+    max-width: 12.5ch;
+    font-size: clamp(2.75rem, 12vw, 3.75rem);
   }
 
   .hero-intro {
@@ -1235,6 +1388,10 @@ const resetPointer = () => {
     display: none;
   }
 
+  .orbit-two {
+    display: none;
+  }
+
   .chip-index {
     top: 4%;
     left: 2%;
@@ -1255,9 +1412,12 @@ const resetPointer = () => {
   .hero-eyebrow,
   .hero-title-line,
   .hero-intro,
+  .hero-signal-row,
   .hero-actions,
   .hero-meta,
   .hero-visual,
+  .hero-visual::before,
+  .hero-orbit,
   .visual-aura,
   .fracture-map,
   .hero-grid,

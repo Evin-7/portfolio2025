@@ -12,62 +12,84 @@
         </div>
       </div>
 
-      <div class="works-grid">
-        <a
-          v-for="(work, index) in works"
-          :key="work.name"
-          :href="work.link"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="work-card interactive"
-          :style="{ '--reveal-delay': `${index * 55}ms` }"
-          @pointerenter="handleEnter"
-          @pointermove="handleMove"
-          @pointerleave="resetMove"
-        >
-          <div class="work-card-inner">
-            <div class="work-copy">
-              <p class="work-kicker">
-                <span>{{ formatIndex(index) }}</span>{{ work.kicker }}
-              </p>
-              <h3 class="work-title">{{ work.name }}</h3>
-            </div>
-
-            <div class="work-media">
-              <div class="laptop-frame">
-                <div class="laptop-screen-shell">
-                  <div class="laptop-topbar">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </div>
-                  <div class="laptop-camera"></div>
-                  <img
-                    :src="work.image"
-                    :alt="work.name"
-                    class="work-image"
-                    decoding="async"
-                    loading="lazy"
-                  />
-                </div>
-                <div class="laptop-base">
-                  <div class="laptop-trackpad"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="work-footer">
-              <div class="work-meta">
-                <span>{{ work.focus }}</span>
-                <span>{{ work.year }}</span>
-              </div>
-              <div class="work-cta">
-                <span>Explore</span>
-                <strong>↗</strong>
-              </div>
-            </div>
+      <div
+        v-for="group in workGroups"
+        :key="group.key"
+        class="works-group"
+      >
+        <div class="works-group-heading">
+          <div>
+            <p class="works-group-eyebrow">{{ group.eyebrow }}</p>
+            <h3>{{ group.title }}</h3>
           </div>
-        </a>
+          <p>{{ group.description }}</p>
+        </div>
+
+        <div class="works-grid">
+          <article
+            v-for="(work, index) in group.items"
+            :key="work.name"
+            class="work-card interactive"
+            :style="{ '--reveal-delay': `${index * 55}ms` }"
+            @pointerenter="handleEnter"
+            @pointermove="handleMove"
+            @pointerleave="resetMove"
+          >
+            <div class="work-card-inner">
+              <div class="work-copy">
+                <p class="work-kicker">
+                  <span>{{ formatIndex(index) }}</span>{{ work.kicker }}
+                </p>
+                <h3 class="work-title">{{ work.name }}</h3>
+              </div>
+
+              <div class="work-media">
+                <div class="laptop-frame">
+                  <div class="laptop-screen-shell">
+                    <div class="laptop-topbar">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                    <div class="laptop-camera"></div>
+                    <img
+                      :src="work.image"
+                      :alt="work.name"
+                      class="work-image"
+                      width="1536"
+                      height="1024"
+                      decoding="async"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="laptop-base">
+                    <div class="laptop-trackpad"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="work-footer">
+                <div class="work-meta">
+                  <span>{{ work.focus }}</span>
+                  <span>{{ work.year }}</span>
+                </div>
+                <div class="work-links">
+                  <a
+                    v-for="link in work.links"
+                    :key="link.href"
+                    :href="link.href"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="work-cta"
+                  >
+                    <span>{{ link.label }}</span>
+                    <strong>↗</strong>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
       </div>
     </div>
   </section>
@@ -187,65 +209,9 @@ onUnmounted(() => {
 
 const works = [
   {
-    name: "Elate HRMS",
-    link: "https://hrms.ae/",
-    image: new URL("../assets/images/hrms.ae.webp", import.meta.url).href,
-    description:
-      "AI-powered HRMS platform for UAE businesses, covering payroll, leave, recruitment, and attendance.",
-    kicker: "HRMS Platform",
-    year: "2026",
-    focus: "Human Resources",
-    tags: ["HRMS", "Payroll", "SaaS"],
-  },
-  {
-    name: "Elate HRMS UAE",
-    link: "https://elatehrms.com/",
-    image: new URL("../assets/images/elatehrms.com.webp", import.meta.url).href,
-    description:
-      "UAE-focused HR software bringing employee records, workflows, and payroll into one organized system.",
-    kicker: "Business Platform",
-    year: "2026",
-    focus: "HR Operations",
-    tags: ["UAE", "HR", "Workflows"],
-  },
-  {
-    name: "Elate Time",
-    link: "https://elatetime.com/",
-    image: new URL("../assets/images/elatetime.com.webp", import.meta.url).href,
-    description:
-      "Attendance and leave management experience for teams across web, mobile, and biometric devices.",
-    kicker: "Attendance Platform",
-    year: "2026",
-    focus: "Workforce Time",
-    tags: ["Attendance", "Mobile", "Analytics"],
-  },
-  {
-    name: "Elate Time Portal",
-    link: "https://app.elatetime.com/login?next=%2F",
-    image: new URL("../assets/images/app.elatetime.webp", import.meta.url).href,
-    description:
-      "Sign-in portal for employee attendance, leave, and workforce-time management.",
-    kicker: "Employee Portal",
-    year: "2026",
-    focus: "Time Tracking",
-    tags: ["Portal", "Attendance", "Employees"],
-  },
-  {
-    name: "Elate HRMS Dashboard",
-    link: "https://app.elatehrms.com/dashboard",
-    image: new URL("../assets/images/app.elatehrms.com.webp", import.meta.url)
-      .href,
-    description:
-      "Operations workspace for recruitment, onboarding, employee records, payroll, and HR reporting.",
-    kicker: "Admin Dashboard",
-    year: "2026",
-    focus: "HR Operations",
-    tags: ["Dashboard", "Employees", "Payroll"],
-  },
-  {
-    name: "Abez Auto",
-    link: "https://abezauto.com/",
-    image: new URL("../assets/images/abezauto.com.webp", import.meta.url).href,
+    name: "AbeZauto",
+    links: [{ label: "Visit site", href: "https://abezauto.com/" }],
+    image: new URL("../assets/images/abezauto.webp", import.meta.url).href,
     description:
       "Premium auto-parts storefront with vehicle-specific discovery, products, and conversion kits.",
     kicker: "E-commerce Platform",
@@ -254,54 +220,98 @@ const works = [
     tags: ["E-commerce", "Automotive", "Search"],
   },
   {
-    name: "Peniel Tech",
-    link: "https://www.penieltech.com/",
-    image: new URL("../assets/images/penieltech-shot.webp", import.meta.url)
-      .href,
+    name: "AGSYBA",
+    links: [{ label: "Visit site", href: "https://agsyba.com/" }],
+    image: new URL("../assets/images/agsyba.webp", import.meta.url).href,
     description:
-      "Corporate site for IT products and solution architecture with a clearer trust-building story.",
-    kicker: "Flagship Website",
+      "Modern fashion e-commerce experience built around curated collections and easy shopping.",
+    kicker: "E-commerce Website",
     year: "2026",
-    focus: "Company Platform",
-    tags: ["Frontend", "Brand", "Responsive"],
+    focus: "Fashion Store",
+    tags: ["E-commerce", "Fashion", "Responsive"],
   },
   {
-    name: "Mezeh App",
-    link: "https://mezeh.com/",
-    image: new URL("../assets/images/mezehapp.webp", import.meta.url).href,
+    name: "Call2Day",
+    links: [{ label: "Visit site", href: "https://call2day.com/" }],
+    image: new URL("../assets/images/call2day.webp", import.meta.url).href,
     description:
-      "Delivery-led experience with stronger product framing and mobile-first commerce flows.",
-    kicker: "Product UI",
-    year: "2025",
-    focus: "Consumer App",
-    tags: ["Product", "Ordering", "Mobile"],
+      "Reliable home-services website designed to make service discovery and booking feel effortless.",
+    kicker: "Service Website",
+    year: "2026",
+    focus: "Home Services",
+    tags: ["Services", "Booking", "Responsive"],
   },
   {
-    name: "Oh Yes World",
-    link: "https://ohyesworld.com/",
-    image: new URL("../assets/images/ohyesworld.webp", import.meta.url).href,
+    name: "Elate HRMS App",
+    type: "mobile",
+    links: [
+      {
+        label: "Google Play",
+        href: "https://play.google.com/store/apps/details?id=com.penieltech.elatehrmsconnect",
+      },
+    ],
+    image: new URL("../assets/images/elatehrmsapp.webp", import.meta.url).href,
     description:
-      "Service-led business site with a cleaner narrative rhythm and polished premium feel.",
-    kicker: "Business Website",
-    year: "2025",
-    focus: "Marketing Site",
-    tags: ["Brand", "Service", "CMS"],
+      "Mobile HR companion for leave, attendance, employee profiles, and connected workplace communication.",
+    kicker: "Mobile Product",
+    year: "2026",
+    focus: "HR & Communication",
+    tags: ["Mobile", "HRMS", "Communication"],
   },
   {
-    name: "Home Maintenance",
-    link: "https://homemaintenance.ohyesworld.com/",
+    name: "Elate HRMS",
+    links: [{ label: "Visit site", href: "https://elatehrms.com/" }],
+    image: new URL("../assets/images/elatehrmscom.webp", import.meta.url).href,
+    description:
+      "AI-powered HRMS platform bringing payroll, attendance, recruitment, and employee management together.",
+    kicker: "Business Platform",
+    year: "2026",
+    focus: "HR Operations",
+    tags: ["HRMS", "Payroll", "SaaS"],
+  },
+  {
+    name: "Elate Chat",
+    type: "mobile",
+    links: [
+      {
+        label: "Google Play",
+        href: "https://play.google.com/store/apps/details?id=com.binsonsamuel.elatechat",
+      },
+    ],
+    image: new URL("../assets/images/elatechatapp.webp", import.meta.url).href,
+    description:
+      "Community messaging product for focused conversations, real-time updates, and smart notifications.",
+    kicker: "Communication App",
+    year: "2026",
+    focus: "Community Product",
+    tags: ["Mobile", "Messaging", "Community"],
+  },
+  {
+    name: "Elate Time",
+    links: [{ label: "Visit site", href: "https://elatetime.com/" }],
+    image: new URL("../assets/images/elatetimecom.webp", import.meta.url).href,
+    description:
+      "Attendance and leave management experience for teams across web, mobile, and biometric devices.",
+    kicker: "Attendance Platform",
+    year: "2026",
+    focus: "Workforce Time",
+    tags: ["Attendance", "Mobile", "Analytics"],
+  },
+  {
+    name: "Oh Yes Home Maintenance",
+    links: [{ label: "Visit site", href: "https://homemaintenance.ohyesworld.com/" }],
     image: new URL("../assets/images/homemaintaince.webp", import.meta.url).href,
     description:
       "Conversion-focused service website built for clarity, trust, and quick decision making.",
     kicker: "Service Platform",
-    year: "2025",
+    year: "2026",
     focus: "Lead Generation",
     tags: ["Services", "Conversion", "UI"],
   },
   {
     name: "Mezeh Catering",
-    link: "https://catering.mezeh.com/",
-    image: new URL("../assets/images/mezehcat.webp", import.meta.url).href,
+    links: [{ label: "Visit site", href: "https://catering.mezeh.com/" }],
+    image: new URL("../assets/images/mezehcateting.webp", import.meta.url).href,
     description:
       "Ordering experience for large-format catering with cleaner customer journey framing.",
     kicker: "Food Platform",
@@ -311,8 +321,13 @@ const works = [
   },
   {
     name: "Mezeh Frontend",
-    link: "https://mezeh-frontend-production.azurewebsites.net/",
-    image: new URL("../assets/images/mezehmeal.webp", import.meta.url).href,
+    links: [
+      {
+        label: "Visit site",
+        href: "https://mezeh-frontend-production.azurewebsites.net/",
+      },
+    ],
+    image: new URL("../assets/images/mezehfrontend.webp", import.meta.url).href,
     description:
       "Branded customer-facing frontend with consistent product hierarchy and browsing flow.",
     kicker: "Frontend System",
@@ -321,43 +336,30 @@ const works = [
     tags: ["Frontend", "UI", "Brand"],
   },
   {
-    name: "Access Rooms",
-    link: "https://accessrooms.com/",
-    image: new URL("../assets/images/9-min.webp", import.meta.url).href,
+    name: "Mezeh Mobile App",
+    type: "mobile",
+    links: [
+      {
+        label: "Google Play",
+        href: "https://play.google.com/store/apps/details?id=com.mezeh.MezehApp&hl=en_IN",
+      },
+      {
+        label: "App Store",
+        href: "https://apps.apple.com/us/app/mezeh-mediterranean-grill/id6747373231",
+      },
+    ],
+    image: new URL("../assets/images/mezehmobileapp.webp", import.meta.url).href,
     description:
-      "Booking experience with a lighter layout and hospitality-first browsing cues.",
-    kicker: "Travel Product",
-    year: "2024",
-    focus: "Booking Site",
-    tags: ["Travel", "Booking", "Responsive"],
-  },
-  {
-    name: "Periyar Tiger Reserve",
-    link: "https://www.periyartigerreserve.org/",
-    image: new URL("../assets/images/6-min.webp", import.meta.url).href,
-    description:
-      "Destination website shaped around discoverability, scenic storytelling, and simple navigation.",
-    kicker: "Tourism Website",
-    year: "2024",
-    focus: "Information Design",
-    tags: ["Tourism", "Content", "UI"],
-  },
-  {
-    name: "St George CSI Church",
-    link: "https://stgeorgecsichurchofficial.com/",
-    image: new URL("../assets/images/stgeorgecsichurch.webp", import.meta.url)
-      .href,
-    description:
-      "Church website focused on clarity, community updates, and a more welcoming information flow.",
-    kicker: "Community Website",
+      "Mobile ordering experience for group orders, rewards, nutrition, gifting, and personalized meals.",
+    kicker: "Product UI",
     year: "2025",
-    focus: "Information Design",
-    tags: ["Community", "Content", "UI"],
+    focus: "Consumer App",
+    tags: ["Product", "Ordering", "Mobile"],
   },
   {
     name: "Mudumalai Tiger Reserve",
-    link: "https://www.mudumalaitigerreserve.com/",
-    image: new URL("../assets/images/mudumalai.webp", import.meta.url).href,
+    links: [{ label: "Visit site", href: "https://www.mudumalaitigerreserve.com/" }],
+    image: new URL("../assets/images/mudumaialia.webp", import.meta.url).href,
     description:
       "Wildlife destination site designed around scenic storytelling and easier visitor exploration.",
     kicker: "Tourism Website",
@@ -366,8 +368,19 @@ const works = [
     tags: ["Tourism", "Wildlife", "Responsive"],
   },
   {
+    name: "Oh Yes World",
+    links: [{ label: "Visit site", href: "https://ohyesworld.com/" }],
+    image: new URL("../assets/images/ohyescom.webp", import.meta.url).href,
+    description:
+      "Service-led business site with a clearer narrative rhythm and polished premium feel.",
+    kicker: "Business Website",
+    year: "2025",
+    focus: "Marketing Site",
+    tags: ["Brand", "Service", "CMS"],
+  },
+  {
     name: "Parambikulam Tiger Reserve",
-    link: "https://parambikulam.org/",
+    links: [{ label: "Visit site", href: "https://parambikulam.org/" }],
     image: new URL("../assets/images/parambikulam.webp", import.meta.url).href,
     description:
       "Destination platform shaped for discoverability, bookings, and clearer content hierarchy.",
@@ -377,15 +390,45 @@ const works = [
     tags: ["Tourism", "Booking", "Content"],
   },
   {
-    name: "Admin Panel - Whale Shark",
-    link: "https://whaleshark.leopardtechlabs.com",
-    image: new URL("../assets/images/2-min.webp", import.meta.url).href,
+    name: "Peniel Tech",
+    links: [{ label: "Visit site", href: "https://www.penieltech.com/" }],
+    image: new URL("../assets/images/penieltech.webp", import.meta.url).href,
     description:
-      "Operations dashboard designed around fast scanning, clearer metrics, and admin workflows.",
-    kicker: "Dashboard",
+      "Corporate site for IT products and solution architecture with a clearer trust-building story.",
+    kicker: "Flagship Website",
+    year: "2025",
+    focus: "Company Platform",
+    tags: ["Frontend", "Brand", "Responsive"],
+  },
+  {
+    name: "Periyar Tiger Reserve",
+    links: [{ label: "Visit site", href: "https://www.periyartigerreserve.org/" }],
+    image: new URL("../assets/images/periyartigerreserve.webp", import.meta.url).href,
+    description:
+      "Destination website shaped around discoverability, scenic storytelling, and simple navigation.",
+    kicker: "Tourism Website",
     year: "2024",
-    focus: "Admin System",
-    tags: ["Dashboard", "Ops", "Data"],
+    focus: "Information Design",
+    tags: ["Tourism", "Content", "UI"],
+  },
+];
+
+const workGroups = [
+  {
+    key: "websites",
+    eyebrow: "Websites & platforms",
+    title: "Digital spaces built to perform.",
+    description:
+      "Web products, business platforms, and experiences made for the real world.",
+    items: works.filter((work) => work.type !== "mobile"),
+  },
+  {
+    key: "mobile",
+    eyebrow: "Mobile products",
+    title: "Useful everywhere.",
+    description:
+      "Clear, dependable app experiences.",
+    items: works.filter((work) => work.type === "mobile"),
   },
 ];
 </script>
@@ -437,6 +480,44 @@ const works = [
   display: block;
   margin-bottom: 2.2rem;
   animation: slideInUp 0.8s ease-out 0.2s both;
+}
+
+.works-group + .works-group {
+  margin-top: clamp(3.4rem, 7vw, 6rem);
+}
+
+.works-group-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.16);
+}
+
+.works-group-heading h3 {
+  margin-top: 0.4rem;
+  color: var(--text-primary);
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.055em;
+}
+
+.works-group-heading > p {
+  max-width: 30ch;
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  line-height: 1.55;
+  text-align: right;
+}
+
+.works-group-eyebrow {
+  color: var(--gold);
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
 }
 
 @keyframes slideInUp {
@@ -584,6 +665,14 @@ const works = [
   align-items: center;
   justify-content: space-between;
   gap: 0.8rem;
+}
+
+.work-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  margin-left: auto;
 }
 
 .work-meta {
@@ -750,15 +839,21 @@ const works = [
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  margin-left: auto;
+  margin-left: 0;
   padding: 0.55rem 0.75rem;
   border-radius: 14px;
   background: rgba(212, 175, 55, 0.1);
   border: 1px solid var(--gold-border);
   color: var(--gold);
+  text-decoration: none;
   transition: all 0.3s ease;
   font-weight: 600;
   transform: translateZ(24px);
+}
+
+.work-cta:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 3px;
 }
 
 .work-cta span,
@@ -857,6 +952,15 @@ const works = [
   .works-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+
+  .works-group-heading {
+    display: block;
+  }
+
+  .works-group-heading > p {
+    margin-top: 0.65rem;
+    text-align: left;
   }
 
   .work-card-inner {

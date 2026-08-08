@@ -10,7 +10,11 @@
           <span>Email</span>
         </a>
         <a href="https://github.com/Evin-7" target="_blank" rel="noopener noreferrer" class="footer-link">
-          <span class="footer-link-icon" aria-hidden="true">GH</span>
+          <span class="footer-link-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="footer-brand-icon">
+              <path :d="siGithub.path" />
+            </svg>
+          </span>
           <span>GitHub</span>
         </a>
         <a href="https://www.linkedin.com/feed/" target="_blank" rel="noopener noreferrer" class="footer-link">
@@ -29,6 +33,7 @@
 
 <script setup>
 import logoMark from "../assets/icons/peniel-mark.svg";
+import { siGithub } from "simple-icons";
 
 const currentYear = new Date().getFullYear();
 </script>
@@ -95,6 +100,12 @@ const currentYear = new Date().getFullYear();
   font-size: 0.68rem;
   font-weight: 700;
   line-height: 1;
+}
+
+.footer-brand-icon {
+  width: 0.95rem;
+  height: 0.95rem;
+  fill: currentColor;
 }
 
 .footer-link:hover { color: var(--gold); box-shadow: 0 0 22px var(--gold-glow); }

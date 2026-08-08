@@ -96,7 +96,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.02fr) minmax(230px, 285px);
   gap: 0.9rem;
-  align-items: start;
+  align-items: stretch;
   animation: slideInUp 0.8s ease-out 0.1s both;
 }
 
@@ -120,6 +120,9 @@
 }
 
 .highlights-copy {
+  display: flex;
+  flex-direction: column;
+  min-height: 18rem;
   padding: 1.3rem;
   background: linear-gradient(
     135deg,
@@ -162,6 +165,9 @@
 }
 
 .highlights-feature {
+  display: flex;
+  flex-direction: column;
+  min-height: 18rem;
   padding: 1.15rem;
   background: linear-gradient(
     135deg,
@@ -203,7 +209,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin-top: 0.9rem;
+  margin-top: auto;
+  padding-top: 0.9rem;
 }
 
 .feature-points span {
@@ -327,6 +334,11 @@
 @media (max-width: 980px) {
   .highlights-intro {
     grid-template-columns: 1fr;
+  }
+
+  .highlights-copy,
+  .highlights-feature {
+    min-height: 0;
   }
 }
 

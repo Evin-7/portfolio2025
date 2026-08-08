@@ -1,179 +1,243 @@
 <template>
   <section class="skills">
     <div class="skills-shell site-container">
-      <p class="skills-eyebrow">Skills</p>
-      <h2 class="skills-title">Focused stack.</h2>
-      <p class="skills-text">
-        Core tools I use across software engineering, product UI, responsive
-        builds, and day-to-day team collaboration.
-      </p>
-      <div class="skills-list">
-        <span v-for="skill in skills" :key="skill" class="skill-pill">{{
-          skill
-        }}</span>
+      <div class="skills-heading">
+        <div>
+          <p class="skills-eyebrow">Toolkit</p>
+          <h2 class="skills-title">Core stack.</h2>
+        </div>
+        <p class="skills-text">Tools for clear interfaces and dependable systems.</p>
+      </div>
+
+      <div class="skills-frame">
+        <div class="skills-marquee" aria-label="Technology stack" role="list">
+          <div class="skills-track">
+            <div
+              v-for="copy in 3"
+              :key="copy"
+              class="skills-group"
+              :aria-hidden="copy > 1"
+            >
+              <div
+                v-for="skill in skills"
+                :key="`${copy}-${skill.name}`"
+                class="skill-pill"
+                role="listitem"
+              >
+                <span
+                  class="skill-mark"
+                  :class="`skill-mark-${skill.slug}`"
+                  :style="skill.icon ? { '--icon-color': `#${skill.icon.hex}` } : {}"
+                >
+                  <img
+                    v-if="skill.image"
+                    :src="skill.image"
+                    :alt="`${skill.name} logo`"
+                    class="skill-icon skill-icon-image"
+                  />
+                  <svg
+                    v-else
+                    class="skill-icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path :d="skill.icon.path" />
+                  </svg>
+                </span>
+                <span>{{ skill.name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 </template>
 
 <script setup>
+import {
+  siGit,
+  siJira,
+  siNodedotjs,
+  siNextdotjs,
+  siReact,
+  siSpringboot,
+  siVuedotjs,
+} from "simple-icons";
+
 const skills = [
-  "Vue",
-  "React",
-  "Next.js",
-  "React Native",
-  "Node.js",
-  "Java",
-  "Spring Boot",
-  "Git",
-  "Jira",
+  { name: "Vue", slug: "vue", icon: siVuedotjs },
+  { name: "React", slug: "react", icon: siReact },
+  { name: "Next.js", slug: "next", icon: siNextdotjs },
+  { name: "React Native", slug: "native", icon: siReact },
+  { name: "Node.js", slug: "node", icon: siNodedotjs },
+  { name: "Spring Boot", slug: "spring", icon: siSpringboot },
+  { name: "Git", slug: "git", icon: siGit },
+  { name: "Jira", slug: "jira", icon: siJira },
 ];
+
 </script>
 
 <style scoped>
 .skills {
-  padding: 4.5rem 0;
-  background: var(--bg-primary);
   position: relative;
   overflow: hidden;
-}
-
-.skills::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: -10%;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(
-    circle,
-    rgba(212, 175, 55, 0.08) 0%,
-    transparent 70%
-  );
-  pointer-events: none;
+  padding: 4.5rem 0;
+  background: var(--bg-primary);
 }
 
 .skills-shell {
   position: relative;
   z-index: 1;
-  animation: slideInUp 0.8s ease-out 0.1s both;
+  animation: skills-rise 700ms cubic-bezier(0.2, 0.75, 0.2, 1) 100ms both;
 }
 
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.skills-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
 }
 
 .skills-eyebrow {
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--gold);
-  opacity: 0.8;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .skills-title {
-  margin-top: 0.9rem;
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-  background: linear-gradient(
-    135deg,
-    var(--text-primary) 0%,
-    var(--gold-light) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  margin-top: 0.65rem;
+  color: var(--text-primary);
+  font-size: clamp(1.9rem, 3.4vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.06em;
+  line-height: 0.98;
 }
 
 .skills-text {
-  max-width: 620px;
-  margin-top: 1rem;
-  font-size: 1rem;
-  line-height: 1.7;
+  max-width: 34ch;
   color: var(--text-secondary);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  text-align: right;
 }
 
-.skills-list {
+.skills-frame {
+  position: relative;
+  overflow: hidden;
+  margin-top: 1.7rem;
+  padding: 1px;
+  border: 1px solid rgba(230, 203, 119, 0.28);
+  border-radius: 22px;
+  background: rgba(22, 22, 21, 0.8);
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.16);
+}
+
+.skills-marquee {
+  overflow: hidden;
+  padding: 0.85rem;
+  border-radius: 21px;
+  background: rgba(17, 17, 17, 0.92);
+}
+
+.skills-track {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.8rem;
+  width: max-content;
+  will-change: transform;
+  animation: skills-marquee 46s linear infinite;
+}
+
+.skills-group {
+  display: flex;
+  flex-shrink: 0;
+  gap: 1.35rem;
+  padding-right: 1.35rem;
+}
+
+.skills-marquee:hover .skills-track {
+  animation-play-state: paused;
 }
 
 .skill-pill {
-  padding: 0.72rem 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 3.05rem;
+  padding: 0.5rem 0.95rem 0.5rem 0.55rem;
+  border: 1px solid rgba(212, 175, 55, 0.16);
   border-radius: 999px;
-  background: linear-gradient(
-    135deg,
-    var(--bg-surface) 0%,
-    rgba(26, 26, 26, 0.5) 100%
-  );
-  border: 1.5px solid var(--gold-border);
-  color: var(--gold);
-  font-size: 0.92rem;
-  line-height: 1;
-  font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  cursor: pointer;
-  animation: pillReveal 0.6s ease-out forwards;
-  opacity: 0;
+  color: #e8e3d5;
+  background: linear-gradient(135deg, rgba(38, 38, 36, 0.96), rgba(22, 22, 21, 0.88));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.08);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.skill-pill:nth-child(1) {
-  animation-delay: 0.1s;
-}
-.skill-pill:nth-child(2) {
-  animation-delay: 0.15s;
-}
-.skill-pill:nth-child(3) {
-  animation-delay: 0.2s;
-}
-.skill-pill:nth-child(4) {
-  animation-delay: 0.25s;
-}
-.skill-pill:nth-child(5) {
-  animation-delay: 0.3s;
-}
-.skill-pill:nth-child(6) {
-  animation-delay: 0.35s;
-}
-.skill-pill:nth-child(7) {
-  animation-delay: 0.4s;
-}
-.skill-pill:nth-child(8) {
-  animation-delay: 0.45s;
-}
-.skill-pill:nth-child(9) {
-  animation-delay: 0.5s;
+.skill-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 10px;
+  color: var(--icon-color, #f0d783);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(10, 10, 10, 0.72);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
 
-@keyframes pillReveal {
+.skill-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--icon-color, currentColor);
+  fill: currentColor;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, currentColor 42%, transparent));
+}
+
+.skill-icon-image {
+  object-fit: contain;
+}
+
+.skill-mark-next {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: #f2f2f0;
+}
+
+@keyframes skills-rise {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(1rem);
   }
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .skill-pill:hover {
-    background: var(--gold);
-    color: var(--bg-primary);
-    transform: scale(1.08) translateY(-4px);
-    border-color: var(--gold);
-    box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+@keyframes skills-marquee {
+  to {
+    transform: translateX(-33.333333%);
+  }
+}
+
+@media (max-width: 700px) {
+  .skills-heading {
+    display: block;
+  }
+
+  .skills-text {
+    margin-top: 0.7rem;
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skills-shell,
+  .skills-track {
+    animation: none;
+  }
+
+  .skills-marquee {
+    overflow-x: auto;
   }
 }
 </style>

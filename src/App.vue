@@ -27,8 +27,6 @@ import Contact from "./views/Contact.vue";
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
-
 :root {
   --bg-primary: #0d0d0d;
   --bg-surface: #1a1a1a;

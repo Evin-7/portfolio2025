@@ -4,12 +4,10 @@
       <div class="about-copy">
         <p class="about-eyebrow">About</p>
         <h2 class="about-title">
-          A software engineer focused on clean systems and scalable product
-          work.
+          Clean systems. Scalable products.
         </h2>
         <p class="about-text">
-          I build clear, scalable interfaces with strong typography, disciplined
-          spacing, and polished interaction details.
+          Clear interfaces, thoughtful details, reliable delivery.
         </p>
       </div>
 
