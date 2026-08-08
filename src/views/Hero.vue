@@ -26,24 +26,31 @@
 
       <div class="hero-shell site-container">
         <div class="hero-copy">
-          <p class="hero-eyebrow"><span></span>Product engineer / independent studio</p>
+          <p class="hero-eyebrow">
+            <span></span>Product engineer / independent studio
+          </p>
           <h1>
             <span class="hero-title-line">Build with intent.</span>
             <em class="hero-title-line">Ship with staying power.</em>
           </h1>
           <p class="hero-intro">
-            I turn complex product ideas into clear interfaces, reliable systems,
-            and digital experiences people want to return to.
+            I turn complex product ideas into clear interfaces, reliable
+            systems, and digital experiences people want to return to.
           </p>
 
-          <div class="hero-signal-row" aria-label="Current availability">
-          </div>
+          <div class="hero-signal-row" aria-label="Current availability"></div>
 
           <div class="hero-actions">
-            <a class="hero-button hero-button-primary interactive" href="#works">
+            <a
+              class="hero-button hero-button-primary interactive"
+              href="#works"
+            >
               View selected work <span aria-hidden="true">↗</span>
             </a>
-            <a class="hero-button hero-button-secondary interactive" href="#contact">
+            <a
+              class="hero-button hero-button-secondary interactive"
+              href="#contact"
+            >
               Start a project
             </a>
           </div>
@@ -92,15 +99,12 @@
               <div class="glass-plane glass-plane-right"></div>
 
               <div class="shard-ui shard-ui-main">
-                <div class="panel-topline">
-                  <span>Build</span>
-                  <span class="panel-live"><i></i> Live</span>
-                </div>
+                <div class="panel-topline"></div>
                 <div class="panel-main">
-                  <p>Clear.</p>
-                  <h2>Ship it.</h2>
+                  <p style="padding-left: 103px">Clear.</p>
+                  <h2 style="padding-left: 103px">Ship it.</h2>
                   <div class="panel-rule"></div>
-                  <div class="panel-stats">
+                  <div style="padding-bottom: 10px" class="panel-stats">
                     <div><span>Design</span><strong>Clear</strong></div>
                     <div><span>Code</span><strong>Solid</strong></div>
                   </div>
@@ -108,8 +112,10 @@
               </div>
 
               <div class="shard-ui shard-ui-top">
-                <span class="shard-label">System</span>
-                <strong>Make it clear.</strong>
+                <strong
+                  style="padding-left: 15px; font-size: 15px; padding-top: 10px"
+                  >Make it clear.</strong
+                >
                 <span class="shard-detail">Built to last.</span>
               </div>
 
@@ -125,7 +131,6 @@
 
               <div class="glass-shard shard-top"></div>
               <div class="glass-shard shard-bottom"></div>
-              <div class="visual-crosshair crosshair-top"></div>
               <div class="visual-crosshair crosshair-bottom"></div>
             </div>
           </div>
@@ -168,7 +173,10 @@ const updateSceneMetrics = () => {
   if (!hero.value) return;
 
   sceneMetrics.top = hero.value.getBoundingClientRect().top + window.scrollY;
-  sceneMetrics.range = Math.max(hero.value.offsetHeight - window.innerHeight, 1);
+  sceneMetrics.range = Math.max(
+    hero.value.offsetHeight - window.innerHeight,
+    1
+  );
 };
 
 const resetScrollScene = () => {
@@ -234,7 +242,9 @@ const handleWindowResize = () => {
 
 onMounted(() => {
   syncScrollScene();
-  window.addEventListener("scroll", requestScrollSceneUpdate, { passive: true });
+  window.addEventListener("scroll", requestScrollSceneUpdate, {
+    passive: true,
+  });
   window.addEventListener("resize", handleWindowResize, { passive: true });
 });
 
@@ -327,9 +337,16 @@ const resetPointer = () => {
   overflow: clip;
   min-height: max(44rem, 100svh);
   padding: clamp(8.2rem, 12vw, 10.5rem) 0 4rem;
-  background:
-    radial-gradient(circle at 75% 49%, rgba(226, 193, 106, 0.12), transparent 19rem),
-    radial-gradient(circle at 4% 98%, rgba(124, 87, 21, 0.08), transparent 18rem),
+  background: radial-gradient(
+      circle at 75% 49%,
+      rgba(226, 193, 106, 0.12),
+      transparent 19rem
+    ),
+    radial-gradient(
+      circle at 4% 98%,
+      rgba(124, 87, 21, 0.08),
+      transparent 18rem
+    ),
     linear-gradient(122deg, #060706 0%, #0a0b0a 46%, #11110f 100%);
 }
 
@@ -373,7 +390,12 @@ const resetPointer = () => {
   position: absolute;
   inset: 1px;
   content: "";
-  background: linear-gradient(118deg, transparent 24%, rgba(255, 255, 255, 0.24), transparent 48%);
+  background: linear-gradient(
+    118deg,
+    transparent 24%,
+    rgba(255, 255, 255, 0.24),
+    transparent 48%
+  );
   opacity: 0.45;
 }
 
@@ -513,8 +535,11 @@ const resetPointer = () => {
 
 .hero::before {
   inset: 0;
-  background:
-    radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(229, 203, 125, 0.11), transparent 19rem),
+  background: radial-gradient(
+      circle at var(--pointer-x) var(--pointer-y),
+      rgba(229, 203, 125, 0.11),
+      transparent 19rem
+    ),
     linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
   background-size: min(25vw, 24rem) 100%;
   opacity: 0.35;
@@ -635,7 +660,8 @@ const resetPointer = () => {
   height: 0.4rem;
   border-radius: 50%;
   background: #d8c47e;
-  box-shadow: 0 0 0 0.24rem rgba(216, 196, 126, 0.1), 0 0 0.7rem rgba(216, 196, 126, 0.6);
+  box-shadow: 0 0 0 0.24rem rgba(216, 196, 126, 0.1),
+    0 0 0.7rem rgba(216, 196, 126, 0.6);
   animation: orbit-pulse 2.6s ease-in-out infinite;
 }
 
@@ -664,8 +690,8 @@ const resetPointer = () => {
   font-weight: 700;
   letter-spacing: 0.01em;
   text-decoration: none;
-  transition: transform 220ms ease, background-color 220ms ease, border-color 220ms ease,
-    box-shadow 220ms ease;
+  transition: transform 220ms ease, background-color 220ms ease,
+    border-color 220ms ease, box-shadow 220ms ease;
 }
 
 .hero-button:hover,
@@ -771,7 +797,11 @@ const resetPointer = () => {
   position: absolute;
   inset: 8% -16% 0 -12%;
   border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(220, 184, 89, 0.14), transparent 65%);
+  background: radial-gradient(
+    ellipse,
+    rgba(220, 184, 89, 0.14),
+    transparent 65%
+  );
   opacity: 0.8;
 }
 
@@ -816,7 +846,8 @@ const resetPointer = () => {
   border-radius: 999px;
   color: rgba(239, 231, 206, 0.78);
   background: rgba(22, 22, 18, 0.42);
-  box-shadow: 0 1rem 2.8rem rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1rem 2.8rem rgba(0, 0, 0, 0.2),
+    inset 0 1px rgba(255, 255, 255, 0.12);
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -847,7 +878,8 @@ const resetPointer = () => {
   height: 0.45rem;
   border-radius: 50%;
   background: #e8cf83;
-  box-shadow: 0 0 0 0.28rem rgba(232, 207, 131, 0.11), 0 0 1rem rgba(232, 207, 131, 0.72);
+  box-shadow: 0 0 0 0.28rem rgba(232, 207, 131, 0.11),
+    0 0 1rem rgba(232, 207, 131, 0.72);
 }
 
 .visual-system {
@@ -859,8 +891,7 @@ const resetPointer = () => {
       calc(var(--visual-y) + var(--scene-y)),
       0
     )
-    scale(var(--scene-scale))
-    rotate(var(--scene-rotate))
+    scale(var(--scene-scale)) rotate(var(--scene-rotate))
     rotateX(var(--visual-rotate-x)) rotateY(var(--visual-rotate-y));
   transform-style: preserve-3d;
   will-change: transform;
@@ -895,8 +926,14 @@ const resetPointer = () => {
   position: absolute;
   overflow: hidden;
   border: 1px solid rgba(255, 249, 227, 0.12);
-  background: linear-gradient(125deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 45%, rgba(231, 191, 95, 0.04));
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 1.2rem 2.8rem rgba(0, 0, 0, 0.18);
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.02) 45%,
+    rgba(231, 191, 95, 0.04)
+  );
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.1),
+    0 1.2rem 2.8rem rgba(0, 0, 0, 0.18);
 }
 
 .glass-plane::after,
@@ -910,7 +947,12 @@ const resetPointer = () => {
 .glass-plane::after,
 .glass-shard::after {
   inset: 0;
-  background: linear-gradient(118deg, transparent 21%, rgba(255, 255, 255, 0.1) 36%, transparent 51%);
+  background: linear-gradient(
+    118deg,
+    transparent 21%,
+    rgba(255, 255, 255, 0.1) 36%,
+    transparent 51%
+  );
   opacity: 0.4;
 }
 
@@ -941,7 +983,11 @@ const resetPointer = () => {
   width: 34%;
   height: 44%;
   clip-path: polygon(25% 0, 100% 32%, 89% 100%, 0 76%);
-  background: linear-gradient(145deg, rgba(230, 194, 105, 0.14), rgba(255, 255, 255, 0.04));
+  background: linear-gradient(
+    145deg,
+    rgba(230, 194, 105, 0.14),
+    rgba(255, 255, 255, 0.04)
+  );
   opacity: 0.72;
 }
 
@@ -970,8 +1016,11 @@ const resetPointer = () => {
   min-height: 16.5rem;
   padding: clamp(1.2rem, 2.6vw, 1.85rem);
   clip-path: polygon(13% 0, 100% 8%, 85% 100%, 0 82%);
-  background:
-    radial-gradient(circle at 85% 10%, rgba(238, 208, 123, 0.2), transparent 22%),
+  background: radial-gradient(
+      circle at 85% 10%,
+      rgba(238, 208, 123, 0.2),
+      transparent 22%
+    ),
     linear-gradient(135deg, rgba(35, 36, 31, 0.88), rgba(18, 19, 17, 0.68));
 }
 
@@ -984,7 +1033,11 @@ const resetPointer = () => {
   min-height: 7.2rem;
   padding: 1.1rem 1.2rem 1.4rem;
   clip-path: polygon(14% 0, 100% 17%, 88% 100%, 0 73%);
-  background: linear-gradient(132deg, rgba(45, 45, 37, 0.86), rgba(23, 23, 20, 0.74));
+  background: linear-gradient(
+    132deg,
+    rgba(45, 45, 37, 0.86),
+    rgba(23, 23, 20, 0.74)
+  );
 }
 
 .shard-ui-side {
@@ -997,7 +1050,11 @@ const resetPointer = () => {
   min-height: 8.75rem;
   padding: 1.2rem 1rem 1.25rem 1.45rem;
   clip-path: polygon(0 8%, 100% 0, 76% 100%, 13% 83%);
-  background: linear-gradient(144deg, rgba(57, 54, 42, 0.86), rgba(21, 21, 18, 0.76));
+  background: linear-gradient(
+    144deg,
+    rgba(57, 54, 42, 0.86),
+    rgba(21, 21, 18, 0.76)
+  );
 }
 
 .shard-ui-bottom {
@@ -1009,7 +1066,11 @@ const resetPointer = () => {
   min-height: 5.65rem;
   padding: 1.25rem 1.15rem 1rem;
   clip-path: polygon(22% 0, 100% 25%, 74% 100%, 0 79%);
-  background: linear-gradient(134deg, rgba(58, 52, 37, 0.8), rgba(20, 20, 17, 0.76));
+  background: linear-gradient(
+    134deg,
+    rgba(58, 52, 37, 0.8),
+    rgba(20, 20, 17, 0.76)
+  );
 }
 
 .shard-label,
@@ -1076,10 +1137,18 @@ const resetPointer = () => {
   background: linear-gradient(#ead28b, rgba(234, 210, 139, 0.26));
 }
 
-.signal-bars i:nth-child(1) { height: 34%; }
-.signal-bars i:nth-child(2) { height: 66%; }
-.signal-bars i:nth-child(3) { height: 46%; }
-.signal-bars i:nth-child(4) { height: 100%; }
+.signal-bars i:nth-child(1) {
+  height: 34%;
+}
+.signal-bars i:nth-child(2) {
+  height: 66%;
+}
+.signal-bars i:nth-child(3) {
+  height: 46%;
+}
+.signal-bars i:nth-child(4) {
+  height: 100%;
+}
 
 .panel-topline,
 .panel-main {
@@ -1142,7 +1211,11 @@ const resetPointer = () => {
   width: 100%;
   height: 1px;
   margin-top: auto;
-  background: linear-gradient(90deg, rgba(229, 203, 125, 0.75), rgba(229, 203, 125, 0.08));
+  background: linear-gradient(
+    90deg,
+    rgba(229, 203, 125, 0.75),
+    rgba(229, 203, 125, 0.08)
+  );
 }
 
 .panel-stats {
@@ -1195,7 +1268,11 @@ const resetPointer = () => {
 
 .glass-shard {
   z-index: 5;
-  background: linear-gradient(125deg, rgba(255, 255, 255, 0.2), rgba(226, 190, 98, 0.07));
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(226, 190, 98, 0.07)
+  );
 }
 
 .shard-top {
@@ -1256,11 +1333,7 @@ const resetPointer = () => {
 }
 
 .hero.scroll-scene .fracture-map {
-  --piece-progress: clamp(
-    0,
-    calc((var(--scene-progress) - 0.04) / 0.52),
-    1
-  );
+  --piece-progress: clamp(0, calc((var(--scene-progress) - 0.04) / 0.52), 1);
   opacity: calc(0.46 + 0.54 * var(--piece-progress));
 }
 
@@ -1272,11 +1345,7 @@ const resetPointer = () => {
 }
 
 .hero.scroll-scene .glass-plane-back {
-  --piece-progress: clamp(
-    0,
-    calc((var(--scene-progress) - 0.06) / 0.24),
-    1
-  );
+  --piece-progress: clamp(0, calc((var(--scene-progress) - 0.06) / 0.24), 1);
   opacity: calc(0.24 + 0.34 * var(--piece-progress));
   translate: calc(2.8rem - 2.8rem * var(--piece-progress))
     calc(-1.8rem + 1.8rem * var(--piece-progress));
@@ -1292,11 +1361,7 @@ const resetPointer = () => {
 }
 
 .hero.scroll-scene .glass-plane-left {
-  --piece-progress: clamp(
-    0,
-    calc((var(--scene-progress) - 0.14) / 0.24),
-    1
-  );
+  --piece-progress: clamp(0, calc((var(--scene-progress) - 0.14) / 0.24), 1);
   opacity: calc(0.3 + 0.5 * var(--piece-progress));
   translate: calc(-3.3rem + 3.3rem * var(--piece-progress))
     calc(1.8rem - 1.8rem * var(--piece-progress));
@@ -1312,11 +1377,7 @@ const resetPointer = () => {
 }
 
 .hero.scroll-scene .glass-plane-right {
-  --piece-progress: clamp(
-    0,
-    calc((var(--scene-progress) - 0.25) / 0.24),
-    1
-  );
+  --piece-progress: clamp(0, calc((var(--scene-progress) - 0.25) / 0.24), 1);
   opacity: calc(0.3 + 0.42 * var(--piece-progress));
   translate: calc(3.2rem - 3.2rem * var(--piece-progress))
     calc(1.6rem - 1.6rem * var(--piece-progress));
@@ -1359,7 +1420,10 @@ const resetPointer = () => {
   z-index: -1;
   inset: 0;
   pointer-events: none;
-  background-image: linear-gradient(rgba(234, 211, 144, 0.075) 1px, transparent 1px),
+  background-image: linear-gradient(
+      rgba(234, 211, 144, 0.075) 1px,
+      transparent 1px
+    ),
     linear-gradient(90deg, rgba(234, 211, 144, 0.075) 1px, transparent 1px);
   background-position: center;
   background-size: 6rem 6rem;
@@ -1373,7 +1437,10 @@ const resetPointer = () => {
   inset: 0;
   pointer-events: none;
   opacity: 0.035;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.22) 0.5px, transparent 0.5px);
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.22) 0.5px,
+    transparent 0.5px
+  );
   background-size: 4px 4px;
 }
 
