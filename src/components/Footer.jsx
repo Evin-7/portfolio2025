@@ -2,7 +2,7 @@ import Image from "next/image";
 import logoMark from "../assets/icons/peniel-mark.svg";
 import { siGithub } from "simple-icons";
 
-const footerLinkClass = "inline-flex items-center gap-2 rounded-full border border-amber/20 bg-panel px-3 py-2 text-[0.82rem] text-copy no-underline transition hover:text-amber hover:shadow-[0_0_22px_rgba(212,175,55,0.15)]";
+const footerLinkClass = "inline-flex w-full min-w-0 items-center justify-start gap-1.5 rounded-full border border-amber/20 bg-panel px-2 py-2 text-left text-[0.72rem] text-copy no-underline transition hover:text-amber hover:shadow-[0_0_22px_rgba(212,175,55,0.15)] sm:gap-2 sm:px-3 sm:text-[0.82rem] md:w-auto";
 
 export default function Footer() {
   return (
@@ -12,23 +12,23 @@ export default function Footer() {
           <Image src={logoMark} alt="Evin logo" className="block size-[34px]" />
         </a>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="grid w-full grid-cols-2 gap-3 md:flex md:w-auto md:flex-wrap">
           <a href="mailto:yjevin75@gmail.com" className={footerLinkClass}>
-            <span className="inline-flex size-6 items-center justify-center rounded-full bg-amber text-[0.68rem] font-bold leading-none text-ink" aria-hidden="true">✉</span>
+            <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-amber text-[0.62rem] font-bold leading-none text-ink sm:size-6 sm:text-[0.68rem]" aria-hidden="true">✉</span>
             <span>Email</span>
           </a>
           <a href="https://github.com/Evin-7" target="_blank" rel="noopener noreferrer" className={footerLinkClass}>
-            <span className="inline-flex size-6 items-center justify-center rounded-full bg-amber text-ink" aria-hidden="true">
+            <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-amber text-ink sm:size-6" aria-hidden="true">
               <svg viewBox="0 0 24 24" className="size-4 fill-current"><path d={siGithub.path} /></svg>
             </span>
             <span>GitHub</span>
           </a>
           <a href="https://www.linkedin.com/feed/" target="_blank" rel="noopener noreferrer" className={footerLinkClass}>
-            <span className="inline-flex size-6 items-center justify-center rounded-full bg-amber text-[0.68rem] font-bold leading-none text-ink" aria-hidden="true">in</span>
+            <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-amber text-[0.62rem] font-bold leading-none text-ink sm:size-6 sm:text-[0.68rem]" aria-hidden="true">in</span>
             <span>LinkedIn</span>
           </a>
           <a href="tel:+917510255897" className={footerLinkClass}>
-            <span className="inline-flex size-6 items-center justify-center rounded-full bg-amber text-[0.68rem] font-bold leading-none text-ink" aria-hidden="true">☎</span>
+            <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-amber text-[0.62rem] font-bold leading-none text-ink sm:size-6 sm:text-[0.68rem]" aria-hidden="true">☎</span>
             <span>+91 7510255897</span>
           </a>
         </div>

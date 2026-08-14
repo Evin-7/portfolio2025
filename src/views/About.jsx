@@ -45,7 +45,7 @@ export default function About() {
         <Reveal className="relative mt-10 grid gap-8 pl-16 before:absolute before:bottom-5 before:left-6 before:top-5 before:w-px before:bg-gradient-to-b before:from-amber before:via-amber/60 before:to-cyan/40 md:grid-cols-3 md:gap-5 md:pl-0 md:before:bottom-auto md:before:left-0 md:before:right-0 md:before:top-5 md:before:h-px md:before:w-auto md:before:bg-gradient-to-r md:before:from-amber md:before:via-amber/60 md:before:to-cyan/40" delay={0.1}>
           {experience.map((item) => (
             <article key={item.role} className="relative pt-0 md:pt-12">
-              <span className="absolute -left-8 top-0 z-10 flex size-10 -translate-x-1/2 items-center justify-center rounded-full border-2 border-ink bg-amber text-[0.58rem] font-bold text-ink shadow-[0_0_0_4px_rgba(212,175,55,0.14)] md:left-1/2 md:top-0" aria-hidden="true">{item.year}</span>
+              <span className="absolute -left-10 top-0 z-10 flex size-10 -translate-x-1/2 items-center justify-center rounded-full border-2 border-ink bg-amber text-[0.58rem] font-bold text-ink shadow-[0_0_0_4px_rgba(212,175,55,0.14)] md:left-1/2 md:top-0" aria-hidden="true">{item.year}</span>
               <div className="cursor-pointer rounded-3xl border border-amber/20 bg-gradient-to-br from-panel to-panel/50 p-5 transition hover:-translate-y-1 hover:border-amber">
                 <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-3">
                   <span className="font-mono text-sm font-semibold text-amber">{item.period}</span>

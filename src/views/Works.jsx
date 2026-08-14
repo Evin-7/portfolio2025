@@ -72,7 +72,7 @@ export default function Works() {
               </Reveal>
             ) : null}
 
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {group.items.map((work, index) => (
                 <Reveal key={work.name} delay={index * 0.045} direction={index % 2 === 0 ? "up" : "right"}>
                   <article

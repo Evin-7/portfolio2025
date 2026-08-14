@@ -177,6 +177,7 @@
 .hero-solid-shard-ui {
   position: absolute;
   overflow: hidden;
+  will-change: transform, opacity;
   border: 1px solid rgba(255, 249, 227, 0.12);
   background: linear-gradient(125deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 45%, rgba(231, 191, 95, 0.04));
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 1.2rem 2.8rem rgba(0, 0, 0, 0.18);

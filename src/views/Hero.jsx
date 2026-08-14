@@ -162,8 +162,8 @@ export default function Hero() {
   const [phase, setPhase] = useState(0);
   const sceneRef = useRef(null);
   const reduceMotion = useReducedMotion();
-  const { scrollYProgress: sceneScrollProgress } = useScroll({ target: sceneRef, offset: ["start start", "end end"] });
-  const smoothSceneProgress = useSpring(sceneScrollProgress, { stiffness: 110, damping: 28, mass: 0.7 });
+  const { scrollYProgress: sceneScrollProgress } = useScroll({ target: sceneRef, offset: ["start start", "end start"] });
+  const smoothSceneProgress = useSpring(sceneScrollProgress, { stiffness: 180, damping: 36, mass: 0.45 });
   const assembly = useTransform(smoothSceneProgress, [0, 0.7, 1], reduceMotion ? [1, 1, 1] : [0, 0.9, 1]);
 
   const downloadResume = () => {
