@@ -105,6 +105,8 @@ config.json # If it contains sensitive information or local settings
 ###########
 node_modules/
 dist/
+.next/
+.vercel/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

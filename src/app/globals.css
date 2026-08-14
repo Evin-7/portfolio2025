@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-site-mono);
+  --font-mono: var(--font-site-mono);
+  --color-ink: #0a0d12;
+  --color-panel: #11151d;
+  --color-panel-alt: #161b25;
+  --color-copy: #e7e9ee;
+  --color-muted: #8b93a7;
+  --color-amber: #d4af37;
+  --color-amber-light: #e6cb77;
+  --color-amber-deep: #9f7620;
+  --color-cyan: #7dd3fc;
+  --color-line: #232a37;
+  --shadow-terminal: 0 2rem 5rem -1.3rem rgba(0, 0, 0, 0.65);
+}
+
+@layer base {
+  html { scroll-behavior: auto; }
+
+  body { @apply min-h-screen overflow-x-hidden bg-ink font-mono text-copy antialiased; }
+
+  a, button, input, textarea { font-family: inherit; }
+  button, input, textarea { @apply m-0; }
+  button { @apply border-0; }
+
+  ::selection { @apply bg-amber text-ink; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-ink; }
+  ::-webkit-scrollbar-thumb { @apply rounded-[3px] border border-ink bg-amber; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-amber-light; }
+}
+
+@keyframes hero-reveal {
+  from { opacity: 0; transform: translateY(0.7rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hero-title-reveal {
+  from { opacity: 0; transform: translateY(1.2rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes cursor-blink { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
