@@ -50,6 +50,445 @@
 
 @keyframes cursor-blink { 50% { opacity: 0; } }
 
+.hero-circuit-right-quiet {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 70%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(10, 13, 18, 0) 0%,
+    rgba(10, 13, 18, 0.76) 32%,
+    rgba(10, 13, 18, 0.96) 62%,
+    #0a0d12 100%
+  );
+}
+
+.hero-source-scatter-piece {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(242, 224, 161, 0.26);
+  background: linear-gradient(135deg, rgba(246, 232, 185, 0.22), rgba(185, 145, 62, 0.06) 55%, rgba(255, 255, 255, 0.04));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.15), 0 1rem 2rem rgba(0, 0, 0, 0.15);
+}
+
+.hero-source-scatter-piece::after {
+  position: absolute;
+  inset: 1px;
+  content: "";
+  background: linear-gradient(118deg, transparent 24%, rgba(255, 255, 255, 0.24), transparent 48%);
+  opacity: 0.45;
+}
+
+.hero-solid-visual {
+  position: relative;
+  min-height: clamp(30rem, 48vw, 39rem);
+  perspective: 1400px;
+}
+
+.hero-solid-visual::before,
+.hero-solid-visual::after {
+  position: absolute;
+  z-index: 0;
+  content: "";
+  border: 1px solid rgba(233, 210, 142, 0.1);
+  pointer-events: none;
+}
+
+.hero-solid-visual::before {
+  inset: 11% 8% 8% 4%;
+  clip-path: polygon(5% 12%, 76% 0, 100% 42%, 78% 100%, 0 82%);
+  opacity: 0.7;
+  transform: rotate(4deg);
+}
+
+.hero-solid-visual::after {
+  inset: 6% 3% 4%;
+  clip-path: polygon(18% 0, 100% 12%, 82% 100%, 0 77%);
+  opacity: 0.72;
+  transform: rotate(-5deg);
+}
+
+.hero-solid-aura {
+  position: absolute;
+  inset: 8% -16% 0 -12%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(220, 184, 89, 0.14), transparent 65%);
+  opacity: 0.8;
+}
+
+.hero-solid-beam {
+  position: absolute;
+  z-index: 4;
+  width: 74%;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(244, 220, 147, 0.72) 48%, transparent);
+  filter: drop-shadow(0 0 0.45rem rgba(231, 201, 116, 0.42));
+  opacity: 0.18;
+}
+
+.hero-solid-beam-one {
+  top: 35%;
+  left: 4%;
+  transform: rotate(-25deg);
+}
+
+.hero-solid-beam-two {
+  right: -2%;
+  bottom: 27%;
+  width: 56%;
+  transform: rotate(28deg);
+}
+
+.hero-solid-system {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.hero-solid-fracture-map {
+  position: absolute;
+  z-index: 4;
+  inset: 2.5% 0 0;
+  width: 100%;
+  height: 96%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.hero-solid-fracture-map path {
+  stroke: rgba(246, 234, 198, 0.62);
+  stroke-width: 1.15;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 4px rgba(234, 211, 144, 0.3));
+}
+
+.hero-solid-fracture-map circle {
+  fill: #ead390;
+  filter: drop-shadow(0 0 7px rgba(234, 211, 144, 0.9));
+}
+
+.hero-solid-glass-plane,
+.hero-solid-glass-shard,
+.hero-solid-shard-ui {
+  position: absolute;
+  overflow: hidden;
+  border: 1px solid rgba(255, 249, 227, 0.12);
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 45%, rgba(231, 191, 95, 0.04));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 1.2rem 2.8rem rgba(0, 0, 0, 0.18);
+}
+
+.hero-solid-glass-plane::after,
+.hero-solid-glass-shard::after,
+.hero-solid-shard-ui::before {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.hero-solid-glass-plane::after,
+.hero-solid-glass-shard::after {
+  inset: 0;
+  background: linear-gradient(118deg, transparent 21%, rgba(255, 255, 255, 0.1) 36%, transparent 51%);
+  opacity: 0.4;
+}
+
+.hero-solid-glass-plane-back {
+  z-index: 1;
+  top: 6%;
+  right: 6%;
+  width: 78%;
+  height: 62%;
+  clip-path: polygon(19% 0, 100% 10%, 87% 77%, 28% 100%, 0 55%);
+}
+
+.hero-solid-glass-plane-left {
+  z-index: 3;
+  bottom: 4%;
+  left: -3%;
+  width: 42%;
+  height: 48%;
+  clip-path: polygon(0 7%, 100% 0, 76% 77%, 16% 100%);
+}
+
+.hero-solid-glass-plane-right {
+  z-index: 2;
+  right: -2%;
+  bottom: 2%;
+  width: 34%;
+  height: 44%;
+  clip-path: polygon(25% 0, 100% 32%, 89% 100%, 0 76%);
+  background: linear-gradient(145deg, rgba(230, 194, 105, 0.14), rgba(255, 255, 255, 0.04));
+}
+
+.hero-solid-shard-ui {
+  z-index: 5;
+  color: #f1eee5;
+}
+
+.hero-solid-shard-ui::before {
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.08), transparent 28%, transparent 70%, rgba(239, 211, 131, 0.04));
+}
+
+.hero-solid-shard-ui-main {
+  top: 20%;
+  right: 11%;
+  width: min(68%, 23rem);
+  height: 51%;
+  min-height: 16.5rem;
+  padding: clamp(1.2rem, 2.6vw, 1.85rem);
+  clip-path: polygon(13% 0, 100% 8%, 85% 100%, 0 82%);
+  background: radial-gradient(circle at 85% 10%, rgba(238, 208, 123, 0.2), transparent 22%), linear-gradient(135deg, rgba(35, 36, 31, 0.88), rgba(18, 19, 17, 0.68));
+}
+
+.hero-solid-shard-ui-top {
+  top: 6%;
+  right: 7%;
+  display: grid;
+  gap: 0.34rem;
+  width: 42%;
+  min-height: 7.2rem;
+  padding: 1.1rem 1.2rem 1.4rem;
+  clip-path: polygon(14% 0, 100% 17%, 88% 100%, 0 73%);
+  background: linear-gradient(132deg, rgba(45, 45, 37, 0.86), rgba(23, 23, 20, 0.74));
+}
+
+.hero-solid-shard-ui-side {
+  bottom: 11%;
+  left: 6%;
+  display: grid;
+  align-content: center;
+  gap: 0.72rem;
+  width: 32%;
+  min-height: 8.75rem;
+  padding: 1.2rem 1rem 1.25rem 1.45rem;
+  clip-path: polygon(0 8%, 100% 0, 76% 100%, 13% 83%);
+  background: linear-gradient(144deg, rgba(57, 54, 42, 0.86), rgba(21, 21, 18, 0.76));
+}
+
+.hero-solid-shard-ui-bottom {
+  right: 5%;
+  bottom: 0;
+  display: grid;
+  gap: 0.14rem;
+  width: 38%;
+  min-height: 5.65rem;
+  padding: 1.25rem 1.15rem 1rem;
+  clip-path: polygon(22% 0, 100% 25%, 74% 100%, 0 79%);
+  background: linear-gradient(134deg, rgba(58, 52, 37, 0.8), rgba(20, 20, 17, 0.76));
+}
+
+.hero-solid-shard-label,
+.hero-solid-shard-detail,
+.hero-solid-shard-ui-bottom span {
+  position: relative;
+  z-index: 1;
+  color: rgba(232, 217, 177, 0.66);
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.hero-solid-shard-ui-top strong,
+.hero-solid-shard-ui-side strong,
+.hero-solid-shard-ui-bottom strong {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-solid-shard-ui-top strong {
+  max-width: 9ch;
+  color: #eee8d9;
+  font-size: clamp(1rem, 1.75vw, 1.3rem);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 0.96;
+}
+
+.hero-solid-shard-ui-side strong {
+  color: #e8d180;
+  font-size: 1.08rem;
+  font-weight: 400;
+}
+
+.hero-solid-shard-ui-bottom span {
+  color: #9c998e;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+.hero-solid-shard-ui-bottom strong {
+  color: #eee7d6;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.hero-solid-signal-bars {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: end;
+  gap: 0.22rem;
+  height: 1.8rem;
+}
+
+.hero-solid-signal-bars i {
+  display: block;
+  width: 0.22rem;
+  background: linear-gradient(#ead28b, rgba(234, 210, 139, 0.26));
+}
+
+.hero-solid-signal-bars i:nth-child(1) { height: 34%; }
+.hero-solid-signal-bars i:nth-child(2) { height: 66%; }
+.hero-solid-signal-bars i:nth-child(3) { height: 46%; }
+.hero-solid-signal-bars i:nth-child(4) { height: 100%; }
+
+.hero-solid-panel-topline,
+.hero-solid-panel-main {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-solid-panel-topline {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  color: rgba(228, 217, 181, 0.75);
+  font-size: 0.57rem;
+  font-weight: 700;
+  letter-spacing: 0.125em;
+  text-transform: uppercase;
+}
+
+.hero-solid-panel-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  color: #e2c670;
+}
+
+.hero-solid-panel-live i {
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 50%;
+  background: #d7bc5f;
+  box-shadow: 0 0 0 0.28rem rgba(215, 188, 95, 0.11);
+}
+
+.hero-solid-panel-main {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 1.2rem);
+  padding-top: clamp(2.6rem, 5vw, 4.6rem);
+  padding-left: 6.4rem;
+}
+
+.hero-solid-panel-main p {
+  color: #e5cb7d;
+  font-size: clamp(1.05rem, 2vw, 1.5rem);
+}
+
+.hero-solid-panel-main h2 {
+  max-width: 11ch;
+  margin-top: 0.4rem;
+  color: #f1eee5;
+  font-size: clamp(1.15rem, 2.05vw, 1.7rem);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.98;
+}
+
+.hero-solid-panel-rule {
+  width: 100%;
+  height: 1px;
+  margin-top: auto;
+  background: linear-gradient(90deg, rgba(229, 203, 125, 0.75), rgba(229, 203, 125, 0.08));
+}
+
+.hero-solid-panel-stats {
+  display: flex;
+  gap: 2rem;
+  padding-top: 0.9rem;
+}
+
+.hero-solid-panel-stats div {
+  display: grid;
+  gap: 0.22rem;
+}
+
+.hero-solid-panel-stats span {
+  color: #96948d;
+  font-size: 0.59rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-solid-panel-stats strong {
+  color: #e6e1d3;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.hero-solid-glass-shard {
+  z-index: 5;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.2), rgba(226, 190, 98, 0.07));
+}
+
+.hero-solid-shard-top {
+  top: 4%;
+  right: 2%;
+  width: 9rem;
+  height: 6.3rem;
+  clip-path: polygon(12% 0, 100% 20%, 79% 100%, 0 64%);
+}
+
+.hero-solid-shard-bottom {
+  right: 14%;
+  bottom: -1%;
+  width: 6.6rem;
+  height: 5.3rem;
+  clip-path: polygon(21% 0, 100% 16%, 75% 100%, 0 72%);
+}
+
+.hero-solid-visual-crosshair {
+  position: absolute;
+  z-index: 7;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid rgba(239, 216, 146, 0.48);
+  border-radius: 50%;
+}
+
+.hero-solid-visual-crosshair::before,
+.hero-solid-visual-crosshair::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.45rem;
+  height: 1px;
+  content: "";
+  background: rgba(239, 216, 146, 0.35);
+  transform: translate(-50%, -50%);
+}
+
+.hero-solid-visual-crosshair::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.hero-solid-crosshair-bottom {
+  right: 2%;
+  bottom: 24%;
+  transform: scale(0.62);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {

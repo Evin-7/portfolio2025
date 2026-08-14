@@ -20,6 +20,7 @@ export default function CircuitBackground() {
       >
         <Image src="/hero-circuit.svg" alt="" fill priority sizes="100vw" className="object-cover object-center" />
       </motion.div>
+      <div className="hero-circuit-right-quiet" />
       <div className="absolute inset-0 bg-gradient-to-b from-ink/50 via-ink/14 to-ink/82" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_38%,rgba(10,13,18,0.46)_86%)]" />
       <motion.div className="absolute inset-0 bg-ink" style={{ opacity: scrollShade }} />
