@@ -8,9 +8,12 @@ export default function Footer() {
   return (
     <footer className="border-t border-white/15 bg-[linear-gradient(110deg,rgba(10,13,18,0.94),rgba(255,255,255,0.08))] px-5 py-8 shadow-[0_1.25rem_3rem_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:py-10">
       <div className="mx-auto flex w-full max-w-[90rem] flex-col items-start gap-5 sm:px-3 md:flex-row md:items-center md:justify-between lg:px-8">
-        <a href="#home" className="inline-flex" aria-label="Back to top">
-          <Image src={logoMark} alt="Evin logo" className="block size-[34px]" />
-        </a>
+        <div className="flex w-full items-center justify-center gap-3 md:contents">
+          <a href="#home" className="inline-flex" aria-label="Back to top">
+            <Image src={logoMark} alt="Evin logo" className="block size-[34px]" />
+          </a>
+          <p className="m-0 text-[0.85rem] text-muted">© {new Date().getFullYear()}</p>
+        </div>
 
         <div className="grid w-full grid-cols-2 gap-3 md:flex md:w-auto md:flex-wrap">
           <a href="mailto:yjevin75@gmail.com" className={footerLinkClass}>
@@ -33,7 +36,6 @@ export default function Footer() {
           </a>
         </div>
 
-        <p className="m-0 text-[0.85rem] text-muted">© {new Date().getFullYear()}</p>
       </div>
     </footer>
   );
