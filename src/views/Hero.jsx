@@ -163,7 +163,9 @@ export default function Hero() {
   const reduceMotion = useReducedMotion();
   const { scrollYProgress: sceneScrollProgress } = useScroll({ target: sceneRef, offset: ["start start", "end start"] });
   const smoothSceneProgress = useSpring(sceneScrollProgress, { stiffness: 180, damping: 36, mass: 0.45 });
-  const assembly = useTransform(smoothSceneProgress, [0, 0.7, 1], reduceMotion ? [1, 1, 1] : [0, 0.9, 1]);
+  // Finish the assembly before the pinned hero releases, leaving a short hold
+  // so the next section only arrives after the pieces are fully combined.
+  const assembly = useTransform(smoothSceneProgress, [0, 0.58, 0.68, 1], reduceMotion ? [1, 1, 1, 1] : [0, 1, 1, 1]);
 
   const downloadResume = () => {
     window.location.assign("/resume");
@@ -229,8 +231,8 @@ export default function Hero() {
   ];
 
   return (
-    <section ref={sceneRef} className="relative isolate min-h-[100svh] overflow-x-clip bg-ink/90 font-mono text-left lg:h-[170svh]">
-      <div className="relative flex min-h-[100svh] items-center overflow-hidden pb-12 pt-[clamp(7.4rem,11vw,10rem)] lg:sticky lg:top-0">
+    <section ref={sceneRef} className="relative isolate min-h-[145svh] overflow-x-clip bg-ink/90 font-mono text-left lg:h-[170svh]">
+      <div className="relative sticky top-0 flex min-h-[100svh] items-center overflow-hidden pb-12 pt-[clamp(7.4rem,11vw,10rem)]">
         <div className="pointer-events-none absolute -right-24 top-[13%] -z-10 size-[min(42rem,66vw)] rounded-full bg-[radial-gradient(ellipse,rgba(212,175,55,0.15),transparent_68%)] blur-2xl" aria-hidden="true" />
         <div className="pointer-events-none absolute right-[5%] top-[10%] -z-10 hidden select-none font-mono text-[clamp(18rem,38vw,38rem)] font-black leading-none tracking-[-0.18em] text-white/[0.025] lg:block" aria-hidden="true">EL</div>
         <AmbientGlassFragments assembly={assembly} reduceMotion={reduceMotion} />
