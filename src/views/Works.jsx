@@ -52,7 +52,7 @@ export default function Works() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-ink py-20">
+    <section className="relative overflow-hidden bg-ink/88 py-20">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(212,175,55,0.04),transparent_70%)]" aria-hidden="true" />
       <div className={`${containerClass} relative z-10`}>
         <Reveal className="mb-9">

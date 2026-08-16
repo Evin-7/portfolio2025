@@ -10,7 +10,7 @@ const highlights = [
 
 export default function Highlights() {
   return (
-    <section className="relative overflow-hidden bg-ink py-16 pb-10">
+    <section className="relative overflow-hidden bg-ink/88 py-16 pb-10">
       <div className="pointer-events-none absolute -bottom-48 -right-36 size-[37.5rem] rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.05),transparent_70%)]" aria-hidden="true" />
       <div className={`${containerClass} relative z-10`}>
         <Reveal className="grid gap-4 md:grid-cols-3" delay={0.1}>

@@ -49,7 +49,7 @@ export default function Contact() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-ink py-[5.5rem]">
+    <section className="relative overflow-hidden bg-ink/88 py-[5.5rem]">
       <div className="pointer-events-none absolute -top-1/2 left-1/2 size-[31.25rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.08),transparent_70%)]" aria-hidden="true" />
       <div className="mx-auto w-full max-w-[90rem] px-5 sm:px-8 md:px-12 lg:px-20 2xl:max-w-none 2xl:px-[clamp(6rem,7vw,13.75rem)]">
         <Reveal className="relative z-10 mx-auto max-w-[47.5rem] text-center">

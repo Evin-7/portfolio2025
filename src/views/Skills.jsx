@@ -32,7 +32,7 @@ const skills = [
 
 export default function Skills() {
   return (
-    <section className="relative overflow-hidden bg-ink py-[4.5rem]">
+    <section className="relative overflow-hidden bg-ink/88 py-[4.5rem]">
       <div className={containerClass}>
         <Reveal>
           <p className="m-0 text-xs font-bold uppercase tracking-[0.14em] text-amber">Toolkit</p>

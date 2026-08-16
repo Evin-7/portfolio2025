@@ -50,6 +50,19 @@
 
 @keyframes cursor-blink { 50% { opacity: 0; } }
 
+.hero-circuit-left-quiet {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 58%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(10, 13, 18, 0.42) 0%,
+    rgba(10, 13, 18, 0.2) 48%,
+    rgba(10, 13, 18, 0) 100%
+  );
+}
+
 .hero-circuit-right-quiet {
   position: absolute;
   inset: 0 0 0 auto;

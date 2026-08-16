@@ -33,7 +33,7 @@ const experience = [
 
 export default function About() {
   return (
-    <section className="relative overflow-hidden bg-ink py-[5.5rem]">
+    <section className="relative overflow-hidden bg-ink/88 py-[5.5rem]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,rgba(212,175,55,0.03),transparent_60%)]" aria-hidden="true" />
       <div className={`${containerClass} relative z-10`}>
         <Reveal className="max-w-[45rem]">

@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
-import CircuitBackground from "../components/CircuitBackground";
 
 const containerClass = "mx-auto w-full max-w-[90rem] px-5 sm:px-8 md:px-12 lg:px-20 2xl:max-w-none 2xl:px-[clamp(6rem,7vw,13.75rem)]";
 
@@ -230,11 +229,9 @@ export default function Hero() {
   ];
 
   return (
-    <section ref={sceneRef} className="relative isolate min-h-[100svh] overflow-x-clip bg-ink font-mono text-left lg:h-[170svh]">
-      <CircuitBackground />
+    <section ref={sceneRef} className="relative isolate min-h-[100svh] overflow-x-clip bg-ink/90 font-mono text-left lg:h-[170svh]">
       <div className="relative flex min-h-[100svh] items-center overflow-hidden pb-12 pt-[clamp(7.4rem,11vw,10rem)] lg:sticky lg:top-0">
         <div className="pointer-events-none absolute -right-24 top-[13%] -z-10 size-[min(42rem,66vw)] rounded-full bg-[radial-gradient(ellipse,rgba(212,175,55,0.15),transparent_68%)] blur-2xl" aria-hidden="true" />
-        <div className="pointer-events-none absolute -bottom-60 -left-56 -z-10 size-[min(42rem,70vw)] rounded-full bg-[radial-gradient(ellipse,rgba(125,211,252,0.08),transparent_68%)] blur-2xl" aria-hidden="true" />
         <div className="pointer-events-none absolute right-[5%] top-[10%] -z-10 hidden select-none font-mono text-[clamp(18rem,38vw,38rem)] font-black leading-none tracking-[-0.18em] text-white/[0.025] lg:block" aria-hidden="true">EL</div>
         <AmbientGlassFragments assembly={assembly} reduceMotion={reduceMotion} />
 
