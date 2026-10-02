@@ -26,7 +26,7 @@ const cardClass = "min-h-48 cursor-pointer overflow-hidden rounded-2xl border bo
 const works = [
   {
     name: "VELTRIX",
-    category: "iGaming platform",
+    category: "",
     summary: "",
     stack: "",
     links: [["Live project", "https://veltrix-evins.vercel.app/"]],
