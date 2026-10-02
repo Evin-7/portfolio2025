@@ -28,7 +28,7 @@ const experience = [
     company: "Penieltech LLC, Dubai",
     country: "United Arab Emirates",
     countryMap: "/company/uae-outline.svg",
-    focus: "VELTRIX — a recent iGaming product build with playable games, authentication, wallet systems, and rewards.",
+    focus: "VELTRIX. — a recent iGaming product build with playable games, authentication, wallet systems, and rewards.",
   },
 ];
 
