@@ -28,6 +28,7 @@ const experience = [
     company: "Penieltech LLC, Dubai",
     country: "United Arab Emirates",
     countryMap: "/company/uae-outline.svg",
+    focus: "VELTRIX — a recent iGaming product build with playable games, authentication, wallet systems, and rewards.",
   },
 ];
 
@@ -63,6 +64,7 @@ export default function About() {
                     />
                   </span>
                 </div>
+                {item.focus ? <p className="mt-4 border-t border-white/10 pt-3 text-xs leading-5 text-copy/75"><span className="font-bold uppercase tracking-[0.08em] text-amber">Product focus · </span>{item.focus}</p> : null}
               </div>
             </article>
           ))}

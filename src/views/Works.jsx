@@ -18,11 +18,20 @@ import ohYesWorld from "../assets/images/ohyescom.webp";
 import parambikulam from "../assets/images/parambikulam.webp";
 import penielTech from "../assets/images/penieltech.webp";
 import periyar from "../assets/images/periyartigerreserve.webp";
+import veltrix from "../assets/images/veltrix.webp";
 
 const containerClass = "mx-auto w-full max-w-[90rem] px-5 sm:px-8 md:px-12 lg:px-20 2xl:max-w-none 2xl:px-[clamp(6rem,7vw,13.75rem)]";
 const cardClass = "min-h-48 cursor-pointer overflow-hidden rounded-2xl border border-amber/20 bg-gradient-to-br from-panel to-panel/80 p-2.5 shadow-none transition duration-200 hover:-translate-y-1.5 hover:border-amber hover:shadow-2xl hover:shadow-black/30";
 
 const works = [
+  {
+    name: "VELTRIX",
+    category: "iGaming platform",
+    summary: "Playable games, authentication, wallet systems, and rewards in one responsive product.",
+    stack: "Next.js · TypeScript · Prisma · PostgreSQL/Neon · Vercel",
+    links: [["Live project", "https://veltrix-evins.vercel.app/"]],
+    image: veltrix,
+  },
   { name: "AbeZauto", links: [["Visit site", "https://abezauto.com/"]], image: abeZauto },
   { name: "AGSYBA", links: [["Visit site", "https://agsyba.com/"]], image: agsyba },
   { name: "Call2Day", links: [["Visit site", "https://call2day.com/"]], image: call2day },
@@ -91,7 +100,9 @@ export default function Works() {
                   <div className="grid h-full grid-rows-[auto_minmax(0,1fr)_auto] gap-3">
                     <div>
                       <p className="m-0 mb-2 font-mono text-[0.61rem] font-bold uppercase tracking-[0.1em] text-amber-light">{String(index + 1).padStart(2, "0")}</p>
+                      {work.category ? <p className="m-0 mb-1 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-cyan">{work.category}</p> : null}
                       <h3 className="m-0 text-[clamp(0.88rem,1.15vw,1.15rem)] font-semibold leading-tight tracking-[-0.04em] text-copy">{work.name}</h3>
+                      {work.summary ? <p className="mt-2 max-w-[32ch] text-xs leading-relaxed text-muted">{work.summary}</p> : null}
                     </div>
 
                     <div className="flex min-h-0 items-center">
@@ -105,9 +116,12 @@ export default function Works() {
                       </div>
                     </div>
 
-                    <div className="flex justify-end">
-                      <div className="flex flex-wrap justify-end gap-2">
+                    <div className="space-y-2">
+                      {work.stack ? <p className="m-0 text-right font-mono text-[0.56rem] leading-relaxed text-muted">{work.stack}</p> : null}
+                      <div className="flex justify-end">
+                        <div className="flex flex-wrap justify-end gap-2">
                         {work.links.map(([label, href]) => <a key={href} href={href} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()} className="inline-flex items-center gap-2 rounded-xl border border-amber/20 bg-amber/10 px-3 py-2 text-[0.68rem] font-bold text-amber transition hover:translate-x-1 hover:bg-amber hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-cyan"><span>{label}</span><strong>↗</strong></a>)}
+                        </div>
                       </div>
                     </div>
                   </div>
