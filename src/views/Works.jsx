@@ -27,8 +27,8 @@ const works = [
   {
     name: "VELTRIX",
     category: "iGaming platform",
-    summary: "Playable games, authentication, wallet systems, and rewards in one responsive product.",
-    stack: "Next.js · TypeScript · Prisma · PostgreSQL/Neon · Vercel",
+    summary: "",
+    stack: "",
     links: [["Live project", "https://veltrix-evins.vercel.app/"]],
     image: veltrix,
   },
