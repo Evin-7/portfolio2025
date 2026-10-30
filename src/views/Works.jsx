@@ -19,11 +19,19 @@ import ohYesWorld from "../assets/images/ohyescom.webp";
 import parambikulam from "../assets/images/parambikulam.webp";
 import penielTech from "../assets/images/penieltech.webp";
 import periyar from "../assets/images/periyartigerreserve.webp";
+import sitecore from "../assets/images/sitecore.webp";
 import veltrix from "../assets/images/veltrix.webp";
 
 const cardClass = "flex h-full flex-col rounded-2xl border border-white/10 bg-panel p-4 transition-colors hover:border-white/25 sm:p-5";
 
 const works = [
+  {
+    name: "SiteCore",
+    category: "3D Operations Dashboard",
+    summary: "An interactive industrial site viewer with 3D assets, operational zones, alerts, and maintenance tools.",
+    links: [["Live project", "https://sitecore-rho.vercel.app/"]],
+    image: sitecore,
+  },
   {
     name: "VELTRIX",
     category: "",
