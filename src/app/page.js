@@ -1,6 +1,5 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import CircuitBackground from "../components/CircuitBackground";
 import Hero from "../views/Hero";
 import Highlights from "../views/Highlights";
 import About from "../views/About";
@@ -10,32 +9,27 @@ import Contact from "../views/Contact";
 
 export default function HomePage() {
   return (
-    <div className="app relative isolate min-h-screen">
-      <CircuitBackground />
-      <div className="relative z-10">
-        <div className="page-shell">
-          <Navbar />
-          <main className="content-shell">
-            <section id="home">
-              <Hero />
-            </section>
-            <Highlights />
-            <section id="about">
-              <About />
-            </section>
-            <section id="skills">
-              <Skills />
-            </section>
-            <section id="works">
-              <Works />
-            </section>
-            <section id="contact">
-              <Contact />
-            </section>
-          </main>
-          <Footer />
-        </div>
-      </div>
+    <div className="min-h-screen bg-ink">
+      <Navbar />
+      <main>
+        <section id="home" className="scroll-mt-24">
+          <Hero />
+        </section>
+        <Highlights />
+        <section id="about" className="scroll-mt-24">
+          <About />
+        </section>
+        <section id="skills" className="scroll-mt-24">
+          <Skills />
+        </section>
+        <section id="works" className="scroll-mt-24">
+          <Works />
+        </section>
+        <section id="contact" className="scroll-mt-24">
+          <Contact />
+        </section>
+      </main>
+      <Footer />
     </div>
   );
 }

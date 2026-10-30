@@ -1,41 +1,37 @@
-import Image from "next/image";
-import logoMark from "../assets/icons/peniel-mark.svg";
 import { siGithub } from "simple-icons";
 
-const footerLinkClass = "inline-flex w-full min-w-0 items-center justify-start gap-1.5 rounded-full border border-amber/20 bg-panel px-2 py-2 text-left text-[0.72rem] text-copy no-underline transition hover:text-amber hover:shadow-[0_0_22px_rgba(212,175,55,0.15)] sm:gap-2 sm:px-3 sm:text-[0.82rem] md:w-auto";
+const footerLinkClass = "inline-flex min-w-0 items-center justify-center gap-2 rounded-full border border-white/15 px-3 py-2 text-left text-xs text-muted no-underline transition-colors hover:border-white/40 hover:text-copy sm:px-4 sm:text-sm";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/15 bg-[linear-gradient(110deg,rgba(10,13,18,0.94),rgba(255,255,255,0.08))] px-5 py-8 shadow-[0_1.25rem_3rem_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:py-10">
-      <div className="mx-auto flex w-full max-w-[90rem] flex-col items-start gap-5 sm:px-3 md:flex-row md:items-center md:justify-between lg:px-8">
-        <div className="flex w-full items-center justify-center gap-3 md:contents">
-          <a href="#home" className="inline-flex" aria-label="Back to top">
-            <Image src={logoMark} alt="Evin logo" className="block size-[34px]" />
+    <footer className="border-t border-white/10 bg-ink px-5 py-8 sm:px-8 sm:py-10">
+      <div className="mx-auto flex w-full max-w-[90rem] flex-col items-center gap-6 md:flex-row md:justify-between lg:px-12 2xl:px-[clamp(2rem,4vw,6rem)]">
+        <div className="flex items-center gap-3">
+          <a href="#home" className="text-xs font-semibold uppercase tracking-[0.16em] text-copy" aria-label="Back to top">
+            Evin Leyander
           </a>
-          <p className="m-0 text-[0.85rem] text-muted">© {new Date().getFullYear()}</p>
+          <span className="text-subtle" aria-hidden="true">·</span>
+          <p className="m-0 text-xs text-muted">© {new Date().getFullYear()}</p>
         </div>
 
-        <div className="grid w-full grid-cols-2 gap-3 md:flex md:w-auto md:flex-wrap">
+        <div className="grid w-full grid-cols-2 gap-2 md:flex md:w-auto md:flex-wrap">
           <a href="mailto:yjevin75@gmail.com" className={footerLinkClass}>
-            <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-amber text-[0.62rem] font-bold leading-none text-ink sm:size-6 sm:text-[0.68rem]" aria-hidden="true">✉</span>
+            <span aria-hidden="true">✉</span>
             <span>Email</span>
           </a>
           <a href="https://github.com/Evin-7" target="_blank" rel="noopener noreferrer" className={footerLinkClass}>
-            <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-amber text-ink sm:size-6" aria-hidden="true">
-              <svg viewBox="0 0 24 24" className="size-4 fill-current"><path d={siGithub.path} /></svg>
-            </span>
+            <svg viewBox="0 0 24 24" className="size-4 fill-current" aria-hidden="true"><path d={siGithub.path} /></svg>
             <span>GitHub</span>
           </a>
           <a href="https://www.linkedin.com/feed/" target="_blank" rel="noopener noreferrer" className={footerLinkClass}>
-            <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-amber text-[0.62rem] font-bold leading-none text-ink sm:size-6 sm:text-[0.68rem]" aria-hidden="true">in</span>
+            <span className="font-semibold" aria-hidden="true">in</span>
             <span>LinkedIn</span>
           </a>
           <a href="tel:+917510255897" className={footerLinkClass}>
-            <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-amber text-[0.62rem] font-bold leading-none text-ink sm:size-6 sm:text-[0.68rem]" aria-hidden="true">☎</span>
+            <span aria-hidden="true">☎</span>
             <span>+91 7510255897</span>
           </a>
         </div>
-
       </div>
     </footer>
   );

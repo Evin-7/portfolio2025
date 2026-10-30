@@ -48,28 +48,52 @@ export default function Contact() {
     }
   };
 
+  const fieldClass = "w-full rounded-xl border border-white/15 bg-panel px-4 py-3.5 text-sm text-copy outline-none transition-colors placeholder:text-muted/80 focus:border-white/50";
+
   return (
-    <section className="relative overflow-hidden bg-ink/88 py-[5.5rem]">
-      <div className="pointer-events-none absolute -top-1/2 left-1/2 size-[31.25rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.08),transparent_70%)]" aria-hidden="true" />
-      <div className="mx-auto w-full max-w-[90rem] px-5 sm:px-8 md:px-12 lg:px-20 2xl:max-w-none 2xl:px-[clamp(6rem,7vw,13.75rem)]">
-        <Reveal className="relative z-10 mx-auto max-w-[47.5rem] text-center">
-          <p className="m-0 text-xs font-bold uppercase tracking-[0.12em] text-amber">Contact</p>
-          <h2 className="mt-3 bg-gradient-to-br from-copy to-amber-light bg-clip-text text-[clamp(2.2rem,5vw,4rem)] font-semibold leading-tight tracking-[-0.055em] text-transparent">Let’s work together.</h2>
-          <p className="mt-4 text-base leading-7 text-muted">Software, product UI, and websites.</p>
+    <section className="border-t border-white/10 bg-panel py-20 sm:py-28">
+      <div className="mx-auto w-full max-w-[90rem] px-5 sm:px-8 md:px-12 lg:px-20 2xl:px-[clamp(6rem,7vw,13.75rem)]">
+        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+          <Reveal className="max-w-[36rem]">
+            <p className="m-0 text-xs font-semibold uppercase tracking-[0.18em] text-muted">Contact</p>
+            <h2 className="mt-4 text-[clamp(2.3rem,5vw,4.5rem)] font-medium leading-[0.98] tracking-[-0.065em] text-copy">
+              Let’s work together.
+            </h2>
+            <p className="mt-6 text-base leading-7 text-muted sm:text-lg sm:leading-8">
+              Software, product UI, and websites.
+            </p>
+            <a
+              href="mailto:yjevin75@gmail.com"
+              className="mt-7 inline-flex min-h-12 items-center rounded-full border border-white/25 px-5 py-3 text-sm font-medium text-copy transition-colors hover:bg-white/[0.07]"
+            >
+              yjevin75@gmail.com <span className="ml-3 text-muted" aria-hidden="true">↗</span>
+            </a>
+          </Reveal>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <a href="mailto:yjevin75@gmail.com" className="rounded-full border border-amber bg-amber px-4 py-2.5 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-amber-light focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-cyan">yjevin75@gmail.com</a>
-          </div>
+          <Reveal delay={0.08}>
+            <form className="flex flex-col gap-3" onSubmit={submitForm}>
+              <label className="sr-only" htmlFor="contact-name">Name</label>
+              <input id="contact-name" name="name" value={form.name} onChange={updateField} type="text" autoComplete="name" placeholder="Name" required className={fieldClass} />
 
-          {messageText ? <div className="mt-6 text-muted" role="status">{messageText}</div> : null}
+              <label className="sr-only" htmlFor="contact-email">Email</label>
+              <input id="contact-email" name="email" value={form.email} onChange={updateField} type="email" autoComplete="email" placeholder="Email" required className={fieldClass} />
 
-          <form className="mt-8 flex flex-col gap-3" onSubmit={submitForm}>
-            <input name="name" value={form.name} onChange={updateField} type="text" placeholder="Name" required className="w-full rounded-2xl border border-amber/20 bg-gradient-to-br from-panel to-panel/50 px-4 py-4 text-copy outline-none transition placeholder:text-muted focus:border-amber focus:shadow-[0_0_24px_rgba(212,175,55,0.15)]" />
-            <input name="email" value={form.email} onChange={updateField} type="email" placeholder="Email" required className="w-full rounded-2xl border border-amber/20 bg-gradient-to-br from-panel to-panel/50 px-4 py-4 text-copy outline-none transition placeholder:text-muted focus:border-amber focus:shadow-[0_0_24px_rgba(212,175,55,0.15)]" />
-            <textarea name="message" value={form.message} onChange={updateField} placeholder="Tell me about your project" rows={5} required className="w-full resize-y rounded-2xl border border-amber/20 bg-gradient-to-br from-panel to-panel/50 px-4 py-4 text-copy outline-none transition placeholder:text-muted focus:border-amber focus:shadow-[0_0_24px_rgba(212,175,55,0.15)]" />
-            <button type="submit" className="mx-auto min-w-44 rounded-full bg-gradient-to-br from-amber to-amber-light px-5 py-4 text-sm font-bold text-ink transition hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-amber/20 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-cyan disabled:cursor-not-allowed disabled:opacity-60" disabled={isSubmitting}>{submitText}</button>
-          </form>
-        </Reveal>
+              <label className="sr-only" htmlFor="contact-message">Tell me about your project</label>
+              <textarea id="contact-message" name="message" value={form.message} onChange={updateField} placeholder="Tell me about your project" rows={5} required className={fieldClass + " resize-y"} />
+
+              <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+                <div className="text-sm text-muted" role="status" aria-live="polite">{messageText}</div>
+                <button
+                  type="submit"
+                  className="inline-flex min-h-12 min-w-40 items-center justify-center rounded-full bg-copy px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={isSubmitting}
+                >
+                  {submitText}
+                </button>
+              </div>
+            </form>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
