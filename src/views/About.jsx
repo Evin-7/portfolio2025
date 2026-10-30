@@ -8,27 +8,29 @@ const experience = [
   {
     year: "2022",
     period: "Oct 2022 - Mar 2024",
-    role: "Frontend Developer",
+    role: "Junior Frontend Developer",
     company: "Leopard Tech Labs, Kanjirappally, Kerala",
     country: "India",
     countryMap: "/company/india-outline.svg",
+    focus: "Built Vue booking platforms with payment integrations, increasing online bookings by 40% and supporting 15,000+ monthly reserve bookings.",
   },
   {
     year: "2024",
-    period: "Apr 2024 - Jan 2026",
+    period: "Apr 2024 - Aug 2025",
     role: "Software Engineer",
     company: "Turinix, Mumbai, Maharashtra",
     country: "India",
     countryMap: "/company/india-outline.svg",
+    focus: "Improved a Vue food-delivery platform's page loads by 60%, supporting 5,000+ concurrent users at 99.9% uptime.",
   },
   {
     year: "2026",
-    period: "Feb 2026 - Present",
-    role: "Senior Software Engineer",
+    period: "Feb 2026 - Aug 2026",
+    role: "Software Engineer",
     company: "Penieltech LLC, Dubai",
     country: "United Arab Emirates",
     countryMap: "/company/uae-outline.svg",
-    focus: "VELTRIX —  a recent iGaming product build with playable games, authentication, wallet systems, and rewards.",
+    focus: "Built SaaS HR and AI workflows, contributed to C#/.NET check-printing and e-invoicing, and delivered a Medusa.js storefront.",
   },
 ];
 
@@ -47,7 +49,7 @@ export default function About() {
           {experience.map((item) => (
             <article key={item.role} className="relative pt-0 md:pt-12">
               <span className="absolute -left-10 top-0 z-10 flex size-10 -translate-x-1/2 items-center justify-center rounded-full border-2 border-ink bg-amber text-[0.58rem] font-bold text-ink shadow-[0_0_0_4px_rgba(212,175,55,0.14)] md:left-1/2 md:top-0" aria-hidden="true">{item.year}</span>
-              <div className="cursor-pointer rounded-3xl border border-amber/20 bg-gradient-to-br from-panel to-panel/50 p-5 transition hover:-translate-y-1 hover:border-amber">
+              <div className="rounded-3xl border border-amber/20 bg-gradient-to-br from-panel to-panel/50 p-5 transition hover:-translate-y-1 hover:border-amber">
                 <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-3">
                   <span className="font-mono text-sm font-semibold text-amber">{item.period}</span>
                 </div>
@@ -64,6 +66,7 @@ export default function About() {
                     />
                   </span>
                 </div>
+                <p className="mt-4 border-t border-white/10 pt-4 text-xs leading-6 text-muted">{item.focus}</p>
               </div>
             </article>
           ))}

@@ -8,7 +8,7 @@ const containerClass = "mx-auto w-full max-w-[90rem] px-5 sm:px-8 md:px-12 lg:px
 const sequence = [
   { key: "eyebrow", text: "Available for new projects", speed: 28 },
   { key: "headline", text: "Full-stack.\nBuilt to ship.", speed: 24 },
-  { key: "role", text: "Currently shipping interfaces", speed: 34 },
+  { key: "role", text: "React, TypeScript & .NET", speed: 34 },
 ];
 
 const completeText = Object.fromEntries(sequence.map(({ key, text }) => [key, text]));
