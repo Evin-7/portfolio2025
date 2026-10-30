@@ -6,10 +6,6 @@ export default function Hero() {
     <section className="bg-ink pb-8 pt-24 sm:pb-12 sm:pt-28 lg:min-h-[calc(100svh-1rem)] lg:py-24">
       <div className="page-container grid items-center gap-8 lg:grid-cols-[1.04fr_0.96fr] lg:gap-12">
         <div className="relative z-10 order-2 max-w-[44rem] py-2 lg:col-start-1 lg:row-start-1 lg:order-1 lg:py-10">
-          <p className="mb-7 flex items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted sm:mb-9">
-            <span className="h-px w-8 bg-subtle" aria-hidden="true" />
-            Portfolio · 2026
-          </p>
           <h1 className="text-[clamp(3.4rem,8vw,7.4rem)] font-semibold uppercase leading-[0.83] tracking-[-0.085em] text-copy">
             Evin
             <span className="mt-2 block text-subtle">Leyander</span>
