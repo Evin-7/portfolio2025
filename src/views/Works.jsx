@@ -35,8 +35,6 @@ const works = [
   },
   {
     name: "Ontix",
-    category: "Enterprise operations",
-    summary: "Live dashboard for projects, cases, customers, teams, employees, and approvals.",
     stack: "",
     links: [["Live project", "https://ontixx.vercel.app/"]],
     image: ontix,
