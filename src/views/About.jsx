@@ -27,7 +27,7 @@ const experience = [
     company: "Penieltech LLC, Dubai",
     country: "United Arab Emirates",
     countryMap: "/company/uae-outline.svg",
-    focus: "Built SaaS HR and AI workflows, contributed to C#/.NET check-printing and e-invoicing, and delivered a Medusa.js storefront.",
+    focus: "Built SaaS HR and AI workflows, contributed to check-printing and e-invoicing software, and delivered a Medusa.js storefront.",
   },
 ];
 

@@ -1,11 +1,11 @@
 import Reveal from "../components/Reveal";
 
-const featuredSkills = new Set(["C#", ".NET", "ASP.NET Core", "React", "TypeScript"]);
+const featuredSkills = new Set(["React", "TypeScript"]);
 
 const skillGroups = [
   {
     title: "Languages",
-    skills: ["TypeScript", "JavaScript", "C#", "Python", "SQL", "Java"],
+    skills: ["TypeScript", "JavaScript", "Python", "SQL", "Java"],
   },
   {
     title: "Frontend & mobile",
@@ -13,7 +13,7 @@ const skillGroups = [
   },
   {
     title: "Backend & APIs",
-    skills: [".NET", "ASP.NET Core", "Node.js", "NestJS", "Express.js", "FastAPI", "Spring / Spring Boot", "REST APIs", "GraphQL", "Medusa.js"],
+    skills: ["Node.js", "NestJS", "Express.js", "FastAPI", "Spring / Spring Boot", "REST APIs", "GraphQL", "Medusa.js"],
   },
   {
     title: "Data & infrastructure",

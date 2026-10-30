@@ -14,7 +14,7 @@ export default function Hero() {
             Full Stack Software Engineer
           </p>
           <p className="mt-4 max-w-[39rem] text-[0.98rem] leading-7 text-muted sm:text-[1.05rem] sm:leading-8">
-            For 4 years, I’ve built and shipped thoughtful digital products across React, TypeScript, Next.js, Node.js, .NET, and AI-powered software.
+            For 4 years, I’ve built and shipped thoughtful digital products across React, TypeScript, Next.js, Node.js, and AI-powered software.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
