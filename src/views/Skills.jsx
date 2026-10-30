@@ -49,7 +49,7 @@ export default function Skills() {
               <article className="h-full rounded-2xl border border-white/10 bg-ink p-5 transition-colors hover:border-white/30 sm:p-6">
                 <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
                   <h3 className="text-sm font-semibold text-copy">{group.title}</h3>
-                  <span className="font-mono text-xs text-muted">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="text-xs text-muted">{String(index + 1).padStart(2, "0")}</span>
                 </div>
                 <ul className="mt-4 flex flex-wrap gap-2" aria-label={group.title}>
                   {group.skills.map((skill) => (

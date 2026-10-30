@@ -92,7 +92,7 @@ export default function Works() {
                   <div>
                     <div className="flex items-baseline justify-between gap-4">
                       <h3 className="m-0 text-lg font-semibold leading-tight tracking-[-0.035em] text-copy">{work.name}</h3>
-                      <span className="font-mono text-[0.65rem] tracking-[0.12em] text-muted">{String(index + 1).padStart(2, "0")}</span>
+                      <span className="text-[0.65rem] tracking-[0.12em] text-muted">{String(index + 1).padStart(2, "0")}</span>
                     </div>
                     {work.category ? <p className="mb-0 mt-2 text-xs font-medium uppercase tracking-[0.12em] text-muted">{work.category}</p> : null}
                     {work.summary ? <p className="mb-0 mt-2 max-w-[32ch] text-sm leading-6 text-muted">{work.summary}</p> : null}

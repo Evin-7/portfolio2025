@@ -53,7 +53,7 @@ export default function About() {
               </span>
               <div className="h-full rounded-2xl border border-white/10 bg-panel p-5 sm:p-6">
                 <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
-                  <span className="font-mono text-xs font-medium tracking-wide text-muted">{item.period}</span>
+                  <span className="text-xs font-medium tracking-wide text-muted">{item.period}</span>
                   <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-muted">{item.year}</span>
                 </div>
                 <h3 className="mt-5 text-lg font-semibold leading-tight tracking-[-0.025em] text-copy">{item.role}</h3>

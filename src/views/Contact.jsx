@@ -81,15 +81,17 @@ export default function Contact() {
               <label className="sr-only" htmlFor="contact-message">Tell me about your project</label>
               <textarea id="contact-message" name="message" value={form.message} onChange={updateField} placeholder="Tell me about your project" rows={5} required className={fieldClass + " resize-y"} />
 
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-                <div className="text-sm text-muted" role="status" aria-live="polite">{messageText}</div>
-                <button
-                  type="submit"
-                  className="inline-flex min-h-12 min-w-40 items-center justify-center rounded-full bg-copy px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-                  disabled={isSubmitting}
-                >
-                  {submitText}
-                </button>
+              <div className="pt-2">
+                <div className="flex justify-center">
+                  <button
+                    type="submit"
+                    className="inline-flex min-h-12 min-w-40 items-center justify-center rounded-full bg-copy px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={isSubmitting}
+                  >
+                    {submitText}
+                  </button>
+                </div>
+                <div className={messageText ? "mt-3 text-center text-sm text-muted" : "sr-only"} role="status" aria-live="polite">{messageText}</div>
               </div>
             </form>
           </Reveal>

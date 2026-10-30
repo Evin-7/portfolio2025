@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: Arial, "Helvetica Neue", sans-serif;
-  --font-mono: "SFMono-Regular", Consolas, monospace;
   --color-ink: #000000;
   --color-panel: #0A0A0A;
   --color-panel-alt: #171717;
@@ -21,19 +19,27 @@
 }
 
 @layer base {
+  :root {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
   html {
     scroll-behavior: smooth;
     background: #000000;
   }
 
   body {
-    @apply min-h-screen overflow-x-hidden bg-ink font-sans text-copy antialiased;
+    @apply min-h-screen overflow-x-hidden bg-ink text-copy antialiased;
   }
 
   a,
   button,
   input,
   textarea {
+    font: inherit;
+  }
+
+  ::placeholder {
     font: inherit;
   }
 
