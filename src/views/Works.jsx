@@ -21,7 +21,7 @@ import penielTech from "../assets/images/penieltech.webp";
 import periyar from "../assets/images/periyartigerreserve.webp";
 import veltrix from "../assets/images/veltrix.webp";
 
-const cardClass = "h-full rounded-2xl border border-white/10 bg-panel p-4 transition-colors hover:border-white/25 sm:p-5";
+const cardClass = "flex h-full flex-col rounded-2xl border border-white/10 bg-panel p-4 transition-colors hover:border-white/25 sm:p-5";
 
 const works = [
   {
@@ -85,7 +85,7 @@ export default function Works() {
               </Reveal>
             ) : null}
 
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {group.items.map((work, index) => {
                 const isWebsite = group.key === "websites";
                 const heading = (
@@ -113,7 +113,7 @@ export default function Works() {
                       height={work.image.height}
                       loading={work.name === "Elate HRMS" ? "eager" : "lazy"}
                       sizes="(max-width: 768px) 88vw, (max-width: 1280px) 42vw, 28vw"
-                      className={"block w-full object-cover grayscale " + (work.wide ? "aspect-[1.84/1] object-bottom" : "aspect-[1.56/1] object-center")}
+                      className={"block aspect-[1.56/1] w-full object-cover grayscale " + (work.wide ? "object-bottom" : "object-center")}
                     />
                   </div>
                 );
@@ -122,15 +122,15 @@ export default function Works() {
                   <Reveal key={work.name} className="h-full" delay={index * 0.035}>
                     <article className={cardClass}>
                       {isWebsite ? (
-                        <a href={work.links[0][1]} target="_blank" rel="noopener noreferrer" className="group block rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+                        <a href={work.links[0][1]} target="_blank" rel="noopener noreferrer" className="group block flex-1 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
                           {heading}
                           {preview}
                         </a>
                       ) : (
-                        <div>{heading}{preview}</div>
+                        <div className="flex-1">{heading}{preview}</div>
                       )}
 
-                      <div className="mt-4 flex flex-wrap gap-2">
+                      <div className="mt-auto flex flex-wrap gap-2 pt-4">
                         {work.links.map(([label, href]) => (
                           <a
                             key={href}
