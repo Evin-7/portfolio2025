@@ -14,6 +14,7 @@ import mezehCatering from "../assets/images/mezehcateting.webp";
 import mezehFrontend from "../assets/images/mezehfrontend.webp";
 import mezehMobile from "../assets/images/mezehmobileapp.webp";
 import mudumalai from "../assets/images/mudumaialia.webp";
+import ontix from "../assets/images/ontixx.webp";
 import ohYesWorld from "../assets/images/ohyescom.webp";
 import parambikulam from "../assets/images/parambikulam.webp";
 import penielTech from "../assets/images/penieltech.webp";
@@ -21,7 +22,7 @@ import periyar from "../assets/images/periyartigerreserve.webp";
 import veltrix from "../assets/images/veltrix.webp";
 
 const containerClass = "mx-auto w-full max-w-[90rem] px-5 sm:px-8 md:px-12 lg:px-20 2xl:max-w-none 2xl:px-[clamp(6rem,7vw,13.75rem)]";
-const cardClass = "min-h-48 cursor-pointer overflow-hidden rounded-2xl border border-amber/20 bg-gradient-to-br from-panel to-panel/80 p-2.5 shadow-none transition duration-200 hover:-translate-y-1.5 hover:border-amber hover:shadow-2xl hover:shadow-black/30";
+const cardClass = "h-full min-h-48 cursor-pointer overflow-hidden rounded-2xl border border-amber/20 bg-gradient-to-br from-panel to-panel/80 p-2.5 shadow-none transition duration-200 hover:-translate-y-1.5 hover:border-amber hover:shadow-2xl hover:shadow-black/30";
 
 const works = [
   {
@@ -31,6 +32,15 @@ const works = [
     stack: "",
     links: [["Live project", "https://veltrix-evins.vercel.app/"]],
     image: veltrix,
+  },
+  {
+    name: "Ontix",
+    category: "Enterprise operations",
+    summary: "Live dashboard for projects, cases, customers, teams, employees, and approvals.",
+    stack: "",
+    links: [["Live project", "https://ontixx.vercel.app/"]],
+    image: ontix,
+    wide: true,
   },
   { name: "AbeZauto", links: [["Visit site", "https://abezauto.com/"]], image: abeZauto },
   { name: "AGSYBA", links: [["Visit site", "https://agsyba.com/"]], image: agsyba },
@@ -83,7 +93,7 @@ export default function Works() {
 
             <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {group.items.map((work, index) => (
-                <Reveal key={work.name} delay={index * 0.045} direction={index % 2 === 0 ? "up" : "right"}>
+                <Reveal key={work.name} className="h-full" delay={index * 0.045} direction={index % 2 === 0 ? "up" : "right"}>
                   <article
                     className={cardClass}
                     onClick={group.key === "websites" ? () => openWebsite(work.links[0][1]) : undefined}
@@ -107,10 +117,10 @@ export default function Works() {
 
                     <div className="flex min-h-0 items-center">
                       <div className="flex w-full flex-col items-center">
-                        <div className="relative aspect-[1.56/1] w-[64%] max-w-[14rem] overflow-hidden rounded-t-xl bg-gradient-to-br from-panel-alt to-ink p-1.5 pb-1 shadow-[inset_0_0_30px_rgba(212,175,55,0.1)] sm:w-[72%]">
+                        <div className={`relative ${work.wide ? "aspect-[1.84/1]" : "aspect-[1.56/1]"} w-[64%] max-w-[14rem] overflow-hidden rounded-t-xl bg-gradient-to-br from-panel-alt to-ink p-1.5 pb-1 shadow-[inset_0_0_30px_rgba(212,175,55,0.1)] sm:w-[72%]`}>
                           <div className="flex gap-1.5 pb-1.5"><span className="size-1.5 rounded-full bg-amber-deep" /><span className="size-1.5 rounded-full bg-amber" /><span className="size-1.5 rounded-full bg-amber-light" /></div>
                           <div className="absolute left-1/2 top-1 h-[0.18rem] w-[18%] max-w-8 -translate-x-1/2 rounded-full bg-white/10" />
-                          <Image src={work.image} alt={work.name} width={1536} height={1024} loading={work.name === "Elate HRMS" ? "eager" : "lazy"} sizes="(max-width: 768px) 88vw, (max-width: 1280px) 42vw, 28vw" className="block h-[calc(100%-13px)] w-full rounded-xl bg-panel-alt object-cover p-1" />
+                          <Image src={work.image} alt={work.name} width={work.image.width} height={work.image.height} loading={work.name === "Elate HRMS" ? "eager" : "lazy"} sizes="(max-width: 768px) 88vw, (max-width: 1280px) 42vw, 28vw" className={`block h-[calc(100%-13px)] w-full rounded-xl bg-panel-alt object-cover p-1 ${work.wide ? "object-bottom" : "object-center"}`} />
                         </div>
                         <div className="relative h-2.5 w-[72%] max-w-[16rem] rounded-b-xl bg-gradient-to-r from-[#7a6f5f] via-muted to-[#7a6f5f] shadow-lg after:absolute after:left-1/2 after:top-0.5 after:h-1 after:w-[18%] after:-translate-x-1/2 after:rounded-full after:bg-white/60" />
                       </div>
