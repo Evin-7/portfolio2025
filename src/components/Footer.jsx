@@ -4,8 +4,8 @@ const footerLinkClass = "inline-flex min-w-0 items-center justify-center gap-2 r
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-ink px-5 py-8 sm:px-8 sm:py-10">
-      <div className="mx-auto flex w-full max-w-[90rem] flex-col items-center gap-6 md:flex-row md:justify-between lg:px-12 2xl:px-[clamp(2rem,4vw,6rem)]">
+    <footer className="border-t border-white/10 bg-ink py-8 sm:py-10">
+      <div className="page-container flex flex-col items-center gap-6 md:flex-row md:justify-between">
         <div className="flex items-center gap-3">
           <a href="#home" className="text-xs font-semibold uppercase tracking-[0.16em] text-copy" aria-label="Back to top">
             Evin Leyander

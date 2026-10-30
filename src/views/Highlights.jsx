@@ -1,8 +1,6 @@
 import Reveal from "../components/Reveal";
 import { siNextdotjs, siPwa, siReact } from "simple-icons";
 
-const containerClass = "mx-auto w-full max-w-[90rem] px-5 sm:px-8 md:px-12 lg:px-20 2xl:px-[clamp(6rem,7vw,13.75rem)]";
-
 const highlights = [
   { title: "Web Development", description: "Websites and product platforms.", icon: siNextdotjs },
   { title: "App Development", description: "Clear, useful application flows.", icon: siReact },
@@ -12,7 +10,7 @@ const highlights = [
 export default function Highlights() {
   return (
     <section className="border-y border-white/10 bg-panel py-8 sm:py-10">
-      <div className={containerClass}>
+      <div className="page-container">
         <Reveal className="grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 md:grid-cols-3">
           {highlights.map((item) => (
             <article key={item.title} className="bg-panel p-5 sm:p-6">

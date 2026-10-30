@@ -52,7 +52,7 @@ export default function Contact() {
 
   return (
     <section className="border-t border-white/10 bg-panel py-20 sm:py-28">
-      <div className="mx-auto w-full max-w-[90rem] px-5 sm:px-8 md:px-12 lg:px-20 2xl:px-[clamp(6rem,7vw,13.75rem)]">
+      <div className="page-container">
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
           <Reveal className="max-w-[36rem]">
             <p className="m-0 text-xs font-semibold uppercase tracking-[0.18em] text-muted">Contact</p>

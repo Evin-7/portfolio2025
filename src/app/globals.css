@@ -12,6 +12,14 @@
   --color-line: #171717;
 }
 
+.page-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

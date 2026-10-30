@@ -1,8 +1,6 @@
 import Image from "next/image";
 import Reveal from "../components/Reveal";
 
-const containerClass = "mx-auto w-full max-w-[90rem] px-5 sm:px-8 md:px-12 lg:px-20 2xl:px-[clamp(6rem,7vw,13.75rem)]";
-
 const experience = [
   {
     year: "2022",
@@ -36,7 +34,7 @@ const experience = [
 export default function About() {
   return (
     <section className="bg-ink py-20 sm:py-28">
-      <div className={containerClass}>
+      <div className="page-container">
         <Reveal className="max-w-[46rem]">
           <p className="m-0 text-xs font-semibold uppercase tracking-[0.18em] text-muted">About</p>
           <h2 className="mt-4 max-w-[18ch] text-[clamp(2.3rem,5vw,4.5rem)] font-medium leading-[0.98] tracking-[-0.065em] text-copy">

@@ -1,6 +1,5 @@
 import Reveal from "../components/Reveal";
 
-const containerClass = "mx-auto w-full max-w-[90rem] px-5 sm:px-8 md:px-12 lg:px-20 2xl:px-[clamp(6rem,7vw,13.75rem)]";
 const featuredSkills = new Set(["C#", ".NET", "ASP.NET Core", "React", "TypeScript"]);
 
 const skillGroups = [
@@ -33,7 +32,7 @@ const skillGroups = [
 export default function Skills() {
   return (
     <section className="border-y border-white/10 bg-panel py-20 sm:py-28">
-      <div className={containerClass}>
+      <div className="page-container">
         <Reveal className="max-w-[54rem]">
           <p className="m-0 text-xs font-semibold uppercase tracking-[0.18em] text-muted">Toolkit</p>
           <h2 className="mt-4 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.06em] text-copy">

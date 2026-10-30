@@ -21,7 +21,6 @@ import penielTech from "../assets/images/penieltech.webp";
 import periyar from "../assets/images/periyartigerreserve.webp";
 import veltrix from "../assets/images/veltrix.webp";
 
-const containerClass = "mx-auto w-full max-w-[90rem] px-5 sm:px-8 md:px-12 lg:px-20 2xl:px-[clamp(6rem,7vw,13.75rem)]";
 const cardClass = "h-full rounded-2xl border border-white/10 bg-panel p-4 transition-colors hover:border-white/25 sm:p-5";
 
 const works = [
@@ -66,7 +65,7 @@ const groups = [
 export default function Works() {
   return (
     <section className="bg-ink py-20 sm:py-28">
-      <div className={containerClass}>
+      <div className="page-container">
         <Reveal className="mb-10 sm:mb-12">
           <p className="m-0 text-xs font-semibold uppercase tracking-[0.18em] text-muted">Projects</p>
           <h2 className="mt-4 text-[clamp(2.3rem,5vw,4rem)] font-medium leading-[0.98] tracking-[-0.065em] text-copy">

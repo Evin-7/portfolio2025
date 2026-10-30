@@ -1,12 +1,10 @@
 import Image from "next/image";
 import portrait from "../assets/images/evin-portrait.webp";
 
-const containerClass = "mx-auto grid w-full max-w-[90rem] items-center gap-8 px-5 sm:px-8 md:px-12 lg:grid-cols-[1.04fr_0.96fr] lg:gap-12 lg:px-20 2xl:px-[clamp(6rem,7vw,13.75rem)]";
-
 export default function Hero() {
   return (
     <section className="bg-ink pb-8 pt-24 sm:pb-12 sm:pt-28 lg:min-h-[calc(100svh-1rem)] lg:py-24">
-      <div className={containerClass}>
+      <div className="page-container grid items-center gap-8 lg:grid-cols-[1.04fr_0.96fr] lg:gap-12">
         <div className="relative z-10 order-2 max-w-[44rem] py-2 lg:col-start-1 lg:row-start-1 lg:order-1 lg:py-10">
           <p className="mb-7 flex items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted sm:mb-9">
             <span className="h-px w-8 bg-subtle" aria-hidden="true" />
@@ -36,13 +34,13 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="relative order-1 mx-auto w-full max-w-[31rem] lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:order-2 lg:mx-0 lg:ml-auto lg:max-w-[35rem]">
+        <div className="relative order-1 w-full max-w-[31rem] justify-self-center lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:order-2 lg:max-w-[35rem] lg:justify-self-end">
           <Image
             src={portrait}
             alt="Evin Leyander wearing a black three-piece suit"
             priority
             sizes="(max-width: 1023px) 88vw, (max-width: 1440px) 42vw, 35rem"
-            className="mx-auto block h-auto max-h-[78svh] w-full object-contain object-bottom"
+            className="block h-auto max-h-[78svh] w-full object-contain object-bottom lg:object-right-bottom"
           />
         </div>
 
