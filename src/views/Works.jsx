@@ -27,8 +27,8 @@ const cardClass = "flex h-full flex-col rounded-2xl border border-white/10 bg-pa
 const works = [
   {
     name: "SiteCore",
-    category: "3D Operations Dashboard",
-    summary: "An interactive industrial site viewer with 3D assets, operational zones, alerts, and maintenance tools.",
+    category: "",
+    summary: "",
     links: [["Live project", "https://sitecore-rho.vercel.app/"]],
     image: sitecore,
   },
