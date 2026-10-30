@@ -37,7 +37,7 @@ export default function Hero() {
         <div className="relative order-1 w-full max-w-[31rem] justify-self-center lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:order-2 lg:max-w-[35rem] lg:justify-self-end">
           <Image
             src={portrait}
-            alt="Evin Leyander wearing a black three-piece suit"
+            alt="Stylized black-and-white portrait of Evin Leyander in a suit"
             priority
             sizes="(max-width: 1023px) 88vw, (max-width: 1440px) 42vw, 35rem"
             className="block h-auto max-h-[78svh] w-full object-contain object-bottom lg:object-right-bottom"
