@@ -21,7 +21,7 @@ export default function Hero() {
             <a href="#works" className="inline-flex min-h-12 items-center justify-center rounded-full bg-copy px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-muted">
               View Projects <span className="ml-2" aria-hidden="true">↗</span>
             </a>
-            <a href="/resume" className="inline-flex min-h-12 items-center justify-center rounded-full border border-copy/25 px-6 py-3 text-sm font-semibold text-copy transition-colors hover:border-copy/60 hover:bg-copy/[0.06]">
+            <a href="/resume" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-copy transition-colors hover:border-white/60 hover:bg-white/[0.06]">
               Download Resume <span className="ml-2 text-subtle" aria-hidden="true">↓</span>
             </a>
             <a href="#contact" className="inline-flex min-h-12 items-center px-3 py-3 text-sm font-medium text-muted transition-colors hover:text-copy">
@@ -40,7 +40,7 @@ export default function Hero() {
           />
         </div>
 
-        <div className="order-3 flex flex-wrap gap-x-9 gap-y-4 border-t border-copy/15 pt-6 lg:col-start-1 lg:row-start-2">
+        <div className="order-3 flex flex-wrap gap-x-9 gap-y-4 border-t border-white/15 pt-6 lg:col-start-1 lg:row-start-2">
           <div className="grid gap-1">
             <strong className="text-2xl font-medium tracking-[-0.06em] text-copy">4+</strong>
             <span className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted">Years shipping</span>

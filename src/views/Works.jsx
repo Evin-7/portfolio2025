@@ -22,7 +22,7 @@ import periyar from "../assets/images/periyartigerreserve.webp";
 import sitecore from "../assets/images/sitecore.webp";
 import veltrix from "../assets/images/veltrix.webp";
 
-const cardClass = "flex h-full flex-col rounded-2xl border border-copy/10 bg-panel p-4 transition-colors hover:border-copy/25 sm:p-5";
+const cardClass = "flex h-full flex-col rounded-2xl border border-white/10 bg-panel p-4 transition-colors hover:border-white/25 sm:p-5";
 
 const works = [
   {
@@ -84,7 +84,7 @@ export default function Works() {
         {groups.map((group) => (
           <div className={group.key === "mobile" ? "mt-16 sm:mt-24" : ""} key={group.key}>
             {group.key === "mobile" ? (
-              <Reveal className="mb-7 flex items-end justify-between gap-8 border-b border-copy/15 pb-5 max-md:block">
+              <Reveal className="mb-7 flex items-end justify-between gap-8 border-b border-white/15 pb-5 max-md:block">
                 <div>
                   <p className="m-0 text-xs font-semibold uppercase tracking-[0.18em] text-muted">{group.eyebrow}</p>
                   <h3 className="mt-3 text-[clamp(1.6rem,3vw,2.5rem)] font-medium leading-tight tracking-[-0.05em] text-copy">{group.title}</h3>
@@ -107,12 +107,12 @@ export default function Works() {
                   </div>
                 );
                 const preview = (
-                  <div className="mt-4 overflow-hidden rounded-xl border border-copy/10 bg-panel-alt">
-                    <div className="flex h-8 items-center gap-1.5 border-b border-copy/10 px-3">
-                      <span className="size-1.5 rounded-full bg-copy/25" />
-                      <span className="size-1.5 rounded-full bg-copy/15" />
-                      <span className="size-1.5 rounded-full bg-copy/10" />
-                      <span className="ml-3 h-1 w-1/4 rounded-full bg-copy/10" />
+                  <div className="mt-4 overflow-hidden rounded-xl border border-white/10 bg-panel-alt">
+                    <div className="flex h-8 items-center gap-1.5 border-b border-white/10 px-3">
+                      <span className="size-1.5 rounded-full bg-white/25" />
+                      <span className="size-1.5 rounded-full bg-white/15" />
+                      <span className="size-1.5 rounded-full bg-white/10" />
+                      <span className="ml-3 h-1 w-1/4 rounded-full bg-white/10" />
                     </div>
                     <Image
                       src={work.image}
@@ -130,7 +130,7 @@ export default function Works() {
                   <Reveal key={work.name} className="h-full" delay={index * 0.035}>
                     <article className={cardClass}>
                       {isWebsite ? (
-                        <a href={work.links[0][1]} target="_blank" rel="noopener noreferrer" className="group block flex-1 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-copy">
+                        <a href={work.links[0][1]} target="_blank" rel="noopener noreferrer" className="group block flex-1 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
                           {heading}
                           {preview}
                         </a>
@@ -145,7 +145,7 @@ export default function Works() {
                             href={href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex min-h-10 items-center gap-2 rounded-full border border-copy/20 px-4 py-2 text-xs font-semibold text-copy transition-colors hover:bg-copy hover:text-ink"
+                            className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-copy transition-colors hover:bg-copy hover:text-ink"
                           >
                             <span>{label}</span><span aria-hidden="true">↗</span>
                           </a>
