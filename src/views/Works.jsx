@@ -121,7 +121,7 @@ export default function Works() {
                       height={work.image.height}
                       loading={work.name === "Elate HRMS" ? "eager" : "lazy"}
                       sizes="(max-width: 768px) 88vw, (max-width: 1280px) 42vw, 28vw"
-                      className={"block aspect-[1.56/1] w-full object-cover grayscale " + (work.wide ? "object-bottom" : "object-center")}
+                      className={"block aspect-[1.56/1] w-full object-cover " + (work.wide ? "object-bottom" : "object-center")}
                     />
                   </div>
                 );
