@@ -48,10 +48,10 @@ export default function Contact() {
     }
   };
 
-  const fieldClass = "w-full rounded-xl border border-white/15 bg-panel px-4 py-3.5 text-sm text-copy outline-none transition-colors placeholder:text-muted/80 focus:border-white/50";
+  const fieldClass = "w-full rounded-xl border border-copy/15 bg-panel px-4 py-3.5 text-sm text-copy outline-none transition-colors placeholder:text-muted/80 focus:border-copy/50";
 
   return (
-    <section className="border-t border-white/10 bg-panel py-20 sm:py-28">
+    <section className="border-t border-copy/10 bg-panel py-20 sm:py-28">
       <div className="page-container">
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
           <Reveal className="max-w-[36rem]">
@@ -64,7 +64,7 @@ export default function Contact() {
             </p>
             <a
               href="mailto:yjevin75@gmail.com"
-              className="mt-7 inline-flex min-h-12 items-center rounded-full border border-white/25 px-5 py-3 text-sm font-medium text-copy transition-colors hover:bg-white/[0.07]"
+              className="mt-7 inline-flex min-h-12 items-center rounded-full border border-copy/25 px-5 py-3 text-sm font-medium text-copy transition-colors hover:bg-copy/[0.07]"
             >
               yjevin75@gmail.com <span className="ml-3 text-muted" aria-hidden="true">↗</span>
             </a>

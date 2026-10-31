@@ -31,7 +31,7 @@ const skillGroups = [
 
 export default function Skills() {
   return (
-    <section className="border-y border-white/10 bg-panel py-20 sm:py-28">
+    <section className="border-y border-copy/10 bg-panel py-20 sm:py-28">
       <div className="page-container">
         <Reveal className="max-w-[54rem]">
           <p className="m-0 text-xs font-semibold uppercase tracking-[0.18em] text-muted">Toolkit</p>
@@ -46,8 +46,8 @@ export default function Skills() {
         <div className="mt-10 grid gap-3 md:grid-cols-2 xl:grid-cols-3" aria-label="Technologies and tools">
           {skillGroups.map((group, index) => (
             <Reveal key={group.title} delay={index * 0.04}>
-              <article className="h-full rounded-2xl border border-white/10 bg-ink p-5 transition-colors hover:border-white/30 sm:p-6">
-                <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
+              <article className="h-full rounded-2xl border border-copy/10 bg-ink p-5 transition-colors hover:border-copy/30 sm:p-6">
+                <div className="flex items-center justify-between gap-3 border-b border-copy/10 pb-4">
                   <h3 className="text-sm font-semibold text-copy">{group.title}</h3>
                   <span className="text-xs text-muted">{String(index + 1).padStart(2, "0")}</span>
                 </div>
@@ -57,8 +57,8 @@ export default function Skills() {
                       key={skill}
                       className={"rounded-full border px-3 py-1.5 text-[0.7rem] font-medium leading-5 transition-colors " + (
                         featuredSkills.has(skill)
-                          ? "border-white/30 bg-white/[0.08] text-copy"
-                          : "border-white/10 text-muted"
+                          ? "border-copy/30 bg-copy/[0.08] text-copy"
+                          : "border-copy/10 text-muted"
                       )}
                     >
                       {skill}

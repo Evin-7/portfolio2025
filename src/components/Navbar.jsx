@@ -24,7 +24,7 @@ export default function Navbar() {
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-[1000] border-b border-white/10 bg-ink">
+    <nav className="fixed inset-x-0 top-0 z-[1000] border-b border-copy/10 bg-ink">
       <div className="page-container">
         <div className="flex h-[4.5rem] items-center justify-between">
           <a
@@ -49,7 +49,7 @@ export default function Navbar() {
           </ul>
 
           <button
-            className="flex size-10 flex-col items-center justify-center gap-[5px] rounded-full border border-white/20 text-copy transition-colors hover:bg-white/[0.06] md:hidden"
+            className="flex size-10 flex-col items-center justify-center gap-[5px] rounded-full border border-copy/20 text-copy transition-colors hover:bg-copy/[0.06] md:hidden"
             type="button"
             aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-controls="mobile-navigation"
@@ -63,7 +63,7 @@ export default function Navbar() {
 
         <div
           id="mobile-navigation"
-          className={"grid overflow-hidden border-t border-white/10 transition-[max-height,padding,opacity] duration-200 md:hidden " + (isMenuOpen ? "max-h-72 py-3 opacity-100" : "max-h-0 border-transparent py-0 opacity-0")}
+          className={"grid overflow-hidden border-t border-copy/10 transition-[max-height,padding,opacity] duration-200 md:hidden " + (isMenuOpen ? "max-h-72 py-3 opacity-100" : "max-h-0 border-transparent py-0 opacity-0")}
           aria-hidden={!isMenuOpen}
         >
           {links.map(([label, href]) => (

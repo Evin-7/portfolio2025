@@ -1,10 +1,10 @@
 import { siGithub } from "simple-icons";
 
-const footerLinkClass = "inline-flex min-w-0 items-center justify-center gap-2 rounded-full border border-white/15 px-3 py-2 text-left text-xs text-muted no-underline transition-colors hover:border-white/40 hover:text-copy sm:px-4 sm:text-sm";
+const footerLinkClass = "inline-flex min-w-0 items-center justify-center gap-2 rounded-full border border-copy/15 px-3 py-2 text-left text-xs text-muted no-underline transition-colors hover:border-copy/40 hover:text-copy sm:px-4 sm:text-sm";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-ink py-8 sm:py-10">
+    <footer className="border-t border-copy/10 bg-ink py-8 sm:py-10">
       <div className="page-container flex flex-col items-center gap-6 md:flex-row md:justify-between">
         <div className="flex items-center gap-3">
           <a href="#home" className="text-xs font-semibold uppercase tracking-[0.16em] text-copy" aria-label="Back to top">

@@ -45,14 +45,14 @@ export default function About() {
           </p>
         </Reveal>
 
-        <Reveal className="relative mt-12 grid gap-5 before:absolute before:bottom-6 before:left-[0.45rem] before:top-3 before:w-px before:bg-white/15 md:grid-cols-3 md:gap-6 md:before:bottom-auto md:before:left-0 md:before:right-0 md:before:top-4 md:before:h-px md:before:w-auto" delay={0.1}>
+        <Reveal className="relative mt-12 grid gap-5 before:absolute before:bottom-6 before:left-[0.45rem] before:top-3 before:w-px before:bg-copy/15 md:grid-cols-3 md:gap-6 md:before:bottom-auto md:before:left-0 md:before:right-0 md:before:top-4 md:before:h-px md:before:w-auto" delay={0.1}>
           {experience.map((item) => (
             <article key={item.company + "-" + item.period} className="relative pl-8 md:pl-0 md:pt-12">
               <span className="absolute left-[0.45rem] top-1 z-10 flex size-3 -translate-x-1/2 items-center justify-center rounded-full border border-ink bg-copy ring-4 ring-ink md:left-1/2 md:top-[0.3rem]">
                 <span className="sr-only">{item.year}</span>
               </span>
-              <div className="h-full rounded-2xl border border-white/10 bg-panel p-5 sm:p-6">
-                <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
+              <div className="h-full rounded-2xl border border-copy/10 bg-panel p-5 sm:p-6">
+                <div className="flex items-center justify-between gap-3 border-b border-copy/10 pb-4">
                   <span className="text-xs font-medium tracking-wide text-muted">{item.period}</span>
                   <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-muted">{item.year}</span>
                 </div>
@@ -65,11 +65,11 @@ export default function About() {
                       alt=""
                       width={20}
                       height={20}
-                      className="size-6 object-contain grayscale brightness-0 invert opacity-70"
+                      className="size-6 object-contain grayscale brightness-0 opacity-70"
                     />
                   </span>
                 </div>
-                <p className="mb-0 mt-5 border-t border-white/10 pt-4 text-sm leading-6 text-muted">{item.focus}</p>
+                <p className="mb-0 mt-5 border-t border-copy/10 pt-4 text-sm leading-6 text-muted">{item.focus}</p>
               </div>
             </article>
           ))}
