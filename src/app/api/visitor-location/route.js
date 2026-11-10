@@ -111,7 +111,12 @@ export async function POST(request) {
     const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
       method: "POST",
       cache: "no-store",
-      headers: { "Content-Type": "application/json" },
+      // EmailJS uses the source Origin header for its domain allowlist. The
+      // incoming Origin has already been checked against this request's host.
+      headers: {
+        "Content-Type": "application/json",
+        Origin: origin,
+      },
       body: JSON.stringify({
         service_id: EMAILJS_SERVICE_ID,
         template_id: EMAILJS_TEMPLATE_ID,
