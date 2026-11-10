@@ -21,13 +21,18 @@ export default function HeroVisual() {
       />
       <div className="orbit-path" aria-hidden="true" />
       {technologies.map((technology) => (
-        <div className={`tech-float ${technology.className}`} key={technology.name}>
+        <div
+          className={`tech-float ${technology.className}`}
+          key={technology.name}
+          role="img"
+          aria-label={technology.name}
+        >
           {technology.icon ? (
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d={technology.icon.path} /></svg>
           ) : (
             <span className="tech-text-mark" aria-hidden="true">AWS</span>
           )}
-          <span>{technology.name}</span>
+          {technology.icon && <span>{technology.name}</span>}
         </div>
       ))}
       <span className="visual-caption"><span className="visual-live-dot" />Building for the web</span>

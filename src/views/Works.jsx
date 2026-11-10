@@ -53,6 +53,13 @@ function ArrowIcon() {
   return <svg className="project-link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10" /></svg>;
 }
 
+function updatePointerHighlight(event) {
+  if (event.pointerType !== "mouse") return;
+  const bounds = event.currentTarget.getBoundingClientRect();
+  event.currentTarget.style.setProperty("--pointer-x", `${event.clientX - bounds.left}px`);
+  event.currentTarget.style.setProperty("--pointer-y", `${event.clientY - bounds.top}px`);
+}
+
 export default function Works() {
   return (
     <section className="section" aria-labelledby="works-title">
@@ -76,7 +83,14 @@ export default function Works() {
             <div className="project-grid">
               {group.items.map((work, index) => (
                 <Reveal className="project-card-wrap" key={work.name} delay={Math.min(index * 0.025, 0.15)}>
-                  <article className={"project-card" + (work.name === "SiteCore" ? " project-card--featured" : "")}>
+                  <article
+                    className={"project-card" + (work.name === "SiteCore" ? " project-card--featured" : "")}
+                    onPointerMove={updatePointerHighlight}
+                    onPointerLeave={(event) => {
+                      event.currentTarget.style.removeProperty("--pointer-x");
+                      event.currentTarget.style.removeProperty("--pointer-y");
+                    }}
+                  >
                     <div className="project-card-content">
                       <div className="project-card-title-row">
                         <h3>{work.name}</h3>

@@ -25,7 +25,6 @@ export default function Hero() {
     <section className="hero-section" aria-labelledby="hero-title">
       <div className="page-container hero-grid">
         <div className="hero-copy">
-          <p className="availability"><span className="availability-dot" />Available for new opportunities</p>
           <h1 className="hero-title" id="hero-title">
             <span className="hero-title-line">Hi, I’m</span>
             <span className="hero-title-line hero-title-name">Evin Leyander</span>
