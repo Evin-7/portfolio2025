@@ -5,82 +5,6 @@ import {
 } from "../../../lib/emailjsConfig";
 
 export const runtime = "nodejs";
-const INDIA_REGIONS = {
-  AN: "Andaman and Nicobar Islands",
-  AP: "Andhra Pradesh",
-  AR: "Arunachal Pradesh",
-  AS: "Assam",
-  BR: "Bihar",
-  CH: "Chandigarh",
-  CT: "Chhattisgarh",
-  DD: "Dadra and Nagar Haveli and Daman and Diu",
-  DL: "Delhi",
-  GA: "Goa",
-  GJ: "Gujarat",
-  HP: "Himachal Pradesh",
-  HR: "Haryana",
-  JH: "Jharkhand",
-  JK: "Jammu and Kashmir",
-  KA: "Karnataka",
-  KL: "Kerala",
-  LA: "Ladakh",
-  LD: "Lakshadweep",
-  MH: "Maharashtra",
-  ML: "Meghalaya",
-  MN: "Manipur",
-  MP: "Madhya Pradesh",
-  MZ: "Mizoram",
-  NL: "Nagaland",
-  OD: "Odisha",
-  PB: "Punjab",
-  PY: "Puducherry",
-  RJ: "Rajasthan",
-  SK: "Sikkim",
-  TG: "Telangana",
-  TN: "Tamil Nadu",
-  TR: "Tripura",
-  UP: "Uttar Pradesh",
-  UT: "Uttarakhand",
-  WB: "West Bengal",
-};
-
-function safeHeaderValue(value, maxLength = 80) {
-  if (!value) return "";
-
-  let decoded = value;
-  try {
-    decoded = decodeURIComponent(value);
-  } catch {
-    // Keep the original value if a provider header contains malformed encoding.
-  }
-
-  return decoded
-    .replace(/[\u0000-\u001f\u007f]/g, " ")
-    .replace(/[^\p{L}\p{N} .,'’()-]/gu, "")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, maxLength);
-}
-
-function getCountryName(code) {
-  if (!/^[A-Z]{2}$/.test(code)) return "";
-  try {
-    return new Intl.DisplayNames(["en"], { type: "region" }).of(code) || code;
-  } catch {
-    return code;
-  }
-}
-
-function getApproximateLocation(request) {
-  const city = safeHeaderValue(request.headers.get("x-vercel-ip-city"));
-  const countryCode = safeHeaderValue(request.headers.get("x-vercel-ip-country"), 2).toUpperCase();
-  const regionCode = safeHeaderValue(request.headers.get("x-vercel-ip-country-region"), 8).toUpperCase();
-  const country = getCountryName(countryCode);
-  const region = countryCode === "IN" ? INDIA_REGIONS[regionCode] || "" : "";
-  const location = [city, region, country].filter(Boolean).join(", ");
-
-  return location.slice(0, 200);
-}
 
 function json(body, status) {
   return Response.json(body, {
@@ -104,8 +28,26 @@ export async function POST(request) {
   }
   if (!sameOrigin) return json({ ok: false }, 403);
 
-  const location = getApproximateLocation(request);
-  if (!location) return json({ ok: true, sent: false }, 202);
+  let location;
+  try {
+    location = await request.json();
+  } catch {
+    return json({ ok: false, reason: "invalid-location" }, 400);
+  }
+
+  const { latitude, longitude, accuracy } = location ?? {};
+  if (
+    typeof latitude !== "number" || !Number.isFinite(latitude) || latitude < -90 || latitude > 90 ||
+    typeof longitude !== "number" || !Number.isFinite(longitude) || longitude < -180 || longitude > 180 ||
+    typeof accuracy !== "number" || !Number.isFinite(accuracy) || accuracy < 0 || accuracy > 100000
+  ) {
+    return json({ ok: false, reason: "invalid-location" }, 400);
+  }
+
+  const latitudeText = latitude.toFixed(6);
+  const longitudeText = longitude.toFixed(6);
+  const accuracyText = Math.round(accuracy);
+  const mapUrl = `https://maps.google.com/?q=${latitudeText},${longitudeText}`;
 
   try {
     const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
@@ -122,15 +64,20 @@ export async function POST(request) {
         template_id: EMAILJS_TEMPLATE_ID,
         user_id: EMAILJS_PUBLIC_KEY,
         template_params: {
-          name: "Portfolio visitor — approximate location",
+          name: "Portfolio visitor — shared device location",
           email: "",
-          message: `Approximate location (inferred from IP, not GPS): ${location}. This estimate may be inaccurate.`,
+          message: [
+            "A visitor chose to share their browser-reported device location.",
+            `Coordinates: ${latitudeText}, ${longitudeText}`,
+            `Reported accuracy: approximately ${accuracyText} metres (the device's estimate; actual accuracy may vary).`,
+            `Open in Google Maps: ${mapUrl}`,
+          ].join("\n"),
         },
       }),
     });
 
     if (!response.ok) {
-      // Do not log the visitor's location or the provider response body.
+      // Do not log the visitor's coordinates or the provider response body.
       console.error("Visitor location email delivery failed", { status: response.status });
       return json({ ok: false }, 502);
     }

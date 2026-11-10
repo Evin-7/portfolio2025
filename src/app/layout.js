@@ -1,5 +1,5 @@
 import SmoothScroll from "../components/SmoothScroll";
-import VisitorLocationPing from "../components/VisitorLocationPing";
+import VisitorLocationShare from "../components/VisitorLocationShare";
 import "./globals.css";
 
 export const metadata = {
@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <SmoothScroll>
-          <VisitorLocationPing />
+          <VisitorLocationShare />
           {children}
         </SmoothScroll>
       </body>
