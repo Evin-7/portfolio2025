@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 import Reveal from "../components/Reveal";
-
-const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "service_1ajllgm";
-const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "template_mtqwxq5";
-const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "zV-JGz4jw4hDv3m2h";
+import {
+  EMAILJS_PUBLIC_KEY,
+  EMAILJS_SERVICE_ID,
+  EMAILJS_TEMPLATE_ID,
+} from "../lib/emailjsConfig";
 const initialForm = { name: "", email: "", message: "" };
 
 export default function Contact() {
@@ -31,7 +32,7 @@ export default function Contact() {
     setMessageText("");
 
     try {
-      await emailjs.send(SERVICE_ID, TEMPLATE_ID, form, PUBLIC_KEY);
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form, EMAILJS_PUBLIC_KEY);
       setSubmitText("Message Sent");
       setMessageText("Your message has been sent.");
       setForm(initialForm);
