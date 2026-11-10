@@ -1,58 +1,60 @@
-import Image from "next/image";
-import portrait from "../assets/images/evin-portrait.webp";
+import HeroVisual from "../components/HeroVisual";
+
+function StatIcon({ kind }) {
+  const paths = {
+    code: "M8 5 3 12l5 7M16 5l5 7-5 7M14 3l-4 18",
+    layers: "m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5",
+    product: "M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 18.5v-13ZM8 8h8M8 12h8M8 16h5",
+  };
+
+  return (
+    <svg className="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d={paths[kind]} />
+    </svg>
+  );
+}
+
+const stats = [
+  { value: "4+", label: "Years Experience", icon: "code" },
+  { value: "19", label: "Projects Built", icon: "layers" },
+  { value: "End-to-End", label: "Product Development", icon: "product" },
+];
 
 export default function Hero() {
   return (
-    <section className="bg-ink pb-8 pt-24 sm:pb-12 sm:pt-28 lg:min-h-[calc(100svh-1rem)] lg:py-24">
-      <div className="page-container grid items-center gap-8 lg:grid-cols-[1.04fr_0.96fr] lg:gap-12">
-        <div className="relative z-10 order-2 max-w-[44rem] py-2 lg:col-start-1 lg:row-start-1 lg:order-1 lg:py-10">
-          <h1 className="text-[clamp(3.4rem,8vw,7.4rem)] font-semibold uppercase leading-[0.83] tracking-[-0.085em] text-copy">
-            Evin
-            <span className="mt-2 block text-subtle">Leyander</span>
+    <section className="hero-section" aria-labelledby="hero-title">
+      <div className="page-container hero-grid">
+        <div className="hero-copy">
+          <p className="availability"><span className="availability-dot" />Available for new opportunities</p>
+          <h1 className="hero-title" id="hero-title">
+            <span className="hero-title-line">Hi, I’m</span>
+            <span className="hero-title-line hero-title-name">Evin Leyander</span>
           </h1>
-          <p className="mt-8 text-[clamp(1.15rem,2vw,1.55rem)] font-medium tracking-[-0.035em] text-copy">
-            Full Stack Software Engineer
+          <p className="hero-role">Full Stack Software Engineer</p>
+          <p className="hero-description">
+            I design and build scalable, user-focused web and mobile applications using React, TypeScript, Next.js, Node.js, and cloud technologies.
           </p>
-          <p className="mt-4 max-w-[39rem] text-[0.98rem] leading-7 text-muted sm:text-[1.05rem] sm:leading-8">
-            For 4 years, I’ve built and shipped thoughtful digital products across React, TypeScript, Next.js, Node.js, and AI-powered software.
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a href="#works" className="inline-flex min-h-12 items-center justify-center rounded-full bg-copy px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-muted">
-              View Projects <span className="ml-2" aria-hidden="true">↗</span>
+          <div className="hero-ctas">
+            <a className="button button--primary" href="#works">
+              View Projects <span aria-hidden="true">→</span>
             </a>
-            <a href="/resume" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-copy transition-colors hover:border-white/60 hover:bg-white/[0.06]">
-              Download Resume <span className="ml-2 text-subtle" aria-hidden="true">↓</span>
-            </a>
-            <a href="#contact" className="inline-flex min-h-12 items-center px-3 py-3 text-sm font-medium text-muted transition-colors hover:text-copy">
-              Contact Me <span className="ml-2" aria-hidden="true">↗</span>
+            <a className="button button--outline" href="#contact">
+              <svg className="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+              Get in Touch
             </a>
           </div>
         </div>
 
-        <div className="relative order-1 w-full max-w-[31rem] justify-self-center lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:order-2 lg:max-w-[35rem] lg:justify-self-end">
-          <Image
-            src={portrait}
-            alt="Stylized black-and-white portrait of Evin Leyander in a suit"
-            priority
-            sizes="(max-width: 1023px) 88vw, (max-width: 1440px) 42vw, 35rem"
-            className="block h-auto max-h-[78svh] w-full object-contain object-bottom lg:object-right-bottom"
-          />
-        </div>
+        <HeroVisual />
 
-        <div className="order-3 flex flex-wrap gap-x-9 gap-y-4 border-t border-white/15 pt-6 lg:col-start-1 lg:row-start-2">
-          <div className="grid gap-1">
-            <strong className="text-2xl font-medium tracking-[-0.06em] text-copy">4+</strong>
-            <span className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted">Years shipping</span>
-          </div>
-          <div className="grid gap-1">
-            <strong className="text-2xl font-medium tracking-[-0.06em] text-copy">20+</strong>
-            <span className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted">Products built</span>
-          </div>
-          <div className="grid gap-1">
-            <strong className="text-2xl font-medium tracking-[-0.06em] text-copy">∞</strong>
-            <span className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted">Curiosity</span>
-          </div>
+        <div className="hero-stats" aria-label="Experience highlights">
+          {stats.map((stat) => (
+            <div className="stat" key={stat.label}>
+              <StatIcon kind={stat.icon} />
+              <strong>{stat.value}</strong>
+              <span>{stat.label}</span>
+            </div>
+          ))}
         </div>
       </div>
     </section>

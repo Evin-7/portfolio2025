@@ -2,13 +2,24 @@
 
 import { useEffect, useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
+import { siGithub } from "simple-icons";
 import Reveal from "../components/Reveal";
 import {
   EMAILJS_PUBLIC_KEY,
   EMAILJS_SERVICE_ID,
   EMAILJS_TEMPLATE_ID,
 } from "../lib/emailjsConfig";
+
 const initialForm = { name: "", email: "", message: "" };
+
+function SocialLink({ href, label, icon }) {
+  return (
+    <a className="social-link" href={href} target="_blank" rel="noopener noreferrer">
+      {icon ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icon.path} /></svg> : <span className="social-mark-text" aria-hidden="true">in</span>}
+      {label}
+    </a>
+  );
+}
 
 export default function Contact() {
   const [form, setForm] = useState(initialForm);
@@ -49,54 +60,42 @@ export default function Contact() {
     }
   };
 
-  const fieldClass = "w-full rounded-xl border border-white/15 bg-panel px-4 py-3.5 text-sm text-copy outline-none transition-colors placeholder:text-muted/80 focus:border-white/50";
-
   return (
-    <section className="border-t border-white/10 bg-panel py-20 sm:py-28">
-      <div className="page-container">
-        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
-          <Reveal className="max-w-[36rem]">
-            <p className="m-0 text-xs font-semibold uppercase tracking-[0.18em] text-muted">Contact</p>
-            <h2 className="mt-4 text-[clamp(2.3rem,5vw,4.5rem)] font-medium leading-[0.98] tracking-[-0.065em] text-copy">
-              Let’s work together.
-            </h2>
-            <p className="mt-6 text-base leading-7 text-muted sm:text-lg sm:leading-8">
-              Software, product UI, and websites.
-            </p>
-            <a
-              href="mailto:yjevin75@gmail.com"
-              className="mt-7 inline-flex min-h-12 items-center rounded-full border border-white/25 px-5 py-3 text-sm font-medium text-copy transition-colors hover:bg-white/[0.07]"
-            >
-              yjevin75@gmail.com <span className="ml-3 text-muted" aria-hidden="true">↗</span>
-            </a>
-          </Reveal>
+    <section className="section contact-section" aria-labelledby="contact-title">
+      <div className="page-container contact-layout">
+        <Reveal className="contact-copy">
+          <p className="section-kicker">05 / Contact</p>
+          <h2 className="section-title" id="contact-title">Let’s build something meaningful.</h2>
+          <p className="section-description">
+            I’m open to opportunities where I can contribute to impactful products, collaborate with strong engineering teams, and continue growing as a software engineer.
+          </p>
+          <a className="contact-email" href="mailto:yjevin75@gmail.com">
+            yjevin75@gmail.com <span aria-hidden="true">↗</span>
+          </a>
+          <div className="contact-socials" aria-label="Contact and profile links">
+            <SocialLink href="https://github.com/Evin-7" label="GitHub" icon={siGithub} />
+            <SocialLink href="https://www.linkedin.com/in/evin-leyander-536a70236/" label="LinkedIn" />
+            <a className="social-link" href="/resume"><span aria-hidden="true">↓</span>Resume</a>
+          </div>
+        </Reveal>
 
-          <Reveal delay={0.08}>
-            <form className="flex flex-col gap-3" onSubmit={submitForm}>
-              <label className="sr-only" htmlFor="contact-name">Name</label>
-              <input id="contact-name" name="name" value={form.name} onChange={updateField} type="text" autoComplete="name" placeholder="Name" required className={fieldClass} />
+        <Reveal delay={0.08}>
+          <form className="contact-form" onSubmit={submitForm}>
+            <label className="sr-only" htmlFor="contact-name">Name</label>
+            <input className="contact-field" id="contact-name" name="name" value={form.name} onChange={updateField} type="text" autoComplete="name" placeholder="Name" required />
 
-              <label className="sr-only" htmlFor="contact-email">Email</label>
-              <input id="contact-email" name="email" value={form.email} onChange={updateField} type="email" autoComplete="email" placeholder="Email" required className={fieldClass} />
+            <label className="sr-only" htmlFor="contact-email">Email</label>
+            <input className="contact-field" id="contact-email" name="email" value={form.email} onChange={updateField} type="email" autoComplete="email" placeholder="Email" required />
 
-              <label className="sr-only" htmlFor="contact-message">Tell me about your project</label>
-              <textarea id="contact-message" name="message" value={form.message} onChange={updateField} placeholder="Tell me about your project" rows={5} required className={fieldClass + " resize-y"} />
+            <label className="sr-only" htmlFor="contact-message">Tell me about your project</label>
+            <textarea className="contact-field contact-field--message" id="contact-message" name="message" value={form.message} onChange={updateField} placeholder="Tell me about your project" rows={5} required />
 
-              <div className="pt-2">
-                <div className="flex justify-center">
-                  <button
-                    type="submit"
-                    className="inline-flex min-h-12 min-w-40 items-center justify-center rounded-full bg-copy px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-                    disabled={isSubmitting}
-                  >
-                    {submitText}
-                  </button>
-                </div>
-                <div className={messageText ? "mt-3 text-center text-sm text-muted" : "sr-only"} role="status" aria-live="polite">{messageText}</div>
-              </div>
-            </form>
-          </Reveal>
-        </div>
+            <div className="contact-submit">
+              <button className="button button--primary" type="submit" disabled={isSubmitting}>{submitText}</button>
+            </div>
+            <p className={messageText ? "contact-status" : "sr-only"} role="status" aria-live="polite">{messageText}</p>
+          </form>
+        </Reveal>
       </div>
     </section>
   );

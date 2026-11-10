@@ -177,7 +177,7 @@ export default function VisitorLocationShare() {
         event.preventDefault();
         if (!busy) dismiss();
       }}
-      className="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-md overflow-y-auto rounded-2xl border border-white/15 bg-[#0A0A0A] p-0 text-copy shadow-[0_24px_90px_rgba(0,0,0,0.75)] backdrop:bg-black/75"
+      className="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-md overflow-y-auto rounded-2xl border border-white/15 bg-panel p-0 text-copy shadow-[0_24px_90px_rgba(0,0,0,0.75)] backdrop:bg-black/75"
     >
       <div className="p-6 sm:p-7">
         <p className="m-0 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">Location sharing</p>

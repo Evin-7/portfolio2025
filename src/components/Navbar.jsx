@@ -1,84 +1,116 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const links = [
-  ["About", "#about"],
-  ["Skills", "#skills"],
-  ["Work", "#works"],
-  ["Contact", "#contact"],
+  ["Home", "home"],
+  ["About", "about"],
+  ["Skills", "skills"],
+  ["Projects", "works"],
+  ["Experience", "experience"],
+  ["Contact", "contact"],
 ];
+
+function BrandMark() {
+  return (
+    <svg className="brand-mark" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m10 6-7 8 7 8M18 6l7 8-7 8M16 3l-4 22" />
+    </svg>
+  );
+}
+
+function DownloadIcon() {
+  return <svg className="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v3h16v-3" /></svg>;
+}
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeId, setActiveId] = useState("home");
+  const toggleRef = useRef(null);
+  const menuRef = useRef(null);
 
   useEffect(() => {
-    const closeOnEscape = (event) => {
-      if (event.key === "Escape") setIsMenuOpen(false);
-    };
+    const sections = links.map(([, id]) => document.getElementById(id)).filter(Boolean);
+    if (!sections.length || !("IntersectionObserver" in window)) return undefined;
 
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible[0]) setActiveId(visible[0].target.id);
+    }, { rootMargin: "-18% 0px -62% 0px", threshold: [0, 0.1, 0.25, 0.5] });
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (!isMenuOpen) return undefined;
+    const firstLink = menuRef.current?.querySelector("a");
+    firstLink?.focus();
+
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") {
+        setIsMenuOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [isMenuOpen]);
+
   const closeMenu = () => setIsMenuOpen(false);
+  const renderLink = ([label, id]) => (
+    <a
+      href={`#${id}`}
+      key={id}
+      onClick={closeMenu}
+      aria-current={activeId === id ? "location" : undefined}
+      className="nav-link"
+    >
+      {label}
+    </a>
+  );
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-[1000] border-b border-white/10 bg-ink">
-      <div className="page-container">
-        <div className="flex h-[4.5rem] items-center justify-between">
-          <a
-            href="#home"
-            className="text-[0.78rem] font-semibold uppercase tracking-[0.16em] text-copy transition-colors hover:text-muted"
-            onClick={closeMenu}
-          >
-            Evin Leyander
-          </a>
+    <header className="site-header">
+      <div className="page-container nav-row">
+        <a href="#home" className="brand-lockup" onClick={closeMenu} aria-label="Evin Leyander, home">
+          <BrandMark />
+          <span className="brand-name">Evin Leyander</span>
+        </a>
 
-          <ul className="hidden items-center gap-9 md:flex">
-            {links.map(([label, href]) => (
-              <li key={href}>
-                <a
-                  href={href}
-                  className="text-[0.75rem] font-medium tracking-[0.05em] text-muted transition-colors hover:text-copy focus-visible:text-copy"
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
+        <nav className="desktop-nav" aria-label="Main navigation">
+          {links.map(renderLink)}
+        </nav>
 
-          <button
-            className="flex size-10 flex-col items-center justify-center gap-[5px] rounded-full border border-white/20 text-copy transition-colors hover:bg-white/[0.06] md:hidden"
-            type="button"
-            aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-            aria-controls="mobile-navigation"
-            aria-expanded={isMenuOpen}
-            onClick={() => setIsMenuOpen((open) => !open)}
-          >
-            <span className="block h-px w-4 bg-current" />
-            <span className="block h-px w-4 bg-current" />
-          </button>
+        <div className="nav-actions">
+          <a href="/resume" className="button button--outline"><DownloadIcon />Download Resume</a>
         </div>
 
-        <div
-          id="mobile-navigation"
-          className={"grid overflow-hidden border-t border-white/10 transition-[max-height,padding,opacity] duration-200 md:hidden " + (isMenuOpen ? "max-h-72 py-3 opacity-100" : "max-h-0 border-transparent py-0 opacity-0")}
-          aria-hidden={!isMenuOpen}
+        <button
+          className="menu-toggle"
+          ref={toggleRef}
+          type="button"
+          aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-controls="mobile-navigation"
+          aria-expanded={isMenuOpen}
+          onClick={() => setIsMenuOpen((open) => !open)}
         >
-          {links.map(([label, href]) => (
-            <a
-              key={href}
-              href={href}
-              onClick={closeMenu}
-              tabIndex={isMenuOpen ? 0 : -1}
-              className="py-3 text-sm font-medium text-muted transition-colors hover:text-copy focus-visible:text-copy"
-            >
-              {label}
-            </a>
-          ))}
-        </div>
+          <span className={isMenuOpen ? "menu-toggle-lines is-open" : "menu-toggle-lines"} aria-hidden="true"><span /><span /></span>
+        </button>
       </div>
-    </nav>
+
+      <nav
+        id="mobile-navigation"
+        ref={menuRef}
+        className="mobile-panel"
+        data-open={isMenuOpen}
+        aria-label="Mobile navigation"
+        aria-hidden={!isMenuOpen}
+        inert={!isMenuOpen}
+      >
+        {links.map(renderLink)}
+        <a href="/resume" className="mobile-resume" onClick={closeMenu}><DownloadIcon />Download Resume</a>
+      </nav>
+    </header>
   );
 }

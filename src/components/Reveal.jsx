@@ -8,12 +8,13 @@ const directions = {
   right: { x: -24, y: 0 },
 };
 
-export default function Reveal({ children, className = "", delay = 0, direction = "up" }) {
+export default function Reveal({ as = "div", children, className = "", delay = 0, direction = "up" }) {
   const reduceMotion = useReducedMotion();
   const offset = directions[direction] ?? directions.up;
+  const MotionElement = as === "li" ? motion.li : motion.div;
 
   return (
-    <motion.div
+    <MotionElement
       className={className}
       initial={reduceMotion ? false : { opacity: 0, ...offset }}
       whileInView={reduceMotion ? undefined : { opacity: 1, x: 0, y: 0 }}
@@ -21,6 +22,6 @@ export default function Reveal({ children, className = "", delay = 0, direction 
       transition={reduceMotion ? { duration: 0 } : { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
-    </motion.div>
+    </MotionElement>
   );
 }
