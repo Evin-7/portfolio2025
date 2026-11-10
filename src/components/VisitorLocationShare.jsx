@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const SHARED_KEY = "portfolio-device-location-shared-at";
 const DISMISSED_KEY = "portfolio-device-location-dismissed-at";
@@ -8,6 +8,30 @@ const ATTEMPT_KEY = "portfolio-device-location-attempted-at";
 const SHARED_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 const DISMISS_COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000;
 const ATTEMPT_COOLDOWN_MS = 10 * 60 * 1000;
+
+async function resolvePlaceName(latitude, longitude, signal) {
+  const url = new URL("https://api.bigdatacloud.net/data/reverse-geocode-client");
+  url.searchParams.set("latitude", String(latitude));
+  url.searchParams.set("longitude", String(longitude));
+  url.searchParams.set("localityLanguage", "en");
+
+  const response = await fetch(url, { cache: "no-store", signal });
+  if (!response.ok) throw new Error("place-lookup-failed");
+
+  const result = await response.json();
+  const place = {
+    locality: result.locality,
+    city: result.city,
+    region: result.principalSubdivision,
+    country: result.countryName,
+  };
+
+  if (!Object.values(place).some((value) => typeof value === "string" && value.trim())) {
+    throw new Error("place-not-found");
+  }
+
+  return place;
+}
 
 function isWithinCooldown(value, cooldownMs, now) {
   const timestamp = Number(value);
@@ -18,6 +42,7 @@ export default function VisitorLocationShare() {
   const [visible, setVisible] = useState(false);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
+  const dialogRef = useRef(null);
 
   useEffect(() => {
     const now = Date.now();
@@ -34,6 +59,14 @@ export default function VisitorLocationShare() {
 
     setVisible(true);
   }, []);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    if (visible && !dialog.open) dialog.showModal();
+    if (!visible && dialog.open) dialog.close();
+  }, [visible]);
 
   function dismiss() {
     try {
@@ -61,19 +94,37 @@ export default function VisitorLocationShare() {
           setStatus("A location share was recently attempted from this browser. Please try again in a few minutes.");
           return;
         }
-        window.localStorage.setItem(ATTEMPT_KEY, String(now));
       } catch {
         // The server still applies its own request limit.
       }
 
-      const { latitude, longitude, accuracy } = position.coords;
+      let place;
+      const lookupController = new AbortController();
+      const lookupTimeout = window.setTimeout(() => lookupController.abort(), 10000);
       try {
+        const { latitude, longitude } = position.coords;
+        place = await resolvePlaceName(latitude, longitude, lookupController.signal);
+      } catch {
+        setStatus("We couldn’t identify your area just now. Nothing was emailed. Please try again later.");
+        setBusy(false);
+        return;
+      } finally {
+        window.clearTimeout(lookupTimeout);
+      }
+
+      try {
+        try {
+          window.localStorage.setItem(ATTEMPT_KEY, String(Date.now()));
+        } catch {
+          // The server still applies its own request limit.
+        }
+
         const response = await fetch("/api/visitor-location", {
           method: "POST",
           credentials: "same-origin",
           cache: "no-store",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ latitude, longitude, accuracy }),
+          body: JSON.stringify(place),
         });
         const result = await response.json().catch(() => null);
 
@@ -95,7 +146,7 @@ export default function VisitorLocationShare() {
         setStatus("Location shared with Evin. Thank you.");
         window.setTimeout(() => setVisible(false), 3500);
       } catch {
-        setStatus("We couldn’t send the location just now. Please try again later.");
+        setStatus("We couldn’t email your place name just now. Please try again later.");
       } finally {
         setBusy(false);
       }
@@ -118,49 +169,55 @@ export default function VisitorLocationShare() {
   if (!visible) return null;
 
   return (
-    <aside
-      aria-label="Location sharing request"
-      className="fixed bottom-4 right-4 z-[1200] w-[calc(100vw-2rem)] max-w-sm rounded-2xl border border-white/15 bg-[#0A0A0A] p-5 text-copy shadow-[0_16px_60px_rgba(0,0,0,0.65)]"
-      style={{ bottom: "max(1rem, env(safe-area-inset-bottom))" }}
+    <dialog
+      ref={dialogRef}
+      aria-labelledby="location-share-title"
+      aria-describedby="location-share-description"
+      onCancel={(event) => {
+        event.preventDefault();
+        if (!busy) dismiss();
+      }}
+      className="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-md overflow-y-auto rounded-2xl border border-white/15 bg-[#0A0A0A] p-0 text-copy shadow-[0_24px_90px_rgba(0,0,0,0.75)] backdrop:bg-black/75"
     >
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="m-0 text-sm font-semibold">Share your location?</p>
-          <p className="mb-0 mt-2 text-xs leading-5 text-muted">
-            If you continue, your browser will ask for location access. If allowed, your coordinates and reported accuracy are emailed to Evin at yjevin75@gmail.com. Declining sends nothing.
-          </p>
+      <div className="p-6 sm:p-7">
+        <p className="m-0 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">Location sharing</p>
+        <h2 id="location-share-title" className="mb-0 mt-3 text-xl font-semibold tracking-tight sm:text-2xl">
+          Where are you visiting from?
+        </h2>
+        <p id="location-share-description" className="mb-0 mt-3 text-sm leading-6 text-muted">
+          Evin would like to know where you’re visiting from. Share your place name by email?
+        </p>
+
+        <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
+          <p className="m-0 text-xs font-medium text-copy">Evin</p>
+          <p className="mb-0 mt-1 text-xs text-muted">yjevin75@gmail.com</p>
         </div>
-        <button
-          type="button"
-          onClick={dismiss}
-          disabled={busy}
-          aria-label="Dismiss location request"
-          className="-mr-2 -mt-2 inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted transition-colors hover:bg-white/10 hover:text-copy disabled:cursor-not-allowed"
-        >
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
+        <p className="mb-0 mt-3 text-xs leading-5 text-muted">
+          BigDataCloud uses your coordinates and IP for the lookup; Evin receives only the place name by email.
+        </p>
 
-      {status ? <p className="mb-0 mt-3 text-xs leading-5 text-muted" role="status" aria-live="polite">{status}</p> : null}
+        {status ? <p className="mb-0 mt-4 text-sm leading-6 text-muted" role="status" aria-live="polite">{status}</p> : null}
 
-      <div className="mt-4 flex items-center justify-end gap-2">
-        <button
-          type="button"
-          onClick={dismiss}
-          disabled={busy}
-          className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-full border border-white/20 px-4 text-xs font-medium text-muted transition-colors hover:border-white/40 hover:text-copy disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          Not now
-        </button>
-        <button
-          type="button"
-          onClick={requestLocation}
-          disabled={busy || status.startsWith("Location shared")}
-          className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-full bg-copy px-4 text-xs font-semibold text-ink transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {busy ? "Getting location…" : "Share location"}
-        </button>
+        <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            onClick={dismiss}
+            disabled={busy}
+            className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full border border-white/20 px-5 text-sm font-medium text-muted transition-colors hover:border-white/40 hover:text-copy disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Not now
+          </button>
+          <button
+            type="button"
+            onClick={requestLocation}
+            disabled={busy || status.startsWith("Location shared")}
+            autoFocus
+            className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-copy px-5 text-sm font-semibold text-ink transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {busy ? "Finding your area…" : "Share location"}
+          </button>
+        </div>
       </div>
-    </aside>
+    </dialog>
   );
 }

@@ -13,6 +13,11 @@ function json(body, status) {
   });
 }
 
+function cleanPlacePart(value) {
+  if (typeof value !== "string") return "";
+  return value.replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, 100);
+}
+
 export async function POST(request) {
   // This feature is intended for the production Vercel deployment only.
   if (process.env.VERCEL_ENV !== "production" || !request.headers.get("x-vercel-id")) {
@@ -32,22 +37,14 @@ export async function POST(request) {
   try {
     location = await request.json();
   } catch {
-    return json({ ok: false, reason: "invalid-location" }, 400);
+    return json({ ok: false, reason: "invalid-place" }, 400);
   }
 
-  const { latitude, longitude, accuracy } = location ?? {};
-  if (
-    typeof latitude !== "number" || !Number.isFinite(latitude) || latitude < -90 || latitude > 90 ||
-    typeof longitude !== "number" || !Number.isFinite(longitude) || longitude < -180 || longitude > 180 ||
-    typeof accuracy !== "number" || !Number.isFinite(accuracy) || accuracy < 0 || accuracy > 100000
-  ) {
-    return json({ ok: false, reason: "invalid-location" }, 400);
-  }
-
-  const latitudeText = latitude.toFixed(6);
-  const longitudeText = longitude.toFixed(6);
-  const accuracyText = Math.round(accuracy);
-  const mapUrl = `https://maps.google.com/?q=${latitudeText},${longitudeText}`;
+  const placeParts = [location?.locality, location?.city, location?.region, location?.country]
+    .map(cleanPlacePart)
+    .filter((part, index, parts) => part && parts.findIndex((candidate) => candidate.toLocaleLowerCase() === part.toLocaleLowerCase()) === index);
+  if (placeParts.length === 0) return json({ ok: false, reason: "invalid-place" }, 400);
+  const placeName = placeParts.join(", ");
 
   try {
     const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
@@ -64,20 +61,23 @@ export async function POST(request) {
         template_id: EMAILJS_TEMPLATE_ID,
         user_id: EMAILJS_PUBLIC_KEY,
         template_params: {
-          name: "Portfolio visitor — shared device location",
+          name: "Portfolio visitor — shared location",
           email: "",
           message: [
-            "A visitor chose to share their browser-reported device location.",
-            `Coordinates: ${latitudeText}, ${longitudeText}`,
-            `Reported accuracy: approximately ${accuracyText} metres (the device's estimate; actual accuracy may vary).`,
-            `Open in Google Maps: ${mapUrl}`,
+            "A visitor shared their location from the portfolio.",
+            "",
+            "LOCATION",
+            placeName,
+            "",
+            "The place name was resolved from browser location after the visitor chose Share.",
+            "Coordinates are not included in this email.",
           ].join("\n"),
         },
       }),
     });
 
     if (!response.ok) {
-      // Do not log the visitor's coordinates or the provider response body.
+      // Do not log the visitor's location or the provider response body.
       console.error("Visitor location email delivery failed", { status: response.status });
       return json({ ok: false }, 502);
     }
