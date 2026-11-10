@@ -34,7 +34,7 @@ export default function Footer() {
             </a>
           </div>
         </div>
-        <p className="mx-auto mt-6 max-w-3xl text-center text-[11px] leading-5 text-subtle md:text-left">
+        <p className="mx-auto mt-6 max-w-3xl text-center text-xs leading-5 text-muted md:text-left">
           Approximate city, region, and country are inferred from your IP address and emailed to the site owner for visitor insights. This site does not request precise GPS location.
         </p>
       </div>
