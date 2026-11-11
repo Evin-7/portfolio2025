@@ -421,6 +421,9 @@ svg {
 }
 
 .highlight-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   min-height: 112px;
   padding: 24px 30px;
   border-right: 1px solid var(--line);
