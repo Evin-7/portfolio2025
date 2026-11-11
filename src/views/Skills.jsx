@@ -11,9 +11,6 @@ export default function Skills() {
           <h2 className="section-title" id="skills-title">
             Technologies I <span className="skill-heading-highlight">work with.</span>
           </h2>
-          <p className="section-description">
-            Tools used across web, mobile, SaaS, commerce, and AI products.
-          </p>
         </Reveal>
 
         <div className="skill-groups" aria-label="Technologies and tools">

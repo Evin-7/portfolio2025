@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Reveal from "../components/Reveal";
 import abeZauto from "../assets/images/abezauto.webp";
@@ -22,20 +22,97 @@ import penielTech from "../assets/images/penieltech.webp";
 import periyar from "../assets/images/periyartigerreserve.webp";
 import sitecore from "../assets/images/sitecore.webp";
 import veltrix from "../assets/images/veltrix.webp";
-import { siChartdotjs, siD3, siReact, siRedis, siThreedotjs } from "simple-icons";
+import {
+  siAxios,
+  siChartdotjs,
+  siD3,
+  siDrizzle,
+  siExpo,
+  siExpress,
+  siGsap,
+  siMedusa,
+  siNeon,
+  siNextdotjs,
+  siNodedotjs,
+  siPalantir,
+  siPinia,
+  siPostgresql,
+  siPrisma,
+  siRazorpay,
+  siReact,
+  siRedis,
+  siRedux,
+  siStrapi,
+  siStripe,
+  siSupabase,
+  siSwiper,
+  siTailwindcss,
+  siThreedotjs,
+  siTypescript,
+  siUpstash,
+  siVite,
+  siVuedotjs,
+  siVuetify,
+} from "simple-icons";
+
+const lightIconColor = "#d3d5e2";
+
+function brandIcon(icon, color) {
+  const brandColor = color ?? `#${icon.hex}`;
+  const [red, green, blue] = brandColor.slice(1).match(/.{2}/g).map((channel) => parseInt(channel, 16));
+  const luminance = (red * 0.299 + green * 0.587 + blue * 0.114) / 255;
+
+  return {
+    path: icon.path,
+    color: luminance < 0.29 ? lightIconColor : brandColor,
+    kind: "brand",
+  };
+}
+
+const outlineIcon = (path, color = lightIconColor) => ({ path, color, kind: "outline" });
 
 const projectTechnologyIcons = {
-  "Chart.js": { path: siChartdotjs.path, color: `#${siChartdotjs.hex}`, kind: "brand" },
-  D3: { path: siD3.path, color: `#${siD3.hex}`, kind: "brand" },
-  "Three.js 0.187": { path: siThreedotjs.path, color: "#E8EAF0", kind: "brand" },
-  "React Three Fiber 9": { path: siReact.path, color: `#${siReact.hex}`, kind: "brand" },
-  "Drei 10": { path: siThreedotjs.path, color: "#E8EAF0", kind: "brand" },
-  Redis: { path: siRedis.path, color: `#${siRedis.hex}`, kind: "brand" },
-  "Amazon SQS": {
-    path: "M7.5 18.5h9a4.5 4.5 0 0 0 .35-8.99A5.75 5.75 0 0 0 5.8 8.25a5.15 5.15 0 0 0 1.7 10.25ZM12 12v6m-2.5-3.5L12 12l2.5 2.5",
-    color: "#FF9900",
-    kind: "outline",
-  },
+  React: brandIcon(siReact),
+  "React Native": brandIcon(siReact),
+  "React Three Fiber 9": brandIcon(siReact),
+  "TypeScript": brandIcon(siTypescript),
+  Vite: brandIcon(siVite),
+  "Tailwind CSS": brandIcon(siTailwindcss),
+  Supabase: brandIcon(siSupabase),
+  "Chart.js": brandIcon(siChartdotjs),
+  D3: brandIcon(siD3),
+  "Three.js 0.187": brandIcon(siThreedotjs, lightIconColor),
+  "Drei 10": brandIcon(siThreedotjs, lightIconColor),
+  "Next.js": brandIcon(siNextdotjs, lightIconColor),
+  "PostgreSQL": brandIcon(siPostgresql),
+  Prisma: brandIcon(siPrisma),
+  Neon: brandIcon(siNeon),
+  "Upstash Redis": brandIcon(siUpstash),
+  Redis: brandIcon(siRedis),
+  "Palantir Foundry": brandIcon(siPalantir),
+  "Medusa.js": brandIcon(siMedusa),
+  "Amazon SQS": outlineIcon("M7.5 18.5h9a4.5 4.5 0 0 0 .35-8.99A5.75 5.75 0 0 0 5.8 8.25a5.15 5.15 0 0 0 1.7 10.25ZM12 12v6m-2.5-3.5L12 12l2.5 2.5", "#FF9900"),
+  Stripe: brandIcon(siStripe),
+  WebSockets: outlineIcon("M7.5 7.5 16.5 16.5M16.5 7.5l-9 9M4.5 12h3m9 0h3M12 4.5v3m0 9v3"),
+  "Vue 2": brandIcon(siVuedotjs),
+  "Vue 3": brandIcon(siVuedotjs),
+  "Vue.js": brandIcon(siVuedotjs),
+  "Vue Router": outlineIcon("M5 6.5h5.5a3 3 0 0 1 3 3v5a3 3 0 0 0 3 3H19m-2.5-2.5L19 17l-2.5 2.5M5 17.5h3"),
+  Razorpay: brandIcon(siRazorpay),
+  "React Big Calendar": outlineIcon("M7 3.5v3m10-3v3M4.5 9h15m-13-4h11a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm1.5 7h3m2 0h3m-8 4h3m2 0h3"),
+  Pinia: brandIcon(siPinia),
+  Axios: brandIcon(siAxios),
+  Swiper: brandIcon(siSwiper),
+  "Express.js": brandIcon(siExpress),
+  Azure: outlineIcon("M12 3.5 4.5 17h7l1.5 3.5L19.5 7H13l-1-3.5Zm.3 5.5h3.7l-3.8 7h-4L12.3 9Z", "#38BDF8"),
+  Vuetify: brandIcon(siVuetify),
+  "REST APIs": outlineIcon("M8 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2m8-14h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2M10 8l-3 4 3 4m4-8 3 4-3 4"),
+  "Node.js": brandIcon(siNodedotjs),
+  "GSAP": brandIcon(siGsap),
+  Strapi: brandIcon(siStrapi),
+  "Drizzle ORM": brandIcon(siDrizzle),
+  Expo: brandIcon(siExpo),
+  "Redux Toolkit": brandIcon(siRedux),
 };
 
 const projects = [
@@ -213,6 +290,90 @@ function ExternalLinkIcon() {
   );
 }
 
+function ProjectTechnologyStrip({ projectName, technologies }) {
+  const listId = useId();
+  const listRef = useRef(null);
+  const [hasOverflow, setHasOverflow] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return undefined;
+
+    const updateScrollState = () => {
+      const overflow = list.scrollWidth > list.clientWidth + 1;
+      setHasOverflow(overflow);
+      setCanScrollRight(overflow && list.scrollLeft + list.clientWidth < list.scrollWidth - 1);
+    };
+
+    updateScrollState();
+    list.addEventListener("scroll", updateScrollState, { passive: true });
+    window.addEventListener("resize", updateScrollState);
+
+    const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateScrollState);
+    resizeObserver?.observe(list);
+    if (list.parentElement) resizeObserver?.observe(list.parentElement);
+
+    return () => {
+      list.removeEventListener("scroll", updateScrollState);
+      window.removeEventListener("resize", updateScrollState);
+      resizeObserver?.disconnect();
+    };
+  }, [technologies.length]);
+
+  const scrollRight = () => {
+    const list = listRef.current;
+    if (!list) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    list.scrollBy({ left: Math.max(list.clientWidth * 0.72, 100), behavior: reduceMotion ? "auto" : "smooth" });
+  };
+
+  return (
+    <div className="project-tags-scroller">
+      <ul className="project-tags" id={listId} ref={listRef} aria-label={`${projectName} technologies`}>
+        {technologies.map((technology) => {
+          const icon = projectTechnologyIcons[technology] ?? outlineIcon("M5 12h14m-7-7 7 7-7 7");
+          return (
+            <li key={technology}>
+              <svg
+                className={`project-tag-icon project-tag-icon--${icon.kind}`}
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                style={{ color: icon.color }}
+                {...(icon.kind === "outline" ? {
+                  fill: "none",
+                  stroke: "currentColor",
+                  strokeWidth: 1.8,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                } : { fill: "currentColor" })}
+              >
+                <path d={icon.path} />
+              </svg>
+              <span>{technology}</span>
+            </li>
+          );
+        })}
+      </ul>
+      {hasOverflow && (
+        <button
+          className="project-tag-scroll-button"
+          type="button"
+          aria-label={`Scroll ${projectName} technologies right`}
+          aria-controls={listId}
+          title="Show more technologies"
+          disabled={!canScrollRight}
+          onClick={scrollRight}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="m9 5 7 7-7 7" />
+          </svg>
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function Works() {
   const [activeFilter, setActiveFilter] = useState("all");
   const filteredProjects = useMemo(
@@ -286,33 +447,7 @@ export default function Works() {
                     </div>
                     <div className="project-card-footer">
                       {project.technologies.length > 0 ? (
-                        <ul className="project-tags" aria-label={`${project.name} technologies`}>
-                          {project.technologies.map((technology) => {
-                            const icon = projectTechnologyIcons[technology];
-                            return (
-                              <li key={technology}>
-                                {icon && (
-                                  <svg
-                                    className={`project-tag-icon project-tag-icon--${icon.kind}`}
-                                    viewBox="0 0 24 24"
-                                    aria-hidden="true"
-                                    style={{ color: icon.color }}
-                                    {...(icon.kind === "outline" ? {
-                                      fill: "none",
-                                      stroke: "currentColor",
-                                      strokeWidth: 1.8,
-                                      strokeLinecap: "round",
-                                      strokeLinejoin: "round",
-                                    } : { fill: "currentColor" })}
-                                  >
-                                    <path d={icon.path} />
-                                  </svg>
-                                )}
-                                <span>{technology}</span>
-                              </li>
-                            );
-                          })}
-                        </ul>
+                        <ProjectTechnologyStrip projectName={project.name} technologies={project.technologies} />
                       ) : <span className="project-tags-spacer" aria-hidden="true" />}
                       <div className="project-card-actions">
                         {project.links.map((link) => (

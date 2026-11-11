@@ -18,7 +18,6 @@ import {
   siMongodb,
   siMysql,
   siNeon,
-  siNestjs,
   siNextdotjs,
   siNodedotjs,
   siOpenapiinitiative,
@@ -84,7 +83,6 @@ const catalogGroups = [
     title: "Backend & APIs",
     technologies: [
       { name: "Node.js", logo: siNodedotjs },
-      { name: "NestJS", logo: siNestjs },
       { name: "Express.js", logo: siExpress },
       { name: "FastAPI", logo: siFastapi },
       { name: "Spring / Spring Boot", logo: siSpringboot },
@@ -167,7 +165,7 @@ const primaryGroups = [
     title: "Backend & APIs",
     description: "Build scalable services and integrations",
     icon: "server",
-    featured: ["Node.js", "NestJS", "Express.js", "FastAPI", "REST APIs"],
+    featured: ["Node.js", "Express.js", "FastAPI", "REST APIs"],
   },
   {
     title: "Databases & Messaging",
