@@ -189,7 +189,7 @@ export default function VisitorLocationShare() {
 
         {status ? <p className="mb-0 mt-4 text-sm leading-6 text-muted" role="status" aria-live="polite">{status}</p> : null}
 
-        <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <div className="location-share-actions mt-6">
           <button
             type="button"
             onClick={dismiss}
