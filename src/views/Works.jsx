@@ -22,9 +22,14 @@ import penielTech from "../assets/images/penieltech.webp";
 import periyar from "../assets/images/periyartigerreserve.webp";
 import sitecore from "../assets/images/sitecore.webp";
 import veltrix from "../assets/images/veltrix.webp";
-import { siRedis } from "simple-icons";
+import { siChartdotjs, siD3, siReact, siRedis, siThreedotjs } from "simple-icons";
 
 const projectTechnologyIcons = {
+  "Chart.js": { path: siChartdotjs.path, color: `#${siChartdotjs.hex}`, kind: "brand" },
+  D3: { path: siD3.path, color: `#${siD3.hex}`, kind: "brand" },
+  "Three.js 0.187": { path: siThreedotjs.path, color: "#E8EAF0", kind: "brand" },
+  "React Three Fiber 9": { path: siReact.path, color: `#${siReact.hex}`, kind: "brand" },
+  "Drei 10": { path: siThreedotjs.path, color: "#E8EAF0", kind: "brand" },
   Redis: { path: siRedis.path, color: `#${siRedis.hex}`, kind: "brand" },
   "Amazon SQS": {
     path: "M7.5 18.5h9a4.5 4.5 0 0 0 .35-8.99A5.75 5.75 0 0 0 5.8 8.25a5.15 5.15 0 0 0 1.7 10.25ZM12 12v6m-2.5-3.5L12 12l2.5 2.5",
@@ -38,7 +43,7 @@ const projects = [
     name: "SiteCore",
     description: "An interactive 3D operations viewer for exploring site assets, buildings, and infrastructure.",
     categories: ["web", "backend", "full-stack"],
-    technologies: ["React", "TypeScript", "Vite", "Tailwind CSS", "Three.js", "React Three Fiber", "Drei", "Supabase"],
+    technologies: ["React", "TypeScript", "Vite", "Tailwind CSS", "Supabase", "Chart.js", "D3", "Three.js 0.187", "React Three Fiber 9", "Drei 10"],
     links: [{ label: "Open SiteCore", href: "https://sitecore-rho.vercel.app/" }],
     image: sitecore,
   },

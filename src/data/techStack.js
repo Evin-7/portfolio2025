@@ -1,5 +1,7 @@
 import {
   siConfluence,
+  siChartdotjs,
+  siD3,
   siDocker,
   siDrizzle,
   siExpress,
@@ -29,6 +31,7 @@ import {
   siRedux,
   siSpringboot,
   siTailwindcss,
+  siThreedotjs,
   siTestinglibrary,
   siTypescript,
   siVercel,
@@ -57,6 +60,16 @@ const catalogGroups = [
       { name: "Vuetify", logo: siVuetify },
       { name: "Redux Toolkit", logo: siRedux },
       { name: "Tailwind CSS", logo: siTailwindcss },
+    ],
+  },
+  {
+    title: "Visualization & 3D",
+    technologies: [
+      { name: "Chart.js", logo: siChartdotjs },
+      { name: "D3", logo: siD3 },
+      { name: "Three.js", logo: siThreedotjs },
+      { name: "React Three Fiber", logo: siReact },
+      { name: "Drei", logo: siThreedotjs },
     ],
   },
   {
@@ -137,6 +150,12 @@ const primaryGroups = [
     description: "Build responsive and modern web interfaces",
     icon: "browser",
     featured: ["React", "Next.js", "Vue.js", "Tailwind CSS", "Vuetify", "Redux Toolkit"],
+  },
+  {
+    title: "Visualization & 3D",
+    description: "Build data visualizations and interactive 3D experiences",
+    icon: "visualization",
+    featured: ["Chart.js", "D3", "Three.js", "React Three Fiber", "Drei"],
   },
   {
     title: "Mobile Development",
