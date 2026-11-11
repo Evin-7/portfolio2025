@@ -526,7 +526,6 @@ svg {
   grid-template-columns: minmax(0, 35fr) minmax(0, 65fr);
   align-items: center;
   column-gap: clamp(28px, 4vw, 56px);
-  border-bottom: 1px solid var(--line);
   padding-block: 38px;
 }
 
