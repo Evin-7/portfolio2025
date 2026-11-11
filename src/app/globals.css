@@ -676,16 +676,20 @@ svg {
 }
 .project-card-wrap { height: 100%; min-width: 0; }
 .project-card {
+  position: relative;
   display: flex;
   height: 100%;
   min-width: 0;
   flex-direction: column;
+  cursor: pointer;
   border: 1px solid rgba(170, 175, 220, 0.12);
   border-radius: 16px;
   padding: 16px;
   background: #101222;
   transition: transform 220ms ease, border-color 220ms ease, background-color 220ms ease;
 }
+.project-card-hit-area { position: absolute; z-index: 1; inset: 0; border-radius: inherit; }
+.project-card-hit-area:focus-visible { outline: 2px solid var(--accent-light); outline-offset: 4px; }
 .project-card:hover { transform: translateY(-2px); border-color: rgba(170, 171, 255, 0.32); background: #131527; }
 .project-preview {
   display: grid;
@@ -702,9 +706,11 @@ svg {
 .project-summary { margin: 8px 0 0; color: var(--text-secondary); font-size: 12px; line-height: 1.65; }
 .project-card-footer { display: flex; min-height: 35px; align-items: end; justify-content: space-between; gap: 10px; margin-top: 18px; }
 .project-tags { display: flex; flex: 1 1 auto; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
-.project-tags li { display: inline-flex; min-height: 25px; align-items: center; border: 1px solid rgba(170, 175, 220, 0.12); border-radius: 999px; padding: 0 8px; background: rgba(255, 255, 255, 0.025); color: var(--text-secondary); font-size: 10px; line-height: 1; white-space: nowrap; }
+.project-tags li { display: inline-flex; min-height: 25px; align-items: center; gap: 5px; border: 1px solid rgba(170, 175, 220, 0.12); border-radius: 999px; padding: 0 8px; background: rgba(255, 255, 255, 0.025); color: var(--text-secondary); font-size: 10px; line-height: 1; white-space: nowrap; }
+.project-tag-icon { width: 12px; height: 12px; flex: 0 0 auto; }
+.project-tag-icon--outline { fill: none; }
 .project-tags-spacer { flex: 1 1 auto; }
-.project-card-actions { display: flex; flex: 0 0 auto; gap: 6px; }
+.project-card-actions { position: relative; z-index: 2; display: flex; flex: 0 0 auto; gap: 6px; }
 .project-link { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border: 1px solid var(--glass-border-hover); border-radius: 9px; background: rgba(6, 7, 16, 0.42); color: var(--text-secondary); transition: border-color 200ms ease, background-color 200ms ease, color 200ms ease; }
 .project-link svg { width: 15px; height: 15px; }
 .project-link:hover { border-color: rgba(170, 171, 255, 0.32); background: var(--accent-soft); color: var(--accent-light); }

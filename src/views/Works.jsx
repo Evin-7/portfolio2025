@@ -22,13 +22,23 @@ import penielTech from "../assets/images/penieltech.webp";
 import periyar from "../assets/images/periyartigerreserve.webp";
 import sitecore from "../assets/images/sitecore.webp";
 import veltrix from "../assets/images/veltrix.webp";
+import { siRedis } from "simple-icons";
+
+const projectTechnologyIcons = {
+  Redis: { path: siRedis.path, color: `#${siRedis.hex}`, kind: "brand" },
+  "Amazon SQS": {
+    path: "M7.5 18.5h9a4.5 4.5 0 0 0 .35-8.99A5.75 5.75 0 0 0 5.8 8.25a5.15 5.15 0 0 0 1.7 10.25ZM12 12v6m-2.5-3.5L12 12l2.5 2.5",
+    color: "#FF9900",
+    kind: "outline",
+  },
+};
 
 const projects = [
   {
     name: "SiteCore",
     description: "An interactive 3D operations viewer for exploring site assets, buildings, and infrastructure.",
     categories: ["web", "backend", "full-stack"],
-    technologies: ["React", "Three.js", "Supabase"],
+    technologies: ["React", "TypeScript", "Vite", "Tailwind CSS", "Three.js", "React Three Fiber", "Drei", "Supabase"],
     links: [{ label: "Open SiteCore", href: "https://sitecore-rho.vercel.app/" }],
     image: sitecore,
   },
@@ -36,7 +46,7 @@ const projects = [
     name: "VELTRIX",
     description: "A premium gaming collection built around virtual play currency.",
     categories: ["web"],
-    technologies: ["Next.js", "Neon"],
+    technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "PostgreSQL", "Prisma", "Neon"],
     links: [{ label: "Open VELTRIX", href: "https://veltrix-evins.vercel.app/" }],
     image: veltrix,
   },
@@ -44,7 +54,7 @@ const projects = [
     name: "Ontix",
     description: "An enterprise operations workspace for monitoring projects, cases, customers, and teams.",
     categories: ["web"],
-    technologies: ["Palantir Foundry", "React"],
+    technologies: ["Next.js", "React", "TypeScript", "Palantir Foundry", "Neon", "Prisma", "Upstash Redis", "Tailwind CSS"],
     links: [{ label: "Open Ontix", href: "https://ontixx.vercel.app/" }],
     image: ontix,
   },
@@ -60,7 +70,7 @@ const projects = [
     name: "AGSYBA",
     description: "A fashion storefront for curated everyday clothing and accessories.",
     categories: ["web"],
-    technologies: ["Medusa.js"],
+    technologies: ["Medusa.js", "Redis", "Amazon SQS"],
     links: [{ label: "Open AGSYBA", href: "https://agsyba.com/" }],
     image: agsyba,
   },
@@ -84,7 +94,7 @@ const projects = [
     name: "Elate HRMS",
     description: "HR workflows covering recruitment, payroll, attendance, leave, and employee self-service.",
     categories: ["web", "backend", "full-stack"],
-    technologies: ["React", "PostgreSQL", "Drizzle ORM"],
+    technologies: ["React", "PostgreSQL", "Drizzle ORM", "Stripe"],
     links: [{ label: "Open Elate HRMS", href: "https://elatehrms.com/" }],
     image: elateHrms,
   },
@@ -100,7 +110,7 @@ const projects = [
     name: "Elate Time",
     description: "Time and attendance software with employee tools and biometric-device integration.",
     categories: ["web", "backend", "full-stack"],
-    technologies: ["React", "PostgreSQL", "Drizzle ORM"],
+    technologies: ["React", "PostgreSQL", "Drizzle ORM", "Stripe"],
     links: [{ label: "Open Elate Time", href: "https://elatetime.com/" }],
     image: elateTime,
   },
@@ -116,7 +126,7 @@ const projects = [
     name: "Mezeh Catering",
     description: "A catering booking experience for Mezeh Mediterranean Grill.",
     categories: ["web"],
-    technologies: ["Vue 3", "Node.js", "Azure"],
+    technologies: ["React", "TypeScript", "Vite", "Tailwind CSS", "React Big Calendar"],
     links: [{ label: "Open Mezeh Catering", href: "https://catering.mezeh.com/" }],
     image: mezehCatering,
   },
@@ -124,7 +134,7 @@ const projects = [
     name: "Mezeh Frontend",
     description: "The customer-facing web experience for Mezeh Mediterranean Grill.",
     categories: ["web"],
-    technologies: ["Vue 3", "Node.js", "Azure"],
+    technologies: ["Vue 3", "Vite", "Pinia", "Tailwind CSS", "Vue Router", "Axios", "Swiper", "Express.js", "Azure"],
     links: [{ label: "Open Mezeh", href: "https://mezeh-frontend-production.azurewebsites.net/" }],
     image: mezehFrontend,
   },
@@ -143,7 +153,7 @@ const projects = [
     name: "Mudumalai Tiger Reserve",
     description: "A visitor booking website for Mudumalai Tiger Reserve.",
     categories: ["web"],
-    technologies: ["Vue.js", "Vuetify", "REST APIs"],
+    technologies: ["Vue.js", "Vuetify", "REST APIs", "Node.js"],
     links: [{ label: "Open Mudumalai Tiger Reserve", href: "https://www.mudumalaitigerreserve.com/" }],
     image: mudumalai,
   },
@@ -151,7 +161,7 @@ const projects = [
     name: "Oh Yes World",
     description: "A home-solutions website connecting customers with household services in Kerala.",
     categories: ["web"],
-    technologies: ["Vue 2", "Razorpay"],
+    technologies: ["Vue 2", "Vuetify", "Vue Router", "GSAP", "Axios", "Swiper", "Razorpay", "Node.js"],
     links: [{ label: "Open Oh Yes World", href: "https://ohyesworld.com/" }],
     image: ohYesWorld,
   },
@@ -159,7 +169,7 @@ const projects = [
     name: "Parambikulam Tiger Reserve",
     description: "A visitor booking website for Parambikulam Tiger Reserve.",
     categories: ["web"],
-    technologies: ["Vue.js", "Vuetify", "REST APIs"],
+    technologies: ["Vue.js", "Vuetify", "REST APIs", "Razorpay", "Node.js"],
     links: [{ label: "Open Parambikulam Tiger Reserve", href: "https://parambikulam.org/" }],
     image: parambikulam,
   },
@@ -167,7 +177,7 @@ const projects = [
     name: "Peniel Tech",
     description: "A corporate website presenting Penieltech's software and IT services.",
     categories: ["web"],
-    technologies: ["Next.js", "Strapi"],
+    technologies: ["Next.js", "Strapi", "Tailwind CSS"],
     links: [{ label: "Open Peniel Tech", href: "https://www.penieltech.com/" }],
     image: penielTech,
   },
@@ -175,7 +185,7 @@ const projects = [
     name: "Periyar Tiger Reserve",
     description: "A visitor booking website for Periyar Tiger Reserve.",
     categories: ["web"],
-    technologies: ["Vue.js", "Vuetify", "REST APIs"],
+    technologies: ["Vue.js", "Vuetify", "REST APIs", "Razorpay", "Node.js"],
     links: [{ label: "Open Periyar Tiger Reserve", href: "https://www.periyartigerreserve.org/" }],
     image: periyar,
   },
@@ -215,7 +225,6 @@ export default function Works() {
         <Reveal className="project-heading nav-anchor-target" id="works">
           <p className="section-kicker">02 / Selected Work</p>
           <h2 className="section-title" id="works-title">Things I&apos;ve built.</h2>
-          <p className="section-description">A collection of real-world projects I&apos;ve designed and developed.</p>
         </Reveal>
 
         <div className="project-filter-row" aria-label="Filter projects by category">
@@ -249,6 +258,13 @@ export default function Works() {
               {group.projects.map((project, index) => (
                 <Reveal className="project-card-wrap" key={project.name} delay={Math.min(index * 0.025, 0.15)}>
                   <article className="project-card">
+                    <a
+                      className="project-card-hit-area"
+                      href={project.links[0].href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={project.links[0].label}
+                    />
                     <div className="project-preview">
                       <Image
                         src={project.image}
@@ -266,7 +282,31 @@ export default function Works() {
                     <div className="project-card-footer">
                       {project.technologies.length > 0 ? (
                         <ul className="project-tags" aria-label={`${project.name} technologies`}>
-                          {project.technologies.map((technology) => <li key={technology}>{technology}</li>)}
+                          {project.technologies.map((technology) => {
+                            const icon = projectTechnologyIcons[technology];
+                            return (
+                              <li key={technology}>
+                                {icon && (
+                                  <svg
+                                    className={`project-tag-icon project-tag-icon--${icon.kind}`}
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                    style={{ color: icon.color }}
+                                    {...(icon.kind === "outline" ? {
+                                      fill: "none",
+                                      stroke: "currentColor",
+                                      strokeWidth: 1.8,
+                                      strokeLinecap: "round",
+                                      strokeLinejoin: "round",
+                                    } : { fill: "currentColor" })}
+                                  >
+                                    <path d={icon.path} />
+                                  </svg>
+                                )}
+                                <span>{technology}</span>
+                              </li>
+                            );
+                          })}
                         </ul>
                       ) : <span className="project-tags-spacer" aria-hidden="true" />}
                       <div className="project-card-actions">

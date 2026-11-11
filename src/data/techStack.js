@@ -64,6 +64,7 @@ const catalogGroups = [
     technologies: [
       { name: "React Native", logo: siReact },
       { name: "Expo", logo: siExpo },
+      { name: "NativeWind", logo: siTailwindcss },
     ],
   },
   {
@@ -136,6 +137,12 @@ const primaryGroups = [
     description: "Build responsive and modern web interfaces",
     icon: "browser",
     featured: ["React", "Next.js", "Vue.js", "Tailwind CSS", "Vuetify", "Redux Toolkit"],
+  },
+  {
+    title: "Mobile Development",
+    description: "Build native-feeling applications for iOS and Android",
+    icon: "mobile",
+    featured: ["React Native", "Expo", "NativeWind"],
   },
   {
     title: "Backend & APIs",
