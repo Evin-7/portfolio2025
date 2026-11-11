@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const links = [
   ["Home", "home"],
-  ["About", "about"],
   ["Skills", "skills"],
   ["Projects", "works"],
   ["Experience", "experience"],
@@ -19,28 +18,94 @@ function BrandMark() {
   );
 }
 
-function DownloadIcon() {
-  return <svg className="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v3h16v-3" /></svg>;
-}
-
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeId, setActiveId] = useState("home");
   const toggleRef = useRef(null);
   const menuRef = useRef(null);
+  const activeLockRef = useRef(false);
+  const unlockTimerRef = useRef(null);
+
+  const lockActiveItem = useCallback((id) => {
+    if (!links.some(([, linkId]) => linkId === id)) return false;
+    activeLockRef.current = true;
+    setActiveId(id);
+    if (unlockTimerRef.current) window.clearTimeout(unlockTimerRef.current);
+    unlockTimerRef.current = window.setTimeout(() => {
+      activeLockRef.current = false;
+      unlockTimerRef.current = null;
+    }, 1800);
+    return true;
+  }, []);
 
   useEffect(() => {
-    const sections = links.map(([, id]) => document.getElementById(id)).filter(Boolean);
-    if (!sections.length || !("IntersectionObserver" in window)) return undefined;
+    const sectionIds = links.map(([, id]) => id);
+    const getTarget = (id) => document.getElementById(id);
+    const activateHash = () => {
+      const id = window.location.hash.slice(1);
+      if (!lockActiveItem(id)) updateFromScroll();
+    };
+    const restoreHashPosition = () => {
+      const id = window.location.hash.slice(1);
+      if (!lockActiveItem(id)) {
+        updateFromScroll();
+        return;
+      }
 
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-      if (visible[0]) setActiveId(visible[0].target.id);
-    }, { rootMargin: "-18% 0px -62% 0px", threshold: [0, 0.1, 0.25, 0.5] });
+      // Browsers restore the previous scroll position during history traversal,
+      // which can leave the URL hash and active navigation item out of sync.
+      // Re-align only on popstate; normal link clicks use native hash scrolling.
+      window.requestAnimationFrame(() => {
+        const target = getTarget(id);
+        if (!target) return;
+        const header = document.querySelector(".site-header");
+        const headerHeight = header?.getBoundingClientRect().height ?? 0;
+        const anchorGap = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--anchor-gap")) || 64;
+        const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - anchorGap;
+        window.scrollTo({ top: Math.max(0, top), behavior: "instant" });
+      });
+    };
+    const updateFromScroll = () => {
+      if (activeLockRef.current) return;
+      const header = document.querySelector(".site-header");
+      const headerHeight = header?.getBoundingClientRect().height ?? 0;
+      const anchorGap = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--anchor-gap")) || 64;
+      const activationLine = headerHeight + anchorGap + 2;
+      const targets = sectionIds.map(getTarget).filter(Boolean);
+      if (!targets.length) return;
 
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, []);
+      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+        setActiveId(targets[targets.length - 1].id);
+        return;
+      }
+
+      const current = targets.filter((target) => target.getBoundingClientRect().top <= activationLine).at(-1);
+      setActiveId((current ?? targets[0]).id);
+    };
+    const releaseLock = () => {
+      if (!activeLockRef.current) return;
+      activeLockRef.current = false;
+      if (unlockTimerRef.current) window.clearTimeout(unlockTimerRef.current);
+      unlockTimerRef.current = null;
+      updateFromScroll();
+    };
+
+    const hashId = window.location.hash.slice(1);
+    if (!lockActiveItem(hashId)) updateFromScroll();
+    window.addEventListener("scroll", updateFromScroll, { passive: true });
+    window.addEventListener("hashchange", activateHash);
+    window.addEventListener("popstate", restoreHashPosition);
+    window.addEventListener("scrollend", releaseLock);
+    window.addEventListener("resize", updateFromScroll);
+    return () => {
+      window.removeEventListener("scroll", updateFromScroll);
+      window.removeEventListener("hashchange", activateHash);
+      window.removeEventListener("popstate", restoreHashPosition);
+      window.removeEventListener("scrollend", releaseLock);
+      window.removeEventListener("resize", updateFromScroll);
+      if (unlockTimerRef.current) window.clearTimeout(unlockTimerRef.current);
+    };
+  }, [lockActiveItem]);
 
   useEffect(() => {
     if (!isMenuOpen) return undefined;
@@ -58,11 +123,15 @@ export default function Navbar() {
   }, [isMenuOpen]);
 
   const closeMenu = () => setIsMenuOpen(false);
+  const handleAnchorClick = (id) => {
+    lockActiveItem(id);
+    closeMenu();
+  };
   const renderLink = ([label, id]) => (
     <a
       href={`#${id}`}
       key={id}
-      onClick={closeMenu}
+      onClick={() => handleAnchorClick(id)}
       aria-current={activeId === id ? "location" : undefined}
       className="nav-link"
     >
@@ -73,7 +142,7 @@ export default function Navbar() {
   return (
     <header className="site-header">
       <div className="page-container nav-row">
-        <a href="#home" className="brand-lockup" onClick={closeMenu} aria-label="Evin Leyander, home">
+        <a href="#home" className="brand-lockup" onClick={() => handleAnchorClick("home")} aria-label="Evin Leyander, home">
           <BrandMark />
           <span className="brand-name">Evin Leyander</span>
         </a>
@@ -81,10 +150,6 @@ export default function Navbar() {
         <nav className="desktop-nav" aria-label="Main navigation">
           {links.map(renderLink)}
         </nav>
-
-        <div className="nav-actions">
-          <a href="/resume" className="button button--outline"><DownloadIcon />Download Resume</a>
-        </div>
 
         <button
           className="menu-toggle"
@@ -109,7 +174,6 @@ export default function Navbar() {
         inert={!isMenuOpen}
       >
         {links.map(renderLink)}
-        <a href="/resume" className="mobile-resume" onClick={closeMenu}><DownloadIcon />Download Resume</a>
       </nav>
     </header>
   );

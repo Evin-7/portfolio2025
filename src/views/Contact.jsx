@@ -63,12 +63,9 @@ export default function Contact() {
   return (
     <section className="section contact-section" aria-labelledby="contact-title">
       <div className="page-container contact-layout">
-        <Reveal className="contact-copy">
-          <p className="section-kicker">05 / Contact</p>
+        <Reveal className="contact-copy nav-anchor-target" id="contact">
+          <p className="section-kicker">04 / Contact</p>
           <h2 className="section-title" id="contact-title">Let’s build something meaningful.</h2>
-          <p className="section-description">
-            I’m open to opportunities where I can contribute to impactful products, collaborate with strong engineering teams, and continue growing as a software engineer.
-          </p>
           <a className="contact-email" href="mailto:yjevin75@gmail.com">
             yjevin75@gmail.com <span aria-hidden="true">↗</span>
           </a>

@@ -44,10 +44,9 @@ export default function Experience() {
   return (
     <section className="section section--alternate" aria-labelledby="experience-title">
       <div className="page-container">
-        <Reveal className="section-heading">
-          <p className="section-kicker">04 / Experience</p>
+        <Reveal className="section-heading nav-anchor-target" id="experience">
+          <p className="section-kicker">03 / Experience</p>
           <h2 className="section-title" id="experience-title">My professional journey.</h2>
-          <p className="section-description">Product teams, real users, and software delivered from interface to production.</p>
         </Reveal>
 
         <ol className="experience-list" aria-label="Professional experience">

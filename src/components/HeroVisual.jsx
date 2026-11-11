@@ -16,7 +16,7 @@ export default function HeroVisual() {
         alt="A dark code editor open on a laptop in a softly lit developer workspace"
         fill
         priority
-        sizes="(max-width: 920px) 100vw, 55vw"
+        sizes="(max-width: 980px) 100vw, (max-width: 1279px) 70vw, 64vw"
         className="hero-visual-image"
       />
       <div className="orbit-path" aria-hidden="true" />
