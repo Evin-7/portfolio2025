@@ -177,23 +177,14 @@ export default function VisitorLocationShare() {
         event.preventDefault();
         if (!busy) dismiss();
       }}
-      className="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-md overflow-y-auto rounded-2xl border border-white/15 bg-panel p-0 text-copy shadow-[0_24px_90px_rgba(0,0,0,0.75)] backdrop:bg-black/75"
+      className="location-share-dialog m-auto max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-md overflow-y-auto rounded-2xl border border-white/15 bg-panel p-0 text-copy shadow-[0_24px_90px_rgba(0,0,0,0.75)] backdrop:bg-black/75"
     >
       <div className="p-6 sm:p-7">
-        <p className="m-0 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">Location sharing</p>
-        <h2 id="location-share-title" className="mb-0 mt-3 text-xl font-semibold tracking-tight sm:text-2xl">
+        <h2 id="location-share-title" className="mb-0 mt-0 text-xl font-semibold tracking-tight sm:text-2xl">
           Where are you visiting from?
         </h2>
         <p id="location-share-description" className="mb-0 mt-3 text-sm leading-6 text-muted">
           Evin would like to know where you’re visiting from. Share your place name by email?
-        </p>
-
-        <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
-          <p className="m-0 text-xs font-medium text-copy">Evin</p>
-          <p className="mb-0 mt-1 text-xs text-muted">yjevin75@gmail.com</p>
-        </div>
-        <p className="mb-0 mt-3 text-xs leading-5 text-muted">
-          BigDataCloud uses your coordinates and IP for the lookup; Evin receives only the place name by email.
         </p>
 
         {status ? <p className="mb-0 mt-4 text-sm leading-6 text-muted" role="status" aria-live="polite">{status}</p> : null}
@@ -203,7 +194,7 @@ export default function VisitorLocationShare() {
             type="button"
             onClick={dismiss}
             disabled={busy}
-            className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full border border-white/20 px-5 text-sm font-medium text-muted transition-colors hover:border-white/40 hover:text-copy disabled:cursor-not-allowed disabled:opacity-60"
+            className="button button--outline location-share-button"
           >
             Not now
           </button>
@@ -212,7 +203,7 @@ export default function VisitorLocationShare() {
             onClick={requestLocation}
             disabled={busy || status.startsWith("Location shared")}
             autoFocus
-            className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-copy px-5 text-sm font-semibold text-ink transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+            className="button button--primary location-share-button"
           >
             {busy ? "Finding your area…" : "Share location"}
           </button>
