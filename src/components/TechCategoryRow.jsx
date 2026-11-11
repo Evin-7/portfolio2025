@@ -57,7 +57,6 @@ export default function TechCategoryRow({ category }) {
         <CategoryIcon kind={category.icon} />
         <div className="skill-group-copy">
           <h3>{category.title}</h3>
-          <p>{category.description}</p>
         </div>
       </div>
       <ul className="tech-badge-list" aria-label={`${category.title} technologies`}>

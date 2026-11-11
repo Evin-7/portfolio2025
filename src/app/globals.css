@@ -567,13 +567,6 @@ svg {
   line-height: 1.25;
 }
 
-.skill-group-copy p {
-  margin: 7px 0 0;
-  color: var(--text-secondary);
-  font-size: 13px;
-  line-height: 1.6;
-}
-
 .tech-badge-list {
   display: flex;
   flex-wrap: wrap;

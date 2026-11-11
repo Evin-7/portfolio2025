@@ -145,37 +145,31 @@ export const technologyCatalog = catalogGroups;
 const primaryGroups = [
   {
     title: "Frontend & Web",
-    description: "Build responsive and modern web interfaces",
     icon: "browser",
     featured: ["React", "Next.js", "Vue.js", "Tailwind CSS", "Vuetify", "Redux Toolkit"],
   },
   {
     title: "Visualization & 3D",
-    description: "Build data visualizations and interactive 3D experiences",
     icon: "visualization",
     featured: ["Chart.js", "D3", "Three.js", "React Three Fiber", "Drei"],
   },
   {
     title: "Mobile Development",
-    description: "Build native-feeling applications for iOS and Android",
     icon: "mobile",
     featured: ["React Native", "Expo", "NativeWind"],
   },
   {
     title: "Backend & APIs",
-    description: "Build scalable services and integrations",
     icon: "server",
     featured: ["Node.js", "Express.js", "FastAPI", "REST APIs"],
   },
   {
     title: "Databases & Messaging",
-    description: "Data storage and asynchronous communication",
     icon: "database",
     featured: ["PostgreSQL", "MySQL", "MongoDB", "Redis", "Amazon SQS"],
   },
   {
     title: "Cloud & Dev Tools",
-    description: "Deployment, versioning and project collaboration",
     icon: "cloud",
     featured: ["AWS S3", "Docker", "Git", "GitHub", "Vercel", "Jira"],
   },
