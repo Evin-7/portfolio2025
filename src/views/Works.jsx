@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -247,58 +247,6 @@ function TechnologyList({ technologies, variant = "feature" }) {
 }
 
 function WorkFeature({ project, index, total }) {
-  const filterId = "work-liquid-" + useId().replaceAll(":", "");
-  const mediaRef = useRef(null);
-  const displacementRef = useRef(null);
-
-  useEffect(() => {
-    const media = mediaRef.current;
-    const displacement = displacementRef.current;
-    if (index !== 0 || !media || !displacement || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
-
-    const warp = { scale: 0, radius: 0, opacity: 0 };
-    const renderWarp = () => {
-      displacement.setAttribute("scale", Math.max(0, warp.scale).toFixed(1));
-      media.style.setProperty("--warp-radius", Math.max(0, warp.radius).toFixed(1) + "px");
-      media.style.setProperty("--warp-opacity", Math.max(0, Math.min(1, warp.opacity)).toFixed(2));
-    };
-    const scaleTo = gsap.quickTo(warp, "scale", { duration: 0.38, ease: "power3.out", onUpdate: renderWarp });
-    const radiusTo = gsap.quickTo(warp, "radius", { duration: 0.42, ease: "elastic.out(1, 0.52)", onUpdate: renderWarp });
-    const opacityTo = gsap.quickTo(warp, "opacity", { duration: 0.18, ease: "power2.out", onUpdate: renderWarp });
-    const supportsPointerEffect = (event) => event.pointerType === "mouse" && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    const onPointerEnter = (event) => {
-      if (!supportsPointerEffect(event)) return;
-      scaleTo(48);
-      radiusTo(Math.min(220, media.clientWidth * 0.35));
-      opacityTo(1);
-    };
-    const onPointerMove = (event) => {
-      if (!supportsPointerEffect(event)) return;
-      const bounds = media.getBoundingClientRect();
-      media.style.setProperty("--liquid-x", ((event.clientX - bounds.left) / bounds.width) * 100 + "%");
-      media.style.setProperty("--liquid-y", ((event.clientY - bounds.top) / bounds.height) * 100 + "%");
-    };
-    const onPointerLeave = () => {
-      scaleTo(0);
-      radiusTo(0);
-      opacityTo(0);
-    };
-
-    media.addEventListener("pointerenter", onPointerEnter, { passive: true });
-    media.addEventListener("pointermove", onPointerMove, { passive: true });
-    media.addEventListener("pointerleave", onPointerLeave, { passive: true });
-    return () => {
-      media.removeEventListener("pointerenter", onPointerEnter);
-      media.removeEventListener("pointermove", onPointerMove);
-      media.removeEventListener("pointerleave", onPointerLeave);
-      scaleTo.tween?.kill();
-      radiusTo.tween?.kill();
-      opacityTo.tween?.kill();
-      ["--warp-radius", "--warp-opacity", "--liquid-x", "--liquid-y"].forEach((property) => media.style.removeProperty(property));
-      displacement.setAttribute("scale", "0");
-    };
-  }, [index]);
-
   return (
     <article className={"work-feature work-feature--" + (index + 1)} data-work-feature>
       <span className="work-feature-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
@@ -321,7 +269,7 @@ function WorkFeature({ project, index, total }) {
           ))}
         </div>
       </div>
-      <figure className="work-feature-visual" ref={mediaRef} data-liquid-effect={index === 0 ? "featured" : undefined}>
+      <figure className="work-feature-visual">
         <Image
           className="work-feature-image"
           src={project.image}
@@ -330,29 +278,6 @@ function WorkFeature({ project, index, total }) {
           height={project.image.height}
           sizes="(max-width: 720px) 92vw, 64vw"
         />
-        {index === 0 && (
-          <>
-            <Image
-              className="work-feature-image work-feature-image--liquid"
-              src={project.image}
-              alt=""
-              aria-hidden="true"
-              width={project.image.width}
-              height={project.image.height}
-              sizes="(max-width: 720px) 92vw, 64vw"
-              style={{ filter: "url(#" + filterId + ")" }}
-            />
-            <svg className="work-liquid-filter" aria-hidden="true" focusable="false">
-              <defs>
-                <filter id={filterId} x="-12%" y="-12%" width="124%" height="124%" colorInterpolationFilters="sRGB">
-                  <feTurbulence type="fractalNoise" baseFrequency="0.022 0.035" numOctaves="2" seed="7" result="liquidNoise" />
-                  <feDisplacementMap ref={displacementRef} in="SourceGraphic" in2="liquidNoise" scale="0" xChannelSelector="R" yChannelSelector="G" />
-                </filter>
-              </defs>
-            </svg>
-            <span className="work-feature-hint" aria-hidden="true">Move across the image</span>
-          </>
-        )}
         <figcaption className="sr-only">{project.name}: {project.description}</figcaption>
       </figure>
     </article>
