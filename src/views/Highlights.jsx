@@ -12,7 +12,7 @@ export default function Highlights() {
     <section className="highlight-section" aria-label="Areas of focus">
       <div className="page-container highlight-grid">
         {highlights.map((item, index) => (
-          <Reveal className="highlight-item" key={item.title} delay={index * 0.05}>
+          <Reveal className="highlight-item" key={item.title} delay={index * 0.05} variant="soft">
             <div className="highlight-heading">
               <svg className="highlight-icon" viewBox="0 0 24 24" aria-hidden="true"><path d={item.icon.path} /></svg>
               <h2>{item.title}</h2>

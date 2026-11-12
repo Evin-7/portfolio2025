@@ -15,7 +15,7 @@ export default function Skills() {
 
         <div className="skill-groups" aria-label="Technologies and tools">
           {techCategories.map((category, index) => (
-            <Reveal key={category.title} delay={index * 0.04}>
+            <Reveal key={category.title} delay={index * 0.04} direction={index % 2 === 0 ? "left" : "right"}>
               <TechCategoryRow category={category} />
             </Reveal>
           ))}

@@ -51,7 +51,7 @@ export default function Experience() {
 
         <ol className="experience-list" aria-label="Professional experience">
           {experience.map((item, index) => (
-            <Reveal as="li" className="experience-item" key={item.company} delay={index * 0.06}>
+            <Reveal as="li" className="experience-item" key={item.company} delay={index * 0.06} direction={index % 2 === 0 ? "left" : "right"}>
               <span className="experience-date">{item.period}</span>
               <span className="experience-marker" aria-hidden="true" />
               <article className="experience-card">

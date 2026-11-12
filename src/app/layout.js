@@ -1,4 +1,5 @@
 import SmoothScroll from "../components/SmoothScroll";
+import CinematicIntro from "../components/CinematicIntro";
 import VisitorLocationShare from "../components/VisitorLocationShare";
 import "./globals.css";
 
@@ -29,7 +30,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        <noscript>
+          <style>{`.intro-loader{display:none!important}.hero-eyebrow,.hero-word,.hero-ctas,.hero-meta{opacity:1!important;transform:none!important;filter:none!important}`}</style>
+        </noscript>
         <SmoothScroll>
+          <CinematicIntro />
           <VisitorLocationShare />
           {children}
         </SmoothScroll>

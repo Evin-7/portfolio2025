@@ -118,6 +118,7 @@ const projectTechnologyIcons = {
 const projects = [
   {
     name: "SiteCore",
+    featured: true,
     description: "An interactive 3D operations viewer for exploring site assets, buildings, and infrastructure.",
     categories: ["web", "backend", "full-stack"],
     technologies: ["React", "TypeScript", "Vite", "Tailwind CSS", "Supabase", "Chart.js", "D3", "Three.js 0.187", "React Three Fiber 9", "Drei 10"],
@@ -422,14 +423,15 @@ export default function Works() {
             )}
             <div className="project-grid" aria-live="polite">
               {group.projects.map((project, index) => (
-                <Reveal className="project-card-wrap" key={project.name} delay={Math.min(index * 0.025, 0.15)}>
-                  <article className="project-card">
+                <Reveal className={`project-card-wrap${project.featured ? " project-card-wrap--featured" : ""}`} key={project.name} delay={Math.min(index * 0.025, 0.15)} variant={project.featured ? "mask" : "rise"}>
+                  <article className="project-card" data-liquid={project.featured ? "featured" : undefined}>
                     <a
                       className="project-card-hit-area"
                       href={project.links[0].href}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={project.links[0].label}
+                      data-cursor-label="VIEW"
                     />
                     <div className="project-preview">
                       <Image

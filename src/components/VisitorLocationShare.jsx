@@ -45,19 +45,29 @@ export default function VisitorLocationShare() {
   const dialogRef = useRef(null);
 
   useEffect(() => {
-    const now = Date.now();
-    try {
-      // Retire keys used by the previous automatic IP-location email feature.
-      window.localStorage.removeItem("portfolio-approx-location-notified-at");
-      window.localStorage.removeItem("portfolio-approx-location-attempted-at");
+    const promptAfterIntro = () => {
+      const now = Date.now();
+      try {
+        // Retire keys used by the previous automatic IP-location email feature.
+        window.localStorage.removeItem("portfolio-approx-location-notified-at");
+        window.localStorage.removeItem("portfolio-approx-location-attempted-at");
 
-      if (isWithinCooldown(window.localStorage.getItem(SHARED_KEY), SHARED_COOLDOWN_MS, now)) return;
-      if (isWithinCooldown(window.localStorage.getItem(DISMISSED_KEY), DISMISS_COOLDOWN_MS, now)) return;
-    } catch {
-      // The request remains available when storage is blocked.
+        if (isWithinCooldown(window.localStorage.getItem(SHARED_KEY), SHARED_COOLDOWN_MS, now)) return;
+        if (isWithinCooldown(window.localStorage.getItem(DISMISSED_KEY), DISMISS_COOLDOWN_MS, now)) return;
+      } catch {
+        // The request remains available when storage is blocked.
+      }
+
+      setVisible(true);
+    };
+
+    if (document.documentElement.dataset.introComplete === "true") {
+      promptAfterIntro();
+      return undefined;
     }
 
-    setVisible(true);
+    window.addEventListener("portfolio:intro-complete", promptAfterIntro, { once: true });
+    return () => window.removeEventListener("portfolio:intro-complete", promptAfterIntro);
   }, []);
 
   useEffect(() => {

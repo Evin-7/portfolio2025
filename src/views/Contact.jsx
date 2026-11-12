@@ -14,7 +14,7 @@ const initialForm = { name: "", email: "", message: "" };
 
 function SocialLink({ href, label, icon }) {
   return (
-    <a className="social-link" href={href} target="_blank" rel="noopener noreferrer">
+    <a className="social-link" href={href} target="_blank" rel="noopener noreferrer" data-cursor-label={label.toUpperCase()}>
       {icon ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icon.path} /></svg> : <span className="social-mark-text" aria-hidden="true">in</span>}
       {label}
     </a>
@@ -73,7 +73,7 @@ export default function Contact() {
           <Reveal className="contact-copy nav-anchor-target" id="contact">
             <p className="section-kicker">04 / Contact</p>
             <h2 className="section-title" id="contact-title">Let’s build something meaningful.</h2>
-            <a className="contact-email" href="mailto:yjevin75@gmail.com">
+            <a className="contact-email" href="mailto:yjevin75@gmail.com" data-cursor-label="EMAIL" data-magnetic>
               yjevin75@gmail.com <span aria-hidden="true">↗</span>
             </a>
             <div className="contact-socials" aria-label="Contact and profile links">
@@ -83,7 +83,7 @@ export default function Contact() {
             </div>
           </Reveal>
 
-          <Reveal delay={0.08}>
+          <Reveal delay={0.08} variant="soft">
             <form className="contact-form" onSubmit={submitForm}>
               <label className="sr-only" htmlFor="contact-name">Name</label>
               <input className="contact-field" id="contact-name" name="name" value={form.name} onChange={updateField} type="text" autoComplete="name" placeholder="Name" required />
@@ -95,7 +95,7 @@ export default function Contact() {
               <textarea className="contact-field contact-field--message" id="contact-message" name="message" value={form.message} onChange={updateField} placeholder="Tell me about your project" rows={5} required />
 
               <div className="contact-submit">
-                <button className="button button--primary" type="submit" disabled={isSubmitting}>{submitText}</button>
+                <button className="button button--primary" type="submit" disabled={isSubmitting} data-magnetic data-liquid><span className="button-label">{submitText}</span></button>
               </div>
             </form>
           </Reveal>
