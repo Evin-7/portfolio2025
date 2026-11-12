@@ -10,14 +10,6 @@ const links = [
   ["Contact", "contact"],
 ];
 
-function BrandMark() {
-  return (
-    <svg className="brand-mark" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="m10 6-7 8 7 8M18 6l7 8-7 8M16 3l-4 22" />
-    </svg>
-  );
-}
-
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeId, setActiveId] = useState("home");
@@ -147,7 +139,9 @@ export default function Navbar() {
     <header className="site-header">
       <div className="page-container nav-row">
         <a href="#home" className="brand-lockup" onClick={() => handleAnchorClick("home")} aria-label="Evin Leyander, home" data-magnetic data-cursor-label="HOME">
-          <BrandMark />
+          <span className="brand-mark-frame" aria-hidden="true">
+            <img className="brand-mark-image" src="/el-monogram.png" alt="" width="120" height="80" />
+          </span>
           <span className="brand-name">Evin Leyander</span>
         </a>
 

@@ -23,6 +23,21 @@ import penielTech from "../assets/images/penieltech.webp";
 import periyar from "../assets/images/periyartigerreserve.webp";
 import sitecore from "../assets/images/sitecore.webp";
 import veltrix from "../assets/images/veltrix.webp";
+import { technologyCatalog } from "../data/techStack";
+
+function normalizeTechnologyName(name) {
+  const normalized = name.toLowerCase().replace(/\s+\d+(?:\.\d+)*$/, "");
+  if (normalized.startsWith("vue ")) return "vue.js";
+  if (normalized === "upstash redis") return "redis";
+  return normalized;
+}
+
+const technologyByName = new Map(
+  technologyCatalog.flatMap(({ technologies }) => technologies.map((technology) => [
+    normalizeTechnologyName(technology.name),
+    technology,
+  ])),
+);
 
 const projects = [
   {
@@ -206,14 +221,28 @@ function ProjectTitle({ name, className = "" }) {
   );
 }
 
-function TechnologyDetails({ project }) {
-  if (!project.technologies.length) return null;
-
+function TechnologyList({ technologies, variant = "feature" }) {
+  if (!technologies.length) return null;
   return (
-    <details className="work-technology-details">
-      <summary>{project.technologies.length} technologies</summary>
-      <p>{project.technologies.join(" · ")}</p>
-    </details>
+    <ul className={`work-technology-list work-technology-list--${variant}`} aria-label="Technologies used">
+      {technologies.map((name) => {
+        const technology = technologyByName.get(normalizeTechnologyName(name));
+        const logo = technology?.logo;
+
+        return (
+          <li className="work-technology-chip" key={name}>
+            <span className="work-technology-logo" aria-hidden="true">
+              {logo?.path ? (
+                <svg viewBox="0 0 24 24" focusable="false"><path d={logo.path} /></svg>
+              ) : (
+                <span>{name.replace(/[^A-Za-z0-9]/g, "").slice(0, 2).toUpperCase()}</span>
+              )}
+            </span>
+            <span>{name}</span>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
@@ -282,8 +311,7 @@ function WorkFeature({ project, index, total }) {
         <span className="work-feature-rule" aria-hidden="true" />
         <p className="work-feature-description">{project.description}</p>
         <div className="work-feature-meta">
-          <span>{project.technologies.slice(0, 2).join(" · ")}</span>
-          <TechnologyDetails project={project} />
+          <TechnologyList technologies={project.technologies} />
         </div>
         <div className="work-feature-actions">
           {project.links.map((link) => (
@@ -360,7 +388,7 @@ function ArchiveProject({ project, index }) {
           </h3>
           <p className="work-archive-description">{project.description}</p>
           <div className="work-archive-meta">
-            <TechnologyDetails project={project} />
+            <TechnologyList technologies={project.technologies} variant="archive" />
             {(hasMultipleLinks ? project.links : otherLinks).map((link) => (
               <a className="work-archive-extra-link" href={link.href} key={link.href} target="_blank" rel="noopener noreferrer">{link.label} <span aria-hidden="true">↗</span></a>
             ))}
