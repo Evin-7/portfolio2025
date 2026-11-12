@@ -4,3 +4,4 @@ export const EMAILJS_TEMPLATE_ID =
   process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "template_mtqwxq5";
 export const EMAILJS_PUBLIC_KEY =
   process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "zV-JGz4jw4hDv3m2h";
+export const EMAILJS_VISITOR_TEMPLATE_ID = process.env.EMAILJS_VISITOR_TEMPLATE_ID || "";

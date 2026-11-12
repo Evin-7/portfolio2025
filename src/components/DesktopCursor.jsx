@@ -16,6 +16,7 @@ export default function DesktopCursor() {
   const [enabled, setEnabled] = useState(false);
   const [pointerActive, setPointerActive] = useState(false);
   const [label, setLabel] = useState("");
+  const [mode, setMode] = useState("default");
   const labelRef = useRef("");
   const magneticRef = useRef(null);
   const liquidRef = useRef(null);
@@ -42,11 +43,14 @@ export default function DesktopCursor() {
     };
     const onPointerMove = (event) => {
       if (!finePointer.matches || reduceMotion) return;
+      document.documentElement.dataset.customCursor = "true";
       setPointerActive(true);
       pointerX.set(event.clientX);
       pointerY.set(event.clientY);
 
       const origin = event.target instanceof Element ? event.target : null;
+      const nextMode = origin?.closest('[data-liquid="featured"]') ? "project" : "default";
+      setMode((current) => current === nextMode ? current : nextMode);
       const interactive = origin?.closest("[data-cursor-label], a, button");
       const nextLabel = interactive?.getAttribute("data-cursor-label") || (interactive ? "OPEN" : "");
       if (nextLabel !== labelRef.current) {
@@ -82,15 +86,24 @@ export default function DesktopCursor() {
     const stopPointer = (event) => {
       if (event.relatedTarget) return;
       setPointerActive(false);
+      setMode("default");
+      document.documentElement.dataset.customCursor = "false";
       if (labelRef.current) {
         labelRef.current = "";
         setLabel("");
       }
       resetTargets();
     };
-    const onKeyDown = () => setPointerActive(false);
+    const onKeyDown = () => {
+      setPointerActive(false);
+      setMode("default");
+      document.documentElement.dataset.customCursor = "false";
+      resetTargets();
+    };
     const onWindowBlur = () => {
       setPointerActive(false);
+      setMode("default");
+      document.documentElement.dataset.customCursor = "false";
       resetTargets();
     };
 
@@ -124,6 +137,7 @@ export default function DesktopCursor() {
       aria-hidden="true"
       data-enabled={enabled}
       data-active={pointerActive}
+      data-mode={mode}
       style={{ x, y }}
     >
       <span className="custom-cursor-ring" />

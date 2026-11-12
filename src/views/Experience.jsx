@@ -42,7 +42,7 @@ function LocationIcon() {
 
 export default function Experience() {
   return (
-    <section className="section section--alternate" aria-labelledby="experience-title">
+    <section className="section section--alternate" aria-labelledby="experience-title" data-story="experience">
       <div className="page-container">
         <Reveal className="section-heading nav-anchor-target" id="experience">
           <p className="section-kicker">03 / Experience</p>

@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Reveal from "../components/Reveal";
 import abeZauto from "../assets/images/abezauto.webp";
 import agsyba from "../assets/images/agsyba.webp";
@@ -375,19 +377,216 @@ function ProjectTechnologyStrip({ projectName, technologies }) {
   );
 }
 
+function FeaturedProjectSpotlight({ project, position, total }) {
+  const filterId = `project-liquid-${useId().replaceAll(":", "")}`;
+  const spotlightRef = useRef(null);
+  const mediaRef = useRef(null);
+  const displacementRef = useRef(null);
+
+  useEffect(() => {
+    const spotlight = spotlightRef.current;
+    const media = mediaRef.current;
+    const displacement = displacementRef.current;
+    if (!spotlight || !media || !displacement || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+
+    gsap.registerPlugin(ScrollTrigger);
+    const warp = { scale: 0, radius: 0, opacity: 0 };
+    const renderWarp = () => {
+      displacement.setAttribute("scale", Math.max(0, warp.scale).toFixed(1));
+      media.style.setProperty("--warp-radius", `${Math.max(0, warp.radius).toFixed(1)}px`);
+      media.style.setProperty("--warp-opacity", Math.max(0, Math.min(1, warp.opacity)).toFixed(2));
+    };
+    const scaleTo = gsap.quickTo(warp, "scale", { duration: 0.4, ease: "power3.out", onUpdate: renderWarp });
+    const radiusTo = gsap.quickTo(warp, "radius", { duration: 0.42, ease: "elastic.out(1, 0.52)", onUpdate: renderWarp });
+    const opacityTo = gsap.quickTo(warp, "opacity", { duration: 0.18, ease: "power2.out", onUpdate: renderWarp });
+
+    const pointerEnter = (event) => {
+      if (event.pointerType !== "mouse" || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+      scaleTo(54);
+      radiusTo(Math.min(210, media.clientWidth * 0.34));
+      opacityTo(1);
+    };
+    const pointerMove = (event) => {
+      if (event.pointerType !== "mouse" || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+      const bounds = media.getBoundingClientRect();
+      media.style.setProperty("--liquid-x", `${((event.clientX - bounds.left) / bounds.width) * 100}%`);
+      media.style.setProperty("--liquid-y", `${((event.clientY - bounds.top) / bounds.height) * 100}%`);
+    };
+    const pointerLeave = () => {
+      scaleTo(0);
+      radiusTo(0);
+      opacityTo(0);
+    };
+    media.addEventListener("pointerenter", pointerEnter, { passive: true });
+    media.addEventListener("pointermove", pointerMove, { passive: true });
+    media.addEventListener("pointerleave", pointerLeave, { passive: true });
+
+    const responsiveContext = gsap.matchMedia();
+    responsiveContext.add("(min-width: 921px)", () => {
+      const context = gsap.context(() => {
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: spotlight,
+          pin: spotlight,
+          start: "top top+=76",
+          end: "+=86%",
+          scrub: 0.9,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      timeline
+        .fromTo(media, {
+          scale: 0.78,
+          clipPath: "inset(11% 8% 11% 8% round 30px)",
+          transformOrigin: "50% 50%",
+        }, {
+          scale: 1,
+          clipPath: "inset(0% 0% 0% 0% round 16px)",
+          ease: "none",
+        }, 0)
+        .fromTo(".project-spotlight-copy", {
+          xPercent: 13,
+          y: 26,
+          opacity: 0.2,
+        }, {
+          xPercent: 0,
+          y: 0,
+          opacity: 1,
+          ease: "none",
+        }, 0.08)
+        .fromTo(".project-spotlight-rule", {
+          scaleX: 0.12,
+          transformOrigin: "left center",
+        }, {
+          scaleX: 1,
+          ease: "none",
+        }, 0.18);
+      }, spotlight);
+
+      return () => context.revert();
+    });
+
+    return () => {
+      media.removeEventListener("pointerenter", pointerEnter);
+      media.removeEventListener("pointermove", pointerMove);
+      media.removeEventListener("pointerleave", pointerLeave);
+      scaleTo.tween?.kill();
+      radiusTo.tween?.kill();
+      opacityTo.tween?.kill();
+      responsiveContext.revert();
+      media.style.removeProperty("--warp-radius");
+      media.style.removeProperty("--warp-opacity");
+      media.style.removeProperty("--liquid-x");
+      media.style.removeProperty("--liquid-y");
+    };
+  }, []);
+
+  return (
+    <article className="project-spotlight" ref={spotlightRef} data-liquid="featured" data-cursor-label="EXPLORE" data-story="featured-project">
+      <div className="project-spotlight-copy">
+        <p className="project-spotlight-eyebrow"><span>Featured project</span><span className="project-spotlight-counter">{String(position).padStart(2, "0")} / {String(total).padStart(2, "0")}</span></p>
+        <h3>{project.name}</h3>
+        <span className="project-spotlight-rule" aria-hidden="true" />
+        <p className="project-spotlight-description">{project.description}</p>
+        <ProjectTechnologyStrip projectName={project.name} technologies={project.technologies} />
+        <div className="project-spotlight-actions">
+          {project.links.map((link, index) => (
+            <a
+              className={index === 0 ? "button button--primary project-spotlight-link" : "project-link"}
+              key={link.href}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={link.label}
+              title={link.label}
+              data-cursor-label={index === 0 ? "VISIT" : "OPEN"}
+            >
+              {index === 0 ? <><span className="button-label">Explore project <span aria-hidden="true">↗</span></span></> : <ExternalLinkIcon />}
+            </a>
+          ))}
+        </div>
+      </div>
+      <div className="project-preview project-spotlight-media" ref={mediaRef}>
+        <Image
+          src={project.image}
+          alt={`${project.name} project preview`}
+          width={project.image.width}
+          height={project.image.height}
+          sizes="(max-width: 920px) 92vw, 65vw"
+          className="project-spotlight-image"
+        />
+        <Image
+          src={project.image}
+          alt=""
+          aria-hidden="true"
+          width={project.image.width}
+          height={project.image.height}
+          sizes="(max-width: 920px) 92vw, 65vw"
+          className="project-spotlight-image project-spotlight-image--liquid"
+          style={{ filter: `url(#${filterId})` }}
+        />
+        <svg className="project-liquid-filter" aria-hidden="true" focusable="false">
+          <defs>
+            <filter id={filterId} x="-12%" y="-12%" width="124%" height="124%" colorInterpolationFilters="sRGB">
+              <feTurbulence type="fractalNoise" baseFrequency="0.022 0.035" numOctaves="2" seed="7" result="liquidNoise" />
+              <feDisplacementMap ref={displacementRef} in="SourceGraphic" in2="liquidNoise" scale="0" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+          </defs>
+        </svg>
+        <a className="project-spotlight-image-link" href={project.links[0].href} target="_blank" rel="noopener noreferrer" aria-label={project.links[0].label} data-cursor-label="VIEW" />
+        <span className="project-spotlight-image-label" aria-hidden="true">Drag the light across the image</span>
+      </div>
+    </article>
+  );
+}
+
 export default function Works() {
   const [activeFilter, setActiveFilter] = useState("all");
   const filteredProjects = useMemo(
     () => activeFilter === "all" ? projects : projects.filter((project) => project.categories.includes(activeFilter)),
     [activeFilter],
   );
+  const spotlightProject = useMemo(() => filteredProjects.find((project) => project.featured), [filteredProjects]);
+  const galleryProjects = useMemo(() => filteredProjects.filter((project) => project !== spotlightProject), [filteredProjects, spotlightProject]);
   const projectGroups = useMemo(() => [
-    { key: "web", title: "Web products", projects: filteredProjects.filter((project) => !project.categories.includes("mobile")) },
-    { key: "mobile", title: "Mobile apps", projects: filteredProjects.filter((project) => project.categories.includes("mobile")) },
-  ].filter((group) => group.projects.length > 0), [filteredProjects]);
+    { key: "web", title: "Web products", projects: galleryProjects.filter((project) => !project.categories.includes("mobile")) },
+    { key: "mobile", title: "Mobile apps", projects: galleryProjects.filter((project) => project.categories.includes("mobile")) },
+  ].filter((group) => group.projects.length > 0), [galleryProjects]);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+
+    gsap.registerPlugin(ScrollTrigger);
+    const context = gsap.context(() => {
+      gsap.utils.toArray(".project-grid .project-card-wrap").forEach((card) => {
+        const preview = card.querySelector(".project-preview");
+        if (!preview) return;
+
+        gsap.fromTo(preview, {
+          clipPath: "inset(0 0 18% 0 round 12px)",
+          scale: 0.9,
+          transformOrigin: "50% 70%",
+        }, {
+          clipPath: "inset(0 0 0% 0 round 12px)",
+          scale: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 92%",
+            end: "top 62%",
+            scrub: 0.6,
+          },
+        });
+      });
+    });
+
+    return () => context.revert();
+  }, [activeFilter]);
 
   return (
-    <section className="section projects-section" aria-labelledby="works-title">
+    <section className="section projects-section" aria-labelledby="works-title" data-story="projects">
       <div className="page-container">
         <Reveal className="project-heading nav-anchor-target" id="works">
           <p className="section-kicker">02 / Selected Work</p>
@@ -413,6 +612,14 @@ export default function Works() {
           </span>
         </div>
 
+        {spotlightProject && (
+          <FeaturedProjectSpotlight
+            project={spotlightProject}
+            position={filteredProjects.indexOf(spotlightProject) + 1}
+            total={filteredProjects.length}
+          />
+        )}
+
         {projectGroups.map((group) => (
           <section className={`project-group project-group--${group.key}`} key={group.key} aria-label={group.title}>
             {group.key === "mobile" && (
@@ -423,8 +630,8 @@ export default function Works() {
             )}
             <div className="project-grid" aria-live="polite">
               {group.projects.map((project, index) => (
-                <Reveal className={`project-card-wrap${project.featured ? " project-card-wrap--featured" : ""}`} key={project.name} delay={Math.min(index * 0.025, 0.15)} variant={project.featured ? "mask" : "rise"}>
-                  <article className="project-card" data-liquid={project.featured ? "featured" : undefined}>
+                <Reveal className="project-card-wrap" key={project.name} delay={Math.min(index * 0.025, 0.15)} variant="rise">
+                  <article className="project-card">
                     <a
                       className="project-card-hit-area"
                       href={project.links[0].href}

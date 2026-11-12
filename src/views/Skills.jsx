@@ -4,7 +4,7 @@ import { techCategories } from "../data/techStack";
 
 export default function Skills() {
   return (
-    <section className="section section--alternate" aria-labelledby="skills-title">
+    <section className="section section--alternate" aria-labelledby="skills-title" data-story="skills">
       <div className="page-container">
         <Reveal className="section-heading nav-anchor-target" id="skills">
           <p className="section-kicker">01 / Tech Stack</p>

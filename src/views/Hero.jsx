@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { motion, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 function HeroWord({ children, className = "", delay, introComplete, reduceMotion }) {
@@ -23,7 +23,7 @@ function HeroWord({ children, className = "", delay, introComplete, reduceMotion
 export default function Hero() {
   const sectionRef = useRef(null);
   const [introComplete, setIntroComplete] = useState(false);
-  const reduceMotion = useReducedMotion();
+  const [reduceMotion, setReduceMotion] = useState(false);
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
   const smoothPointerX = useSpring(pointerX, { stiffness: 75, damping: 22, mass: 0.8 });
@@ -42,6 +42,14 @@ export default function Hero() {
     }
     window.addEventListener("portfolio:intro-complete", markIntroComplete);
     return () => window.removeEventListener("portfolio:intro-complete", markIntroComplete);
+  }, []);
+
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncPreference = () => setReduceMotion(preference.matches);
+    syncPreference();
+    preference.addEventListener("change", syncPreference);
+    return () => preference.removeEventListener("change", syncPreference);
   }, []);
 
   const moveParallaxWithPointer = (event) => {

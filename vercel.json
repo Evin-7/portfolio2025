@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/visitor-summary",
+      "schedule": "35 18 * * *"
+    }
+  ]
+}

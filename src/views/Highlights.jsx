@@ -9,7 +9,7 @@ const highlights = [
 
 export default function Highlights() {
   return (
-    <section className="highlight-section" aria-label="Areas of focus">
+    <section className="highlight-section" aria-label="Areas of focus" data-story="highlights">
       <div className="page-container highlight-grid">
         {highlights.map((item, index) => (
           <Reveal className="highlight-item" key={item.title} delay={index * 0.05} variant="soft">

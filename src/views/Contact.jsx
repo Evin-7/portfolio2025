@@ -68,7 +68,7 @@ export default function Contact() {
 
   return (
     <>
-      <section className="section contact-section" aria-labelledby="contact-title">
+      <section className="section contact-section" aria-labelledby="contact-title" data-story="contact">
         <div className="page-container contact-layout">
           <Reveal className="contact-copy nav-anchor-target" id="contact">
             <p className="section-kicker">04 / Contact</p>

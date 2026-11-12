@@ -1,6 +1,6 @@
 import SmoothScroll from "../components/SmoothScroll";
-import CinematicIntro from "../components/CinematicIntro";
-import VisitorLocationShare from "../components/VisitorLocationShare";
+import VisitorPrivacyConsent from "../components/VisitorPrivacyConsent";
+import ScrollStories from "../components/ScrollStories";
 import "./globals.css";
 
 export const metadata = {
@@ -31,12 +31,12 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <noscript>
-          <style>{`.intro-loader{display:none!important}.hero-eyebrow,.hero-word,.hero-ctas,.hero-meta{opacity:1!important;transform:none!important;filter:none!important}`}</style>
+          <style>{`.cinematic-intro{display:none!important}.hero-eyebrow,.hero-word,.hero-ctas,.hero-meta{opacity:1!important;transform:none!important;filter:none!important}`}</style>
         </noscript>
         <SmoothScroll>
-          <CinematicIntro />
-          <VisitorLocationShare />
+          <VisitorPrivacyConsent />
           {children}
+          <ScrollStories />
         </SmoothScroll>
       </body>
     </html>
