@@ -121,7 +121,6 @@ export default function Hero() {
           </motion.p>
         </div>
       </div>
-      <div className="hero-scroll-cue" aria-hidden="true"><span />Scroll to explore</div>
     </section>
   );
 }
