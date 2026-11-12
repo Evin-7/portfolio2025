@@ -37,7 +37,9 @@ export default function CinematicIntro() {
     if (!stage) return undefined;
 
     let completed = false;
+    let disposed = false;
     let heroRevealed = false;
+    let context = null;
     const revealHero = () => {
       if (heroRevealed) return;
       heroRevealed = true;
@@ -59,7 +61,9 @@ export default function CinematicIntro() {
     }
 
     const header = document.querySelector(".site-header");
-    const context = gsap.context(() => {
+    const startIntro = () => {
+      if (disposed || completed) return;
+      context = gsap.context(() => {
       const firstLetters = gsap.utils.toArray(".intro-name-first .intro-letter");
       const lastLetters = gsap.utils.toArray(".intro-name-last .intro-letter");
       const panels = gsap.utils.toArray(".intro-panel");
@@ -120,7 +124,12 @@ export default function CinematicIntro() {
         .to(stage, { clipPath: "inset(47% 0% 47% 0%)", duration: 0.52, ease: "power4.inOut" }, 1.68)
         .to(".intro-streak", { scaleX: 1.4, autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 1.68)
         .to(stage, { scaleX: 0, autoAlpha: 0, duration: 0.34, ease: "power3.inOut" }, 2.1);
-    }, stage);
+      }, stage);
+    };
+
+    const fontsReady = document.fonts?.ready;
+    if (fontsReady) fontsReady.then(startIntro, startIntro);
+    else startIntro();
 
     const skipIntro = () => {
       timelineRef.current?.kill();
@@ -143,10 +152,11 @@ export default function CinematicIntro() {
 
     return () => {
       window.removeEventListener("keydown", onKeyDown);
+      disposed = true;
       timelineRef.current?.kill();
       timelineRef.current = null;
       finishRef.current = null;
-      context.revert();
+      context?.revert();
     };
   }, []);
 

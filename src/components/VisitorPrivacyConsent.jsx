@@ -59,10 +59,13 @@ export default function VisitorPrivacyConsent() {
   }, []);
 
   useEffect(() => {
-    void refresh();
+    const refreshTimer = window.setTimeout(() => void refresh(), 0);
     const openChoices = () => setVisible(true);
     window.addEventListener("portfolio:privacy-choices", openChoices);
-    return () => window.removeEventListener("portfolio:privacy-choices", openChoices);
+    return () => {
+      window.clearTimeout(refreshTimer);
+      window.removeEventListener("portfolio:privacy-choices", openChoices);
+    };
   }, [refresh]);
 
   async function choose(decision) {

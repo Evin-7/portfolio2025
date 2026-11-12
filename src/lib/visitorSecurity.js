@@ -100,9 +100,9 @@ export function getPseudonymousNetworkKey(request) {
 
 export function getEmailOrigin(request) {
   if (process.env.VISITOR_EMAIL_ORIGIN) return process.env.VISITOR_EMAIL_ORIGIN;
-  if (request?.headers.get("origin")) return request.headers.get("origin");
   if (process.env.VERCEL_PROJECT_PRODUCTION_URL) return "https://" + process.env.VERCEL_PROJECT_PRODUCTION_URL;
   if (process.env.VERCEL_URL) return "https://" + process.env.VERCEL_URL;
+  if (request?.headers.get("origin")) return request.headers.get("origin");
   return "https://evinleyander.vercel.app";
 }
 

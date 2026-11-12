@@ -53,12 +53,13 @@ export async function GET(request) {
   if (getNotificationMode() !== "daily") return json({ ok: true, sent: false, reason: "individual-mode" });
   if (!isLocalTestMode() && process.env.VERCEL_ENV !== "production") return json({ ok: true, sent: false, reason: "not-production" });
 
-  // Vercel invokes the scheduled job at 00:00 IST, so summarize the day that just ended.
+  // Vercel invokes this at 00:05 IST, so summarize the day that just ended.
   const day = isLocalTestMode()
     ? istDayKey()
     : istDayKey(new Date(Date.now() - 24 * 60 * 60 * 1000));
   const lockKey = "portfolio:visitors:summary-lock:" + day;
   const sentKey = "portfolio:visitors:summary-sent:" + day;
+  let deliveryAttempted = false;
   try {
     if (!(await claimKey(lockKey, 10 * 60))) return json({ ok: true, sent: false, duplicate: true });
     if (!(await claimKey(sentKey, 14 * 24 * 60 * 60))) {
@@ -72,9 +73,11 @@ export async function GET(request) {
       return json({ ok: true, sent: false, empty: true });
     }
 
+    deliveryAttempted = true;
     const result = await sendVisitorEmail(request, emailBody(rows, day));
     if (!result.sent) {
-      await releaseKey(sentKey);
+      // Keep the idempotency marker after uncertain delivery to avoid duplicate emails.
+      if (result.status >= 400 && result.status < 500) await releaseKey(sentKey);
       await releaseKey(lockKey);
       console.error("Portfolio visitor summary delivery failed", { status: result.status || 0 });
       return json({ ok: true, sent: false });
@@ -83,7 +86,9 @@ export async function GET(request) {
     return json({ ok: true, sent: true, dryRun: Boolean(result.dryRun), visits: rows.reduce((sum, row) => sum + row.count, 0) });
   } catch {
     try { await releaseKey(lockKey); } catch { /* storage may be unavailable */ }
-    try { await releaseKey(sentKey); } catch { /* storage may be unavailable */ }
+    if (!deliveryAttempted) {
+      try { await releaseKey(sentKey); } catch { /* storage may be unavailable */ }
+    }
     console.error("Portfolio visitor summary could not be sent");
     return json({ ok: true, sent: false });
   }

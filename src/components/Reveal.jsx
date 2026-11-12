@@ -1,7 +1,11 @@
 "use client";
 
 import { motion, useInView, useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useSyncExternalStore } from "react";
+
+const subscribe = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 const directions = {
   up: { x: 0, y: 24 },
@@ -17,7 +21,7 @@ const revealVariants = {
 
 export default function Reveal({ as = "div", children, className = "", id, delay = 0, direction = "up", variant = "rise" }) {
   const reduceMotion = useReducedMotion();
-  const [hydrated, setHydrated] = useState(false);
+  const hydrated = useSyncExternalStore(subscribe, getClientSnapshot, getServerSnapshot);
   const elementRef = useRef(null);
   const isInView = useInView(elementRef, { once: true, amount: 0.18 });
   const offset = directions[direction] ?? directions.up;
@@ -27,8 +31,6 @@ export default function Reveal({ as = "div", children, className = "", id, delay
   const target = isVisible
     ? { ...animation.animate, x: 0, y: 0 }
     : { ...animation.initial, ...offset };
-
-  useEffect(() => setHydrated(true), []);
 
   return (
     <MotionElement

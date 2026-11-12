@@ -4,7 +4,6 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Reveal from "../components/Reveal";
 import abeZauto from "../assets/images/abezauto.webp";
 import agsyba from "../assets/images/agsyba.webp";
 import call2day from "../assets/images/call2day.webp";
@@ -24,98 +23,6 @@ import penielTech from "../assets/images/penieltech.webp";
 import periyar from "../assets/images/periyartigerreserve.webp";
 import sitecore from "../assets/images/sitecore.webp";
 import veltrix from "../assets/images/veltrix.webp";
-import {
-  siAxios,
-  siChartdotjs,
-  siD3,
-  siDrizzle,
-  siExpo,
-  siExpress,
-  siGsap,
-  siMedusa,
-  siNeon,
-  siNextdotjs,
-  siNodedotjs,
-  siPalantir,
-  siPinia,
-  siPostgresql,
-  siPrisma,
-  siRazorpay,
-  siReact,
-  siRedis,
-  siRedux,
-  siStrapi,
-  siStripe,
-  siSupabase,
-  siSwiper,
-  siTailwindcss,
-  siThreedotjs,
-  siTypescript,
-  siUpstash,
-  siVite,
-  siVuedotjs,
-  siVuetify,
-} from "simple-icons";
-
-const lightIconColor = "#d3d5e2";
-
-function brandIcon(icon, color) {
-  const brandColor = color ?? `#${icon.hex}`;
-  const [red, green, blue] = brandColor.slice(1).match(/.{2}/g).map((channel) => parseInt(channel, 16));
-  const luminance = (red * 0.299 + green * 0.587 + blue * 0.114) / 255;
-
-  return {
-    path: icon.path,
-    color: luminance < 0.29 ? lightIconColor : brandColor,
-    kind: "brand",
-  };
-}
-
-const outlineIcon = (path, color = lightIconColor) => ({ path, color, kind: "outline" });
-
-const projectTechnologyIcons = {
-  React: brandIcon(siReact),
-  "React Native": brandIcon(siReact),
-  "React Three Fiber 9": brandIcon(siReact),
-  "TypeScript": brandIcon(siTypescript),
-  Vite: brandIcon(siVite),
-  "Tailwind CSS": brandIcon(siTailwindcss),
-  Supabase: brandIcon(siSupabase),
-  "Chart.js": brandIcon(siChartdotjs),
-  D3: brandIcon(siD3),
-  "Three.js 0.187": brandIcon(siThreedotjs, lightIconColor),
-  "Drei 10": brandIcon(siThreedotjs, lightIconColor),
-  "Next.js": brandIcon(siNextdotjs, lightIconColor),
-  "PostgreSQL": brandIcon(siPostgresql),
-  Prisma: brandIcon(siPrisma),
-  Neon: brandIcon(siNeon),
-  "Upstash Redis": brandIcon(siUpstash),
-  Redis: brandIcon(siRedis),
-  "Palantir Foundry": brandIcon(siPalantir),
-  "Medusa.js": brandIcon(siMedusa),
-  "Amazon SQS": outlineIcon("M7.5 18.5h9a4.5 4.5 0 0 0 .35-8.99A5.75 5.75 0 0 0 5.8 8.25a5.15 5.15 0 0 0 1.7 10.25ZM12 12v6m-2.5-3.5L12 12l2.5 2.5", "#FF9900"),
-  Stripe: brandIcon(siStripe),
-  WebSockets: outlineIcon("M7.5 7.5 16.5 16.5M16.5 7.5l-9 9M4.5 12h3m9 0h3M12 4.5v3m0 9v3"),
-  "Vue 2": brandIcon(siVuedotjs),
-  "Vue 3": brandIcon(siVuedotjs),
-  "Vue.js": brandIcon(siVuedotjs),
-  "Vue Router": outlineIcon("M5 6.5h5.5a3 3 0 0 1 3 3v5a3 3 0 0 0 3 3H19m-2.5-2.5L19 17l-2.5 2.5M5 17.5h3"),
-  Razorpay: brandIcon(siRazorpay),
-  "React Big Calendar": outlineIcon("M7 3.5v3m10-3v3M4.5 9h15m-13-4h11a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm1.5 7h3m2 0h3m-8 4h3m2 0h3"),
-  Pinia: brandIcon(siPinia),
-  Axios: brandIcon(siAxios),
-  Swiper: brandIcon(siSwiper),
-  "Express.js": brandIcon(siExpress),
-  Azure: outlineIcon("M12 3.5 4.5 17h7l1.5 3.5L19.5 7H13l-1-3.5Zm.3 5.5h3.7l-3.8 7h-4L12.3 9Z", "#38BDF8"),
-  Vuetify: brandIcon(siVuetify),
-  "REST APIs": outlineIcon("M8 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2m8-14h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2M10 8l-3 4 3 4m4-8 3 4-3 4"),
-  "Node.js": brandIcon(siNodedotjs),
-  "GSAP": brandIcon(siGsap),
-  Strapi: brandIcon(siStrapi),
-  "Drizzle ORM": brandIcon(siDrizzle),
-  Expo: brandIcon(siExpo),
-  "Redux Toolkit": brandIcon(siRedux),
-};
 
 const projects = [
   {
@@ -284,317 +191,309 @@ const filters = [
   { label: "Full Stack", value: "full-stack" },
 ];
 
-function ExternalLinkIcon() {
+const featuredProjectNames = new Set(["SiteCore", "VELTRIX", "Ontix", "AbeZauto", "AGSYBA"]);
+
+function ProjectTitle({ name, className = "" }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M14 4h6v6M20 4 10 14" />
-      <path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5" />
-    </svg>
+    <h3 className={className} aria-label={name}>
+      <span className="sr-only">{name}</span>
+      <span className="work-feature-title-visual" aria-hidden="true">
+        {Array.from(name).map((character, index) => (
+          <span className="work-feature-title-char" key={index}>{character === " " ? "\u00a0" : character}</span>
+        ))}
+      </span>
+    </h3>
   );
 }
 
-function ProjectTechnologyStrip({ projectName, technologies }) {
-  const listId = useId();
-  const listRef = useRef(null);
-  const [hasOverflow, setHasOverflow] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  useEffect(() => {
-    const list = listRef.current;
-    if (!list) return undefined;
-
-    const updateScrollState = () => {
-      const overflow = list.scrollWidth > list.clientWidth + 1;
-      setHasOverflow(overflow);
-      setCanScrollRight(overflow && list.scrollLeft + list.clientWidth < list.scrollWidth - 1);
-    };
-
-    updateScrollState();
-    list.addEventListener("scroll", updateScrollState, { passive: true });
-    window.addEventListener("resize", updateScrollState);
-
-    const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateScrollState);
-    resizeObserver?.observe(list);
-    if (list.parentElement) resizeObserver?.observe(list.parentElement);
-
-    return () => {
-      list.removeEventListener("scroll", updateScrollState);
-      window.removeEventListener("resize", updateScrollState);
-      resizeObserver?.disconnect();
-    };
-  }, [technologies.length]);
-
-  const scrollRight = () => {
-    const list = listRef.current;
-    if (!list) return;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    list.scrollBy({ left: Math.max(list.clientWidth * 0.72, 100), behavior: reduceMotion ? "auto" : "smooth" });
-  };
+function TechnologyDetails({ project }) {
+  if (!project.technologies.length) return null;
 
   return (
-    <div className="project-tags-scroller">
-      <ul className="project-tags" id={listId} ref={listRef} aria-label={`${projectName} technologies`}>
-        {technologies.map((technology) => {
-          const icon = projectTechnologyIcons[technology] ?? outlineIcon("M5 12h14m-7-7 7 7-7 7");
-          return (
-            <li key={technology}>
-              <svg
-                className={`project-tag-icon project-tag-icon--${icon.kind}`}
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-                style={{ color: icon.color }}
-                {...(icon.kind === "outline" ? {
-                  fill: "none",
-                  stroke: "currentColor",
-                  strokeWidth: 1.8,
-                  strokeLinecap: "round",
-                  strokeLinejoin: "round",
-                } : { fill: "currentColor" })}
-              >
-                <path d={icon.path} />
-              </svg>
-              <span>{technology}</span>
-            </li>
-          );
-        })}
-      </ul>
-      {hasOverflow && (
-        <button
-          className="project-tag-scroll-button"
-          type="button"
-          aria-label={`Scroll ${projectName} technologies right`}
-          aria-controls={listId}
-          title="Show more technologies"
-          disabled={!canScrollRight}
-          onClick={scrollRight}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="m9 5 7 7-7 7" />
-          </svg>
-        </button>
-      )}
-    </div>
+    <details className="work-technology-details">
+      <summary>{project.technologies.length} technologies</summary>
+      <p>{project.technologies.join(" · ")}</p>
+    </details>
   );
 }
 
-function FeaturedProjectSpotlight({ project, position, total }) {
-  const filterId = `project-liquid-${useId().replaceAll(":", "")}`;
-  const spotlightRef = useRef(null);
+function WorkFeature({ project, index, total }) {
+  const filterId = "work-liquid-" + useId().replaceAll(":", "");
   const mediaRef = useRef(null);
   const displacementRef = useRef(null);
 
   useEffect(() => {
-    const spotlight = spotlightRef.current;
     const media = mediaRef.current;
     const displacement = displacementRef.current;
-    if (!spotlight || !media || !displacement || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+    if (index !== 0 || !media || !displacement || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
 
-    gsap.registerPlugin(ScrollTrigger);
     const warp = { scale: 0, radius: 0, opacity: 0 };
     const renderWarp = () => {
       displacement.setAttribute("scale", Math.max(0, warp.scale).toFixed(1));
-      media.style.setProperty("--warp-radius", `${Math.max(0, warp.radius).toFixed(1)}px`);
+      media.style.setProperty("--warp-radius", Math.max(0, warp.radius).toFixed(1) + "px");
       media.style.setProperty("--warp-opacity", Math.max(0, Math.min(1, warp.opacity)).toFixed(2));
     };
-    const scaleTo = gsap.quickTo(warp, "scale", { duration: 0.4, ease: "power3.out", onUpdate: renderWarp });
+    const scaleTo = gsap.quickTo(warp, "scale", { duration: 0.38, ease: "power3.out", onUpdate: renderWarp });
     const radiusTo = gsap.quickTo(warp, "radius", { duration: 0.42, ease: "elastic.out(1, 0.52)", onUpdate: renderWarp });
     const opacityTo = gsap.quickTo(warp, "opacity", { duration: 0.18, ease: "power2.out", onUpdate: renderWarp });
-
-    const pointerEnter = (event) => {
-      if (event.pointerType !== "mouse" || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-      scaleTo(54);
-      radiusTo(Math.min(210, media.clientWidth * 0.34));
+    const supportsPointerEffect = (event) => event.pointerType === "mouse" && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const onPointerEnter = (event) => {
+      if (!supportsPointerEffect(event)) return;
+      scaleTo(48);
+      radiusTo(Math.min(220, media.clientWidth * 0.35));
       opacityTo(1);
     };
-    const pointerMove = (event) => {
-      if (event.pointerType !== "mouse" || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const onPointerMove = (event) => {
+      if (!supportsPointerEffect(event)) return;
       const bounds = media.getBoundingClientRect();
-      media.style.setProperty("--liquid-x", `${((event.clientX - bounds.left) / bounds.width) * 100}%`);
-      media.style.setProperty("--liquid-y", `${((event.clientY - bounds.top) / bounds.height) * 100}%`);
+      media.style.setProperty("--liquid-x", ((event.clientX - bounds.left) / bounds.width) * 100 + "%");
+      media.style.setProperty("--liquid-y", ((event.clientY - bounds.top) / bounds.height) * 100 + "%");
     };
-    const pointerLeave = () => {
+    const onPointerLeave = () => {
       scaleTo(0);
       radiusTo(0);
       opacityTo(0);
     };
-    media.addEventListener("pointerenter", pointerEnter, { passive: true });
-    media.addEventListener("pointermove", pointerMove, { passive: true });
-    media.addEventListener("pointerleave", pointerLeave, { passive: true });
 
-    const responsiveContext = gsap.matchMedia();
-    responsiveContext.add("(min-width: 921px)", () => {
-      const context = gsap.context(() => {
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: spotlight,
-          pin: spotlight,
-          start: "top top+=76",
-          end: "+=86%",
-          scrub: 0.9,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      timeline
-        .fromTo(media, {
-          scale: 0.78,
-          clipPath: "inset(11% 8% 11% 8% round 30px)",
-          transformOrigin: "50% 50%",
-        }, {
-          scale: 1,
-          clipPath: "inset(0% 0% 0% 0% round 16px)",
-          ease: "none",
-        }, 0)
-        .fromTo(".project-spotlight-copy", {
-          xPercent: 13,
-          y: 26,
-          opacity: 0.2,
-        }, {
-          xPercent: 0,
-          y: 0,
-          opacity: 1,
-          ease: "none",
-        }, 0.08)
-        .fromTo(".project-spotlight-rule", {
-          scaleX: 0.12,
-          transformOrigin: "left center",
-        }, {
-          scaleX: 1,
-          ease: "none",
-        }, 0.18);
-      }, spotlight);
-
-      return () => context.revert();
-    });
-
+    media.addEventListener("pointerenter", onPointerEnter, { passive: true });
+    media.addEventListener("pointermove", onPointerMove, { passive: true });
+    media.addEventListener("pointerleave", onPointerLeave, { passive: true });
     return () => {
-      media.removeEventListener("pointerenter", pointerEnter);
-      media.removeEventListener("pointermove", pointerMove);
-      media.removeEventListener("pointerleave", pointerLeave);
+      media.removeEventListener("pointerenter", onPointerEnter);
+      media.removeEventListener("pointermove", onPointerMove);
+      media.removeEventListener("pointerleave", onPointerLeave);
       scaleTo.tween?.kill();
       radiusTo.tween?.kill();
       opacityTo.tween?.kill();
-      responsiveContext.revert();
-      media.style.removeProperty("--warp-radius");
-      media.style.removeProperty("--warp-opacity");
-      media.style.removeProperty("--liquid-x");
-      media.style.removeProperty("--liquid-y");
+      ["--warp-radius", "--warp-opacity", "--liquid-x", "--liquid-y"].forEach((property) => media.style.removeProperty(property));
+      displacement.setAttribute("scale", "0");
     };
-  }, []);
+  }, [index]);
 
   return (
-    <article className="project-spotlight" ref={spotlightRef} data-liquid="featured" data-cursor-label="EXPLORE" data-story="featured-project">
-      <div className="project-spotlight-copy">
-        <p className="project-spotlight-eyebrow"><span>Featured project</span><span className="project-spotlight-counter">{String(position).padStart(2, "0")} / {String(total).padStart(2, "0")}</span></p>
-        <h3>{project.name}</h3>
-        <span className="project-spotlight-rule" aria-hidden="true" />
-        <p className="project-spotlight-description">{project.description}</p>
-        <ProjectTechnologyStrip projectName={project.name} technologies={project.technologies} />
-        <div className="project-spotlight-actions">
-          {project.links.map((link, index) => (
-            <a
-              className={index === 0 ? "button button--primary project-spotlight-link" : "project-link"}
-              key={link.href}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={link.label}
-              title={link.label}
-              data-cursor-label={index === 0 ? "VISIT" : "OPEN"}
-            >
-              {index === 0 ? <><span className="button-label">Explore project <span aria-hidden="true">↗</span></span></> : <ExternalLinkIcon />}
+    <article className={"work-feature work-feature--" + (index + 1)} data-work-feature>
+      <span className="work-feature-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+      <div className="work-feature-copy">
+        <p className="work-feature-eyebrow">
+          <span>Selected project</span>
+          <span>{String(index + 1).padStart(2, "0")} <span aria-hidden="true">/</span> {String(total).padStart(2, "0")}</span>
+        </p>
+        <ProjectTitle name={project.name} className="work-feature-title" />
+        <span className="work-feature-rule" aria-hidden="true" />
+        <p className="work-feature-description">{project.description}</p>
+        <div className="work-feature-meta">
+          <span>{project.technologies.slice(0, 2).join(" · ")}</span>
+          <TechnologyDetails project={project} />
+        </div>
+        <div className="work-feature-actions">
+          {project.links.map((link) => (
+            <a className="work-feature-link" href={link.href} key={link.href} target="_blank" rel="noopener noreferrer" data-cursor-label="VISIT">
+              {link.label} <span aria-hidden="true">↗</span>
             </a>
           ))}
         </div>
       </div>
-      <div className="project-preview project-spotlight-media" ref={mediaRef}>
+      <figure className="work-feature-visual" ref={mediaRef} data-liquid-effect={index === 0 ? "featured" : undefined}>
         <Image
+          className="work-feature-image"
           src={project.image}
-          alt={`${project.name} project preview`}
+          alt={project.name + " project preview"}
           width={project.image.width}
           height={project.image.height}
-          sizes="(max-width: 920px) 92vw, 65vw"
-          className="project-spotlight-image"
+          sizes="(max-width: 720px) 92vw, 64vw"
         />
-        <Image
-          src={project.image}
-          alt=""
-          aria-hidden="true"
-          width={project.image.width}
-          height={project.image.height}
-          sizes="(max-width: 920px) 92vw, 65vw"
-          className="project-spotlight-image project-spotlight-image--liquid"
-          style={{ filter: `url(#${filterId})` }}
-        />
-        <svg className="project-liquid-filter" aria-hidden="true" focusable="false">
-          <defs>
-            <filter id={filterId} x="-12%" y="-12%" width="124%" height="124%" colorInterpolationFilters="sRGB">
-              <feTurbulence type="fractalNoise" baseFrequency="0.022 0.035" numOctaves="2" seed="7" result="liquidNoise" />
-              <feDisplacementMap ref={displacementRef} in="SourceGraphic" in2="liquidNoise" scale="0" xChannelSelector="R" yChannelSelector="G" />
-            </filter>
-          </defs>
-        </svg>
-        <a className="project-spotlight-image-link" href={project.links[0].href} target="_blank" rel="noopener noreferrer" aria-label={project.links[0].label} data-cursor-label="VIEW" />
-        <span className="project-spotlight-image-label" aria-hidden="true">Drag the light across the image</span>
-      </div>
+        {index === 0 && (
+          <>
+            <Image
+              className="work-feature-image work-feature-image--liquid"
+              src={project.image}
+              alt=""
+              aria-hidden="true"
+              width={project.image.width}
+              height={project.image.height}
+              sizes="(max-width: 720px) 92vw, 64vw"
+              style={{ filter: "url(#" + filterId + ")" }}
+            />
+            <svg className="work-liquid-filter" aria-hidden="true" focusable="false">
+              <defs>
+                <filter id={filterId} x="-12%" y="-12%" width="124%" height="124%" colorInterpolationFilters="sRGB">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.022 0.035" numOctaves="2" seed="7" result="liquidNoise" />
+                  <feDisplacementMap ref={displacementRef} in="SourceGraphic" in2="liquidNoise" scale="0" xChannelSelector="R" yChannelSelector="G" />
+                </filter>
+              </defs>
+            </svg>
+            <span className="work-feature-hint" aria-hidden="true">Move across the image</span>
+          </>
+        )}
+        <figcaption className="sr-only">{project.name}: {project.description}</figcaption>
+      </figure>
     </article>
   );
 }
 
+function ArchiveProject({ project, index }) {
+  const [primaryLink, ...otherLinks] = project.links;
+
+  return (
+    <li className="work-archive-item" data-work-archive-row>
+      <article className="work-archive-row">
+        <span className="work-archive-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+        <figure className="work-archive-visual">
+          <Image
+            src={project.image}
+            alt=""
+            fill
+            sizes="(max-width: 620px) 24vw, 17vw"
+            className="work-archive-image"
+          />
+          <figcaption className="sr-only">{project.name} project preview</figcaption>
+        </figure>
+        <div className="work-archive-copy">
+          <p className="work-archive-category">{project.categories.map((category) => category.replace("-", " ")).join(" / ")}</p>
+          <h3><a href={primaryLink.href} target="_blank" rel="noopener noreferrer">{project.name}<span aria-hidden="true"> ↗</span></a></h3>
+          <p className="work-archive-description">{project.description}</p>
+          <div className="work-archive-meta">
+            <TechnologyDetails project={project} />
+            {otherLinks.map((link) => (
+              <a className="work-archive-extra-link" href={link.href} key={link.href} target="_blank" rel="noopener noreferrer">{link.label} <span aria-hidden="true">↗</span></a>
+            ))}
+          </div>
+        </div>
+      </article>
+    </li>
+  );
+}
+
 export default function Works() {
+  const rootRef = useRef(null);
   const [activeFilter, setActiveFilter] = useState("all");
   const filteredProjects = useMemo(
     () => activeFilter === "all" ? projects : projects.filter((project) => project.categories.includes(activeFilter)),
     [activeFilter],
   );
-  const spotlightProject = useMemo(() => filteredProjects.find((project) => project.featured), [filteredProjects]);
-  const galleryProjects = useMemo(() => filteredProjects.filter((project) => project !== spotlightProject), [filteredProjects, spotlightProject]);
-  const projectGroups = useMemo(() => [
-    { key: "web", title: "Web products", projects: galleryProjects.filter((project) => !project.categories.includes("mobile")) },
-    { key: "mobile", title: "Mobile apps", projects: galleryProjects.filter((project) => project.categories.includes("mobile")) },
-  ].filter((group) => group.projects.length > 0), [galleryProjects]);
+  const featuredProjects = useMemo(
+    () => filteredProjects.filter((project) => featuredProjectNames.has(project.name)),
+    [filteredProjects],
+  );
+  const archiveProjects = useMemo(
+    () => filteredProjects.filter((project) => !featuredProjectNames.has(project.name)),
+    [filteredProjects],
+  );
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+    const root = rootRef.current;
+    if (!root || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
 
     gsap.registerPlugin(ScrollTrigger);
-    const context = gsap.context(() => {
-      gsap.utils.toArray(".project-grid .project-card-wrap").forEach((card) => {
-        const preview = card.querySelector(".project-preview");
-        if (!preview) return;
+    const responsiveMotion = gsap.matchMedia(root);
+    responsiveMotion.add("(min-width: 901px) and (prefers-reduced-motion: no-preference)", () => {
+        root.querySelectorAll("[data-work-feature]").forEach((scene, index) => {
+          const visual = scene.querySelector(".work-feature-visual");
+          const copy = scene.querySelector(".work-feature-copy");
+          const title = scene.querySelectorAll(".work-feature-title-char");
+          const number = scene.querySelector(".work-feature-index");
+          const timeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: scene,
+              start: "top 96%",
+              end: "bottom 8%",
+              scrub: 0.78,
+              invalidateOnRefresh: true,
+            },
+          });
 
-        gsap.fromTo(preview, {
-          clipPath: "inset(0 0 18% 0 round 12px)",
-          scale: 0.9,
-          transformOrigin: "50% 70%",
-        }, {
-          clipPath: "inset(0 0 0% 0 round 12px)",
-          scale: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 92%",
-            end: "top 62%",
-            scrub: 0.6,
-          },
+          timeline
+            .fromTo(visual, {
+              clipPath: "inset(13% 10% 13% 10% round 28px)",
+              scale: 0.88,
+              xPercent: index % 2 === 0 ? 5 : -5,
+              rotateY: index % 2 === 0 ? -5 : 5,
+              transformPerspective: 1200,
+            }, {
+              clipPath: "inset(0% 0% 0% 0% round 18px)",
+              scale: 1,
+              xPercent: 0,
+              rotateY: 0,
+              ease: "none",
+            }, 0)
+            .fromTo(number, { xPercent: -14, opacity: 0.06 }, { xPercent: 0, opacity: 0.15, ease: "none" }, 0)
+            .fromTo(title, {
+              yPercent: 112,
+              rotateX: -48,
+              autoAlpha: 0.12,
+              transformOrigin: "50% 100%",
+            }, {
+              yPercent: 0,
+              rotateX: 0,
+              autoAlpha: 1,
+              stagger: { each: 0.025, from: "center" },
+              ease: "none",
+            }, 0.05)
+            .fromTo(copy.querySelector(".work-feature-description"), { y: 24, autoAlpha: 0.3 }, { y: 0, autoAlpha: 1, ease: "none" }, 0.18)
+            .fromTo(copy.querySelector(".work-feature-meta"), { y: 20, autoAlpha: 0.25 }, { y: 0, autoAlpha: 1, ease: "none" }, 0.24)
+            .fromTo(copy.querySelector(".work-feature-actions"), { y: 18, autoAlpha: 0.2 }, { y: 0, autoAlpha: 1, ease: "none" }, 0.28)
+            .to(visual, { scale: 1.06, clipPath: "inset(0% 0% 0% 0% round 4px)", ease: "none" }, 0.76)
+            // Let scenes recede without pulling the readable copy into the clipped edge.
+            .to(copy, { xPercent: -1.5, yPercent: -3, opacity: 0.65, ease: "none" }, 0.78);
         });
       });
-    });
 
-    return () => context.revert();
+    responsiveMotion.add("(max-width: 900px) and (prefers-reduced-motion: no-preference)", () => {
+        root.querySelectorAll("[data-work-feature]").forEach((scene) => {
+          const visual = scene.querySelector(".work-feature-visual");
+          const copy = scene.querySelector(".work-feature-copy");
+          gsap.from(visual, {
+            clipPath: "inset(0% 0% 9% 0% round 18px)",
+            y: 24,
+            immediateRender: false,
+            ease: "power2.out",
+            scrollTrigger: { trigger: scene, start: "top 88%", end: "top 52%", toggleActions: "play none play reverse" },
+          });
+          gsap.from(copy, {
+            y: 22,
+            autoAlpha: 0.75,
+            immediateRender: false,
+            ease: "power2.out",
+            scrollTrigger: { trigger: scene, start: "top 84%", end: "top 55%", toggleActions: "play none play reverse" },
+          });
+        });
+      });
+
+    let refreshFrame = 0;
+    let disposed = false;
+    const refresh = () => {
+      if (disposed) return;
+      window.cancelAnimationFrame(refreshFrame);
+      refreshFrame = window.requestAnimationFrame(() => ScrollTrigger.refresh());
+    };
+    const onImageLoad = (event) => {
+      if (event.target instanceof HTMLImageElement) refresh();
+    };
+    root.addEventListener("load", onImageLoad, true);
+    document.fonts?.ready.then(refresh).catch(() => {});
+    refresh();
+
+    return () => {
+      disposed = true;
+      window.cancelAnimationFrame(refreshFrame);
+      root.removeEventListener("load", onImageLoad, true);
+      responsiveMotion.revert();
+    };
   }, [activeFilter]);
 
   return (
-    <section className="section projects-section" aria-labelledby="works-title" data-story="projects">
-      <div className="page-container">
-        <Reveal className="project-heading nav-anchor-target" id="works">
-          <p className="section-kicker">02 / Selected Work</p>
-          <h2 className="section-title" id="works-title">Things I&apos;ve built.</h2>
-        </Reveal>
+    <section className="section projects-section" aria-labelledby="works-title" data-story="projects" ref={rootRef}>
+      <div className="page-container work-exhibition">
+        <header className="project-heading nav-anchor-target" id="works">
+          <div>
+            <p className="section-kicker">02 / Digital exhibition</p>
+            <h2 className="section-title" id="works-title">Selected work<span aria-hidden="true">.</span></h2>
+          </div>
+          <p className="work-heading-note">A collection of products and experiences, shaped from first idea to launch.</p>
+        </header>
 
-        <div className="project-filter-row" aria-label="Filter projects by category">
-          <div className="project-filters" role="group" aria-label="Project categories">
+        <div className="project-filter-row">
+          <div className="project-filters" role="group" aria-label="Filter projects by category">
             {filters.map((filter) => (
               <button
                 className="project-filter"
@@ -608,78 +507,32 @@ export default function Works() {
             ))}
           </div>
           <span className="project-count" aria-live="polite">
-            {filteredProjects.length} {filteredProjects.length === 1 ? "Project" : "Projects"}
+            {String(filteredProjects.length).padStart(2, "0")} projects
           </span>
         </div>
 
-        {spotlightProject && (
-          <FeaturedProjectSpotlight
-            project={spotlightProject}
-            position={filteredProjects.indexOf(spotlightProject) + 1}
-            total={filteredProjects.length}
-          />
+        {featuredProjects.length > 0 && (
+          <div className="work-feature-list" aria-label="Featured projects">
+            {featuredProjects.map((project, index) => (
+              <WorkFeature key={project.name} project={project} index={index} total={featuredProjects.length} />
+            ))}
+          </div>
         )}
 
-        {projectGroups.map((group) => (
-          <section className={`project-group project-group--${group.key}`} key={group.key} aria-label={group.title}>
-            {group.key === "mobile" && (
-              <div className="project-group-heading">
-                <h3>{group.title}</h3>
-                <span>Useful, clear app experiences across devices.</span>
-              </div>
-            )}
-            <div className="project-grid" aria-live="polite">
-              {group.projects.map((project, index) => (
-                <Reveal className="project-card-wrap" key={project.name} delay={Math.min(index * 0.025, 0.15)} variant="rise">
-                  <article className="project-card">
-                    <a
-                      className="project-card-hit-area"
-                      href={project.links[0].href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={project.links[0].label}
-                      data-cursor-label="VIEW"
-                    />
-                    <div className="project-preview">
-                      <Image
-                        src={project.image}
-                        alt={`${project.name} project preview`}
-                        width={project.image.width}
-                        height={project.image.height}
-                        sizes="(max-width: 620px) 90vw, (max-width: 920px) 44vw, 29vw"
-                        className="project-image"
-                      />
-                    </div>
-                    <div className="project-card-content">
-                      <h3>{project.name}</h3>
-                      <p className="project-summary">{project.description}</p>
-                    </div>
-                    <div className="project-card-footer">
-                      {project.technologies.length > 0 ? (
-                        <ProjectTechnologyStrip projectName={project.name} technologies={project.technologies} />
-                      ) : <span className="project-tags-spacer" aria-hidden="true" />}
-                      <div className="project-card-actions">
-                        {project.links.map((link) => (
-                          <a
-                            className="project-link"
-                            key={link.href}
-                            href={link.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={link.label}
-                            title={link.label}
-                          >
-                            <ExternalLinkIcon />
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  </article>
-                </Reveal>
+        {archiveProjects.length > 0 && (
+          <section className="work-archive" aria-labelledby="work-archive-title">
+            <header className="work-archive-heading">
+              <p className="section-kicker">The rest of the collection</p>
+              <h2 id="work-archive-title">Project archive<span aria-hidden="true">.</span></h2>
+              <p>More products, platforms, and tools built with thoughtful teams.</p>
+            </header>
+            <ol className="work-archive-list" aria-live="polite">
+              {archiveProjects.map((project) => (
+                <ArchiveProject key={project.name} project={project} index={projects.indexOf(project)} />
               ))}
-            </div>
+            </ol>
           </section>
-        ))}
+        )}
       </div>
     </section>
   );

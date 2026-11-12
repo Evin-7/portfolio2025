@@ -1,6 +1,5 @@
 import SmoothScroll from "../components/SmoothScroll";
 import VisitorPrivacyConsent from "../components/VisitorPrivacyConsent";
-import ScrollStories from "../components/ScrollStories";
 import "./globals.css";
 
 export const metadata = {
@@ -36,7 +35,6 @@ export default function RootLayout({ children }) {
         <SmoothScroll>
           <VisitorPrivacyConsent />
           {children}
-          <ScrollStories />
         </SmoothScroll>
       </body>
     </html>

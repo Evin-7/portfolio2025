@@ -4,6 +4,7 @@ import {
   formatIstDateTime,
   istDayKey,
   istHourBucket,
+  istMonthKey,
   locationFromHeaders,
   makeVisitorEmail,
   normalizeReferral,
@@ -13,6 +14,7 @@ import {
 test("formats visit dates in India Standard Time", () => {
   const date = new Date("2026-11-12T13:00:00.000Z");
   assert.equal(istDayKey(date), "20261112");
+  assert.equal(istMonthKey(date), "202611");
   assert.deepEqual(formatIstDateTime(date), { date: "November 12, 2026", time: "6:30 PM" });
   assert.equal(istHourBucket(date), "6 PM IST");
 });

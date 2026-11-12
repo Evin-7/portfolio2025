@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export const metadata = {
   title: "Privacy — Evin Leyander",
   description: "Privacy information for Evin Leyander’s portfolio website.",
@@ -22,7 +24,7 @@ export default function PrivacyPage() {
       <section>
         <h2>How it is used and retained</h2>
         <p>
-          The data is grouped into daily counts by hour, approximate location, page, and referral domain, then emailed to the portfolio owner. Daily summary is the default; the owner can configure individual notifications with a daily email cap. Aggregates expire after eight days. A necessary, signed preference cookie remembers your choice for up to six months. Short-lived keyed digests are used to prevent duplicate and abusive requests; raw IP addresses are not stored by this feature. Browser Do Not Track and Global Privacy Control signals are honored.
+          The data is grouped into daily counts by hour, approximate location, page, and referral domain, then emailed to the portfolio owner. Daily summary is the default and sends at most one visitor email per IST day. Individual notifications can be enabled by the owner and are capped at two attempts per IST day and 25 per IST calendar month. Aggregates expire after eight days. A necessary, signed preference cookie remembers your choice for up to six months. Short-lived keyed digests are used to prevent duplicate and abusive requests; raw IP addresses are not stored by this feature. Browser Do Not Track and Global Privacy Control signals are honored.
         </p>
       </section>
 
@@ -33,7 +35,7 @@ export default function PrivacyPage() {
         </p>
       </section>
 
-      <a className="button button--outline privacy-back" href="/">Back to portfolio</a>
+      <Link className="button button--outline privacy-back" href="/">Back to portfolio</Link>
     </main>
   );
 }

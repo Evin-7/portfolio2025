@@ -90,14 +90,17 @@ export default function Navbar() {
       updateFromScroll();
     };
 
-    const hashId = window.location.hash.slice(1);
-    if (!lockActiveItem(hashId)) updateFromScroll();
+    const initialUpdate = window.requestAnimationFrame(() => {
+      const hashId = window.location.hash.slice(1);
+      if (!lockActiveItem(hashId)) updateFromScroll();
+    });
     window.addEventListener("scroll", updateFromScroll, { passive: true });
     window.addEventListener("hashchange", activateHash);
     window.addEventListener("popstate", restoreHashPosition);
     window.addEventListener("scrollend", releaseLock);
     window.addEventListener("resize", updateFromScroll);
     return () => {
+      window.cancelAnimationFrame(initialUpdate);
       window.removeEventListener("scroll", updateFromScroll);
       window.removeEventListener("hashchange", activateHash);
       window.removeEventListener("popstate", restoreHashPosition);

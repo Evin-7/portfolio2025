@@ -41,6 +41,16 @@ export function istDayKey(date = new Date()) {
   return part("year") + part("month") + part("day");
 }
 
+export function istMonthKey(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+  }).formatToParts(date);
+  const part = (type) => parts.find((item) => item.type === type)?.value || "00";
+  return part("year") + part("month");
+}
+
 export function formatIstDateTime(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-IN", {
     timeZone: "Asia/Kolkata",
