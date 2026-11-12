@@ -206,8 +206,6 @@ const filters = [
   { label: "Full Stack", value: "full-stack" },
 ];
 
-const featuredProjectNames = new Set(["SiteCore", "VELTRIX", "Ontix", "AbeZauto", "AGSYBA"]);
-
 function ProjectTitle({ name, className = "" }) {
   return (
     <h3 className={className} aria-label={name}>
@@ -221,10 +219,10 @@ function ProjectTitle({ name, className = "" }) {
   );
 }
 
-function TechnologyList({ technologies, variant = "feature" }) {
+function TechnologyList({ technologies }) {
   if (!technologies.length) return null;
   return (
-    <ul className={`work-technology-list work-technology-list--${variant}`} aria-label="Technologies used">
+    <ul className="work-technology-list" aria-label="Technologies used">
       {technologies.map((name) => {
         const technology = technologyByName.get(normalizeTechnologyName(name));
         const logo = technology?.logo;
@@ -284,46 +282,6 @@ function WorkFeature({ project, index, total }) {
   );
 }
 
-function ArchiveProject({ project, index }) {
-  const [primaryLink, ...otherLinks] = project.links;
-  const hasMultipleLinks = project.links.length > 1;
-
-  return (
-    <li className="work-archive-item" data-work-archive-row>
-      <article className="work-archive-row">
-        <span className="work-archive-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-        <figure className="work-archive-visual">
-          <Image
-            src={project.image}
-            alt=""
-            fill
-            sizes="(max-width: 620px) 24vw, 17vw"
-            className="work-archive-image"
-          />
-          <figcaption className="sr-only">{project.name} project preview</figcaption>
-        </figure>
-        <div className="work-archive-copy">
-          <p className="work-archive-category">{project.categories.map((category) => category.replace("-", " ")).join(" / ")}</p>
-          <h3>
-            {hasMultipleLinks ? project.name : (
-              <a href={primaryLink.href} target="_blank" rel="noopener noreferrer">
-                {project.name}<span aria-hidden="true"> ↗</span>
-              </a>
-            )}
-          </h3>
-          <p className="work-archive-description">{project.description}</p>
-          <div className="work-archive-meta">
-            <TechnologyList technologies={project.technologies} variant="archive" />
-            {(hasMultipleLinks ? project.links : otherLinks).map((link) => (
-              <a className="work-archive-extra-link" href={link.href} key={link.href} target="_blank" rel="noopener noreferrer">{link.label} <span aria-hidden="true">↗</span></a>
-            ))}
-          </div>
-        </div>
-      </article>
-    </li>
-  );
-}
-
 export default function Works() {
   const rootRef = useRef(null);
   const [activeFilter, setActiveFilter] = useState("all");
@@ -331,15 +289,6 @@ export default function Works() {
     () => activeFilter === "all" ? projects : projects.filter((project) => project.categories.includes(activeFilter)),
     [activeFilter],
   );
-  const featuredProjects = useMemo(
-    () => filteredProjects.filter((project) => featuredProjectNames.has(project.name)),
-    [filteredProjects],
-  );
-  const archiveProjects = useMemo(
-    () => filteredProjects.filter((project) => !featuredProjectNames.has(project.name)),
-    [filteredProjects],
-  );
-
   useEffect(() => {
     const root = rootRef.current;
     if (!root || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
@@ -471,27 +420,12 @@ export default function Works() {
           </span>
         </div>
 
-        {featuredProjects.length > 0 && (
-          <div className="work-feature-list" aria-label="Featured projects">
-            {featuredProjects.map((project, index) => (
-              <WorkFeature key={project.name} project={project} index={index} total={featuredProjects.length} />
+        {filteredProjects.length > 0 && (
+          <div className="work-feature-list" aria-label="Projects">
+            {filteredProjects.map((project, index) => (
+              <WorkFeature key={project.name} project={project} index={index} total={filteredProjects.length} />
             ))}
           </div>
-        )}
-
-        {archiveProjects.length > 0 && (
-          <section className="work-archive" aria-labelledby="work-archive-title">
-            <header className="work-archive-heading">
-              <p className="section-kicker">The rest of the collection</p>
-              <h2 id="work-archive-title">Project archive<span aria-hidden="true">.</span></h2>
-              <p>More products, platforms, and tools built with thoughtful teams.</p>
-            </header>
-            <ol className="work-archive-list" aria-live="polite">
-              {archiveProjects.map((project) => (
-                <ArchiveProject key={project.name} project={project} index={projects.indexOf(project)} />
-              ))}
-            </ol>
-          </section>
         )}
       </div>
     </section>

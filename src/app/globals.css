@@ -1280,9 +1280,6 @@ svg {
 .work-technology-logo { display: grid; width: 14px; height: 14px; flex: 0 0 14px; place-items: center; color: var(--accent-light); }
 .work-technology-logo svg { display: block; width: 100%; height: 100%; fill: currentColor; }
 .work-technology-logo > span { font-size: 7px; font-weight: 750; letter-spacing: -0.04em; }
-.work-technology-list--archive { gap: 5px; }
-.work-technology-list--archive .work-technology-chip { min-height: 23px; gap: 5px; padding: 3px 7px; font-size: 9px; }
-.work-technology-list--archive .work-technology-logo { width: 12px; height: 12px; flex-basis: 12px; }
 .work-feature-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 21px; margin-top: 28px; }
 .work-feature-link {
   display: inline-flex;
@@ -1314,52 +1311,6 @@ svg {
   isolation: isolate;
 }
 .work-feature-image { display: block; width: 100%; height: 100%; object-fit: contain; }
-
-.work-archive { margin-top: clamp(92px, 13vw, 176px); }
-.work-archive-heading { max-width: 720px; margin-bottom: 34px; }
-.work-archive-heading h2 {
-  margin: 15px 0 0;
-  color: var(--text);
-  font-size: clamp(3.1rem, 7.4vw, 6rem);
-  font-weight: 710;
-  letter-spacing: -0.075em;
-  line-height: 0.92;
-}
-.work-archive-heading h2 > span { color: var(--accent-light); }
-.work-archive-heading > p:last-child { margin: 15px 0 0; color: var(--text-secondary); font-size: 14px; line-height: 1.7; }
-.work-archive-list { margin: 0; padding: 0; border-top: 1px solid rgba(226, 228, 245, 0.17); list-style: none; }
-.work-archive-item { border-bottom: 1px solid rgba(226, 228, 245, 0.17); }
-.work-archive-row {
-  display: grid;
-  grid-template-columns: 48px minmax(170px, 250px) minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(16px, 2.4vw, 34px);
-  min-height: 184px;
-  padding-block: 22px;
-}
-.work-archive-index { align-self: start; padding-top: 4px; color: var(--text-muted); font-size: 11px; font-variant-numeric: tabular-nums; letter-spacing: 0.1em; }
-.work-archive-visual {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1.55 / 1;
-  overflow: hidden;
-  margin: 0;
-  border: 1px solid rgba(226, 228, 245, 0.12);
-  border-radius: 8px;
-  background: rgba(10, 11, 20, 0.9);
-}
-.work-archive-image { object-fit: contain; }
-.work-archive-copy { min-width: 0; }
-.work-archive-category { margin: 0 0 10px; color: var(--accent-light); font-size: 9px; font-weight: 650; letter-spacing: 0.15em; text-transform: uppercase; }
-.work-archive-copy h3 { margin: 0; color: var(--text); font-size: clamp(1.35rem, 2.7vw, 2.2rem); font-weight: 620; letter-spacing: -0.055em; line-height: 1.08; }
-.work-archive-copy h3 a { color: inherit; text-decoration: none; text-underline-offset: 5px; }
-.work-archive-copy h3 a:hover { text-decoration: underline; text-decoration-color: var(--accent-light); }
-.work-archive-copy h3 a span { color: var(--accent-light); font-size: 0.75em; }
-.work-archive-description { max-width: 68ch; margin: 10px 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.65; }
-.work-archive-meta { display: flex; align-items: baseline; flex-wrap: wrap; gap: 9px 20px; margin-top: 12px; color: var(--text-muted); font-size: 11px; }
-.work-archive-extra-link { color: var(--text-secondary); text-decoration-color: rgba(226, 228, 245, 0.3); text-underline-offset: 3px; }
-.work-archive-extra-link:hover { color: var(--accent-light); }
-.work-archive-extra-link span { color: var(--accent-light); }
 
 .experience-list {
   position: relative;
@@ -1872,23 +1823,12 @@ svg {
   .work-feature-meta { margin-top: 19px; }
   .work-feature-actions { margin-top: 22px; }
   .work-feature-index { top: 43%; left: -0.06em; font-size: 46vw; }
-  .work-archive { margin-top: 85px; }
-  .work-archive-heading { margin-bottom: 24px; }
-  .work-archive-heading h2 { font-size: clamp(2.8rem, 13vw, 4.4rem); }
-  .work-archive-row { grid-template-columns: 28px minmax(76px, 0.38fr) minmax(0, 1fr); gap: 10px; min-height: 0; padding-block: 19px; }
-  .work-archive-visual { aspect-ratio: 1 / 1.08; border-radius: 6px; }
-  .work-archive-index { padding-top: 2px; font-size: 9px; }
-  .work-archive-category { margin-bottom: 7px; font-size: 8px; letter-spacing: 0.1em; }
-  .work-archive-copy h3 { font-size: clamp(1.08rem, 5.1vw, 1.45rem); letter-spacing: -0.045em; }
-  .work-archive-description { display: -webkit-box; overflow: hidden; margin-top: 7px; font-size: 11px; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-  .work-archive-meta { gap: 8px 12px; margin-top: 9px; font-size: 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .projects-section::before { background-attachment: scroll, scroll; }
   .work-feature-title-char { transform: none !important; }
-  .work-feature-visual,
-  .work-archive-image { clip-path: none !important; transform: none !important; }
+  .work-feature-visual { clip-path: none !important; transform: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
