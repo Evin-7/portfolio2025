@@ -333,6 +333,7 @@ function WorkFeature({ project, index, total }) {
 
 function ArchiveProject({ project, index }) {
   const [primaryLink, ...otherLinks] = project.links;
+  const hasMultipleLinks = project.links.length > 1;
 
   return (
     <li className="work-archive-item" data-work-archive-row>
@@ -350,11 +351,17 @@ function ArchiveProject({ project, index }) {
         </figure>
         <div className="work-archive-copy">
           <p className="work-archive-category">{project.categories.map((category) => category.replace("-", " ")).join(" / ")}</p>
-          <h3><a href={primaryLink.href} target="_blank" rel="noopener noreferrer">{project.name}<span aria-hidden="true"> ↗</span></a></h3>
+          <h3>
+            {hasMultipleLinks ? project.name : (
+              <a href={primaryLink.href} target="_blank" rel="noopener noreferrer">
+                {project.name}<span aria-hidden="true"> ↗</span>
+              </a>
+            )}
+          </h3>
           <p className="work-archive-description">{project.description}</p>
           <div className="work-archive-meta">
             <TechnologyDetails project={project} />
-            {otherLinks.map((link) => (
+            {(hasMultipleLinks ? project.links : otherLinks).map((link) => (
               <a className="work-archive-extra-link" href={link.href} key={link.href} target="_blank" rel="noopener noreferrer">{link.label} <span aria-hidden="true">↗</span></a>
             ))}
           </div>
