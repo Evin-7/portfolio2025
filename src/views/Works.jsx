@@ -211,9 +211,14 @@ function ProjectTitle({ name, className = "" }) {
     <h3 className={className} aria-label={name}>
       <span className="sr-only">{name}</span>
       <span className="work-feature-title-visual" aria-hidden="true">
-        {Array.from(name).map((character, index) => (
-          <span className="work-feature-title-char" key={index}>{character === " " ? "\u00a0" : character}</span>
-        ))}
+        {name.split(" ").flatMap((word, wordIndex) => [
+          wordIndex > 0 ? " " : null,
+          <span className="work-feature-title-word" key={wordIndex}>
+            {Array.from(word).map((character, characterIndex) => (
+              <span className="work-feature-title-char" key={characterIndex}>{character}</span>
+            ))}
+          </span>,
+        ])}
       </span>
     </h3>
   );

@@ -1248,10 +1248,11 @@ svg {
   font-weight: 730;
   letter-spacing: -0.085em;
   line-height: 0.86;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   perspective: 900px;
 }
 .work-feature-title-visual { display: inline-block; }
+.work-feature-title-word { display: inline-block; white-space: nowrap; }
 .work-feature-title-char { display: inline-block; backface-visibility: hidden; transform-origin: 50% 100%; }
 .work-feature-rule { display: block; width: 74px; height: 2px; margin-top: clamp(24px, 3vw, 38px); background: var(--accent-light); }
 .work-feature-description {
