@@ -213,7 +213,7 @@ function ProjectTitle({ name, className = "" }) {
       <span
         className="work-feature-title-visual"
         aria-hidden="true"
-        style={{ "--title-fit": `${145 / Math.max(...name.split(" ").map((word) => word.length))}cqi` }}
+        style={{ "--title-fit": `${130 / Math.max(...name.split(" ").map((word) => word.length))}cqi` }}
       >
         {name.split(" ").flatMap((word, wordIndex) => [
           wordIndex > 0 ? " " : null,

@@ -876,7 +876,7 @@ svg {
   margin: 0 auto;
   color: var(--text);
   font-size: clamp(3.4rem, 7.3vw, 6.25rem);
-  font-weight: 720;
+  font-weight: 680;
   letter-spacing: -0.065em;
   line-height: 0.99;
   text-wrap: balance;
@@ -1280,8 +1280,8 @@ svg {
   color: var(--text);
   font-size: clamp(4.25rem, 8.8vw, 8rem);
   font-weight: 730;
-  letter-spacing: -0.085em;
-  line-height: 0.95;
+  letter-spacing: normal;
+  line-height: 1.04;
   overflow-wrap: normal;
   perspective: 900px;
 }
@@ -1290,7 +1290,7 @@ svg {
   font-size: min(1em, var(--title-fit));
   text-wrap: balance;
 }
-.work-feature-title-word { display: inline-block; max-inline-size: 100%; }
+.work-feature-title-word { display: inline-block; max-inline-size: 100%; letter-spacing: -0.02em; }
 .work-feature-title-char { display: inline-block; backface-visibility: hidden; transform-origin: 50% 100%; }
 .work-feature-rule { display: block; width: 74px; height: 2px; margin-top: clamp(24px, 3vw, 38px); background: var(--accent-light); }
 .work-feature-description {
@@ -1835,6 +1835,8 @@ svg {
 }
 
 @media (max-width: 920px) {
+  .projects-section::before { opacity: 0.35; filter: saturate(0.25); }
+  .work-feature::before { opacity: 0.35; }
   .project-heading { align-items: flex-start; flex-direction: column; gap: 18px; }
   .project-heading .section-title { font-size: clamp(4.2rem, 13vw, 7.6rem); }
   .work-heading-note { max-width: 440px; }
