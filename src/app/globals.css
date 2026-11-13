@@ -1222,7 +1222,7 @@ svg {
   font-size: clamp(4.25rem, 8.8vw, 8rem);
   font-weight: 730;
   letter-spacing: -0.085em;
-  line-height: 0.86;
+  line-height: 0.95;
   overflow-wrap: normal;
   perspective: 900px;
 }

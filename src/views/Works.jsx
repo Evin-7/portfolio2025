@@ -306,6 +306,26 @@ export default function Works() {
           const copy = scene.querySelector(".work-feature-copy");
           const title = scene.querySelectorAll(".work-feature-title-char");
           const number = scene.querySelector(".work-feature-index");
+          gsap.fromTo(title, {
+            yPercent: 108,
+            rotateX: -40,
+            autoAlpha: 0.12,
+            transformOrigin: "50% 100%",
+          }, {
+            yPercent: 0,
+            rotateX: 0,
+            autoAlpha: 1,
+            duration: 1,
+            stagger: { each: 0.018, from: "center" },
+            ease: "none",
+            scrollTrigger: {
+              trigger: scene,
+              start: "top 88%",
+              end: "top 50%",
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          });
           const timeline = gsap.timeline({
             scrollTrigger: {
               trigger: scene,
@@ -331,18 +351,6 @@ export default function Works() {
               ease: "none",
             }, 0)
             .fromTo(number, { xPercent: -14, opacity: 0.06 }, { xPercent: 0, opacity: 0.15, ease: "none" }, 0)
-            .fromTo(title, {
-              yPercent: 112,
-              rotateX: -48,
-              autoAlpha: 0.12,
-              transformOrigin: "50% 100%",
-            }, {
-              yPercent: 0,
-              rotateX: 0,
-              autoAlpha: 1,
-              stagger: { each: 0.025, from: "center" },
-              ease: "none",
-            }, 0.05)
             .fromTo(copy.querySelector(".work-feature-description"), { y: 24, autoAlpha: 0.3 }, { y: 0, autoAlpha: 1, ease: "none" }, 0.18)
             .fromTo(copy.querySelector(".work-feature-meta"), { y: 20, autoAlpha: 0.25 }, { y: 0, autoAlpha: 1, ease: "none" }, 0.24)
             .fromTo(copy.querySelector(".work-feature-actions"), { y: 18, autoAlpha: 0.2 }, { y: 0, autoAlpha: 1, ease: "none" }, 0.28)
