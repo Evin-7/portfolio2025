@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import HeroBeams from "./HeroBeams";
 
 function HeroWord({ children, className = "", delay, introComplete, reduceMotion }) {
   return (
@@ -72,6 +73,7 @@ export default function Hero() {
       onPointerMove={moveParallaxWithPointer}
       onPointerLeave={resetParallaxPointer}
     >
+      <HeroBeams introComplete={introComplete} />
       <motion.div
         className="hero-parallax-layer"
         aria-hidden="true"

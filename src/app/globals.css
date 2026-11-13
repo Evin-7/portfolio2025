@@ -778,27 +778,62 @@ svg {
   will-change: transform;
 }
 
-.hero-parallax-layer::before {
+/* Match the raster's centered cover crop, then its top-aligned mobile sizing. */
+.hero-beams {
   position: absolute;
+  z-index: 0;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 12% 52%, rgba(154, 231, 182, 0.24), transparent 25%),
-    radial-gradient(ellipse at 88% 52%, rgba(154, 231, 182, 0.24), transparent 25%);
-  content: "";
-  opacity: 0.45;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 850ms var(--ease-fluid);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .hero-parallax-layer::before {
-    animation: hero-edge-glow 6s ease-in-out infinite alternate;
-  }
+.hero-beams[data-ready="true"] { opacity: 1; }
+
+.hero-beam-streak,
+.hero-beam-tip {
+  opacity: 0;
+  animation-duration: var(--beam-duration);
+  animation-delay: var(--beam-delay);
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
 }
 
-@keyframes hero-edge-glow {
-  from { opacity: 0.3; }
-  to { opacity: 0.95; }
+.hero-beam-streak { animation-name: hero-beam-travel; }
+.hero-beam-tip { animation-name: hero-beam-arrival; }
+.hero-beam-echo { animation: hero-beam-echo 14s ease-in-out infinite paused; }
+
+.hero-beams[data-ready="true"][data-visible="true"] :is(.hero-beam-streak, .hero-beam-tip, .hero-beam-echo) {
+  animation-play-state: running;
 }
 
+@keyframes hero-beam-travel {
+  0% { transform: translateX(0); opacity: 0; animation-timing-function: cubic-bezier(0.38, 0, 0.58, 1); }
+  12%, 72% { opacity: 1; }
+  86%, 100% { transform: translateX(var(--beam-length)); opacity: 0; }
+}
+
+@keyframes hero-beam-arrival {
+  0%, 69%, 100% { opacity: 0; }
+  84% { opacity: 0.75; }
+}
+
+@keyframes hero-beam-echo {
+  0%, 50%, 100% { opacity: 0; }
+  22%, 37% { opacity: 0.85; }
+}
+
+@media (max-width: 980px) {
+  .hero-beams { height: auto; aspect-ratio: 2 / 1; }
+  .hero-beam-bloom, .hero-beam-echo { display: none; }
+  .hero-beams[data-ready="true"] { opacity: 0.75; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-beams { display: none; }
+}
 
 .hero-copy {
   width: min(100%, 900px);
