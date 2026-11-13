@@ -21,7 +21,8 @@ export const metadata = {
     images: ["/developer-workspace.webp"],
   },
   icons: {
-    icon: [{ url: "/el-monogram.png", type: "image/png" }],
+    icon: [{ url: "/el-monogram-favicon.png", sizes: "256x256", type: "image/png" }],
+    apple: [{ url: "/el-monogram-favicon.png", sizes: "256x256", type: "image/png" }],
   },
 };
 

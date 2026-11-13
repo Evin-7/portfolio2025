@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const links = [
@@ -140,7 +141,7 @@ export default function Navbar() {
       <div className="page-container nav-row">
         <a href="#home" className="brand-lockup" onClick={() => handleAnchorClick("home")} aria-label="Evin Leyander, home" data-magnetic data-cursor-label="HOME">
           <span className="brand-mark-frame" aria-hidden="true">
-            <img className="brand-mark-image" src="/el-monogram.png" alt="" width="120" height="80" />
+            <Image className="brand-mark-image" src="/el-monogram-neon.png" alt="" width={120} height={80} priority />
           </span>
           <span className="brand-name">Evin Leyander</span>
         </a>
