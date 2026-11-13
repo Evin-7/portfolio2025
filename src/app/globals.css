@@ -778,6 +778,28 @@ svg {
   will-change: transform;
 }
 
+.hero-parallax-layer::before {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 12% 52%, rgba(154, 231, 182, 0.24), transparent 25%),
+    radial-gradient(ellipse at 88% 52%, rgba(154, 231, 182, 0.24), transparent 25%);
+  content: "";
+  opacity: 0.45;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-parallax-layer::before {
+    animation: hero-edge-glow 6s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes hero-edge-glow {
+  from { opacity: 0.3; }
+  to { opacity: 0.95; }
+}
+
+
 .hero-copy {
   width: min(100%, 900px);
   margin-inline: auto;
@@ -1204,7 +1226,7 @@ svg {
   pointer-events: none;
   transform: translateY(-50%);
 }
-.work-feature-copy { position: relative; z-index: 2; min-width: 0; }
+.work-feature-copy { position: relative; z-index: 2; min-width: 0; container-type: inline-size; }
 .work-feature-eyebrow {
   display: flex;
   align-items: center;
@@ -1228,8 +1250,12 @@ svg {
   overflow-wrap: normal;
   perspective: 900px;
 }
-.work-feature-title-visual { display: inline-block; }
-.work-feature-title-word { display: inline-block; white-space: nowrap; }
+.work-feature-title-visual {
+  display: block;
+  font-size: min(1em, var(--title-fit));
+  text-wrap: balance;
+}
+.work-feature-title-word { display: inline-block; max-inline-size: 100%; }
 .work-feature-title-char { display: inline-block; backface-visibility: hidden; transform-origin: 50% 100%; }
 .work-feature-rule { display: block; width: 74px; height: 2px; margin-top: clamp(24px, 3vw, 38px); background: var(--accent-light); }
 .work-feature-description {

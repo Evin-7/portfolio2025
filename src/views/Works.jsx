@@ -210,7 +210,11 @@ function ProjectTitle({ name, className = "" }) {
   return (
     <h3 className={className} aria-label={name}>
       <span className="sr-only">{name}</span>
-      <span className="work-feature-title-visual" aria-hidden="true">
+      <span
+        className="work-feature-title-visual"
+        aria-hidden="true"
+        style={{ "--title-fit": `${145 / Math.max(...name.split(" ").map((word) => word.length))}cqi` }}
+      >
         {name.split(" ").flatMap((word, wordIndex) => [
           wordIndex > 0 ? " " : null,
           <span className="work-feature-title-word" key={wordIndex}>
@@ -355,8 +359,8 @@ export default function Works() {
             .fromTo(copy.querySelector(".work-feature-meta"), { y: 20, autoAlpha: 0.25 }, { y: 0, autoAlpha: 1, ease: "none" }, 0.24)
             .fromTo(copy.querySelector(".work-feature-actions"), { y: 18, autoAlpha: 0.2 }, { y: 0, autoAlpha: 1, ease: "none" }, 0.28)
             .to(visual, { scale: 1.06, clipPath: "inset(0% 0% 0% 0% round 4px)", ease: "none" }, 0.76)
-            // Let scenes recede without pulling the readable copy into the clipped edge.
-            .to(copy, { xPercent: -1.5, yPercent: -3, opacity: 0.65, ease: "none" }, 0.78);
+            // Keep the copy inside the card’s clipped bounds as the scene recedes.
+            .to(copy, { yPercent: -3, opacity: 0.65, ease: "none" }, 0.78);
         });
       });
 
