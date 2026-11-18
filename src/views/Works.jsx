@@ -22,6 +22,7 @@ import parambikulam from "../assets/images/parambikulam.webp";
 import penielTech from "../assets/images/penieltech.webp";
 import periyar from "../assets/images/periyartigerreserve.webp";
 import sitecore from "../assets/images/sitecore.webp";
+import stGeorgeCsi from "../assets/images/stgeorgecsi.webp";
 import veltrix from "../assets/images/veltrix.webp";
 import { technologyCatalog } from "../data/techStack";
 
@@ -195,6 +196,14 @@ const projects = [
     technologies: ["Vue.js", "Vuetify", "REST APIs", "Razorpay", "Node.js"],
     links: [{ label: "Open Periyar Tiger Reserve", href: "https://www.periyartigerreserve.org/" }],
     image: periyar,
+  },
+  {
+    name: "St. George CSI Church",
+    description: "A heritage website for St. George CSI Church, paired with a companion admin app for managing site content and gallery albums.",
+    categories: ["web", "backend", "full-stack"],
+    technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Framer Motion", "Swiper", "Axios", "EmailJS", "MongoDB", "Mongoose", "Cloudinary", "jose"],
+    links: [{ label: "Visit St. George CSI Church", href: "https://stgeorgecsichurchofficial.com" }],
+    image: stGeorgeCsi,
   },
 ];
 
