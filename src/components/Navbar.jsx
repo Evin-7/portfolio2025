@@ -130,7 +130,6 @@ export default function Navbar() {
       onClick={() => handleAnchorClick(id)}
       aria-current={activeId === id ? "location" : undefined}
       className="nav-link"
-      data-cursor-label={label.toUpperCase()}
     >
       {label}
     </a>
@@ -139,7 +138,7 @@ export default function Navbar() {
   return (
     <header className="site-header">
       <div className="page-container nav-row">
-        <a href="#home" className="brand-lockup" onClick={() => handleAnchorClick("home")} aria-label="Evin Leyander, home" data-magnetic data-cursor-label="HOME">
+        <a href="#home" className="brand-lockup" onClick={() => handleAnchorClick("home")} aria-label="Evin Leyander, home" data-magnetic>
           <span className="brand-mark-frame" aria-hidden="true">
             <Image className="brand-mark-image" src="/el-monogram-neon.png" alt="" width={120} height={80} priority />
           </span>
@@ -157,7 +156,6 @@ export default function Navbar() {
           aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
           aria-controls="mobile-navigation"
           aria-expanded={isMenuOpen}
-          data-cursor-label={isMenuOpen ? "CLOSE" : "MENU"}
           onClick={() => setIsMenuOpen((open) => !open)}
         >
           <span className={isMenuOpen ? "menu-toggle-lines is-open" : "menu-toggle-lines"} aria-hidden="true"><span /><span /></span>

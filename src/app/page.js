@@ -7,7 +7,7 @@ import Skills from "../views/Skills";
 import Works from "../views/Works";
 import Experience from "../views/Experience";
 import Contact from "../views/Contact";
-import DesktopCursor from "../components/DesktopCursor";
+import PointerEffects from "../components/PointerEffects";
 
 export default function HomePage() {
   return (
@@ -24,7 +24,7 @@ export default function HomePage() {
         <Contact />
       </main>
       <Footer />
-      <DesktopCursor />
+      <PointerEffects />
     </div>
   );
 }

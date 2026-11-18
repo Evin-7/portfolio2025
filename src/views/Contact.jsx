@@ -14,7 +14,7 @@ const initialForm = { name: "", email: "", message: "" };
 
 function SocialLink({ href, label, icon }) {
   return (
-    <a className="social-link" href={href} target="_blank" rel="noopener noreferrer" data-cursor-label={label.toUpperCase()}>
+    <a className="social-link" href={href} target="_blank" rel="noopener noreferrer">
       {icon ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icon.path} /></svg> : <span className="social-mark-text" aria-hidden="true">in</span>}
       {label}
     </a>
@@ -73,7 +73,7 @@ export default function Contact() {
           <Reveal className="contact-copy nav-anchor-target" id="contact">
             <p className="section-kicker">04 / Contact</p>
             <h2 className="section-title" id="contact-title">Let’s build something meaningful.</h2>
-            <a className="contact-email" href="mailto:yjevin75@gmail.com" data-cursor-label="EMAIL" data-magnetic>
+            <a className="contact-email" href="mailto:yjevin75@gmail.com" data-magnetic>
               yjevin75@gmail.com <span aria-hidden="true">↗</span>
             </a>
             <div className="contact-socials" aria-label="Contact and profile links">

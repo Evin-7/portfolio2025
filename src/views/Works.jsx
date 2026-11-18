@@ -279,21 +279,29 @@ function WorkFeature({ project, index, total }) {
         </div>
         <div className="work-feature-actions">
           {project.links.map((link) => (
-            <a className="work-feature-link" href={link.href} key={link.href} target="_blank" rel="noopener noreferrer" data-cursor-label="VISIT">
+            <a className="work-feature-link" href={link.href} key={link.href} target="_blank" rel="noopener noreferrer">
               {link.label} <span aria-hidden="true">↗</span>
             </a>
           ))}
         </div>
       </div>
       <figure className="work-feature-visual">
-        <Image
-          className={project.imageFit === "cover" ? "work-feature-image work-feature-image--cover" : "work-feature-image"}
-          src={project.image}
-          alt={project.name + " project preview"}
-          width={project.image.width}
-          height={project.image.height}
-          sizes="(max-width: 720px) 92vw, 64vw"
-        />
+        <a
+          className="work-feature-image-link"
+          href={project.links[0].href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open ${project.name} in a new tab`}
+        >
+          <Image
+            className={project.imageFit === "cover" ? "work-feature-image work-feature-image--cover" : "work-feature-image"}
+            src={project.image}
+            alt=""
+            width={project.image.width}
+            height={project.image.height}
+            sizes="(max-width: 720px) 92vw, 64vw"
+          />
+        </a>
         <figcaption className="sr-only">{project.name}: {project.description}</figcaption>
       </figure>
     </article>

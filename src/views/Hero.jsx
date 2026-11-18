@@ -105,10 +105,10 @@ export default function Hero() {
             animate={reduceMotion || introComplete ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
             transition={{ duration: 0.55, delay: reduceMotion ? 0 : 0.68 }}
           >
-            <a className="button button--primary" href="#works" data-magnetic data-liquid data-cursor-label="VIEW">
+            <a className="button button--primary" href="#works" data-magnetic data-liquid>
               <span className="button-label">View Projects <span aria-hidden="true">→</span></span>
             </a>
-            <a className="button button--outline" href="#contact" data-magnetic data-cursor-label="SAY HI">
+            <a className="button button--outline" href="#contact" data-magnetic>
               <span className="button-label"><svg className="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>Get in Touch</span>
             </a>
           </motion.div>
