@@ -42,6 +42,22 @@ const technologyByName = new Map(
 
 const projects = [
   {
+    name: "Mezeh",
+    description: "The customer-facing ordering experience for Mezeh Mediterranean Grill.",
+    categories: ["web", "backend", "full-stack"],
+    technologies: ["Vue 3", "Vite", "Pinia", "Tailwind CSS", "Vue Router", "Axios", "Swiper", "Express.js", "Azure", "Olo Pay", "Paytronix"],
+    links: [{ label: "Open Mezeh", href: "https://mezeh-frontend-production.azurewebsites.net/" }],
+    image: mezehFrontend,
+  },
+  {
+    name: "Mezeh Catering",
+    description: "A catering booking experience for Mezeh Mediterranean Grill.",
+    categories: ["web"],
+    technologies: ["React", "TypeScript", "Vite", "Tailwind CSS", "React Big Calendar"],
+    links: [{ label: "Open Mezeh Catering", href: "https://catering.mezeh.com/" }],
+    image: mezehCatering,
+  },
+  {
     name: "SiteCore",
     featured: true,
     description: "An interactive 3D operations viewer for exploring site assets, buildings, and infrastructure.",
@@ -129,22 +145,6 @@ const projects = [
     technologies: ["Vue 2", "Razorpay"],
     links: [{ label: "Open Home Maintenance", href: "https://homemaintenance.ohyesworld.com/" }],
     image: homeMaintenance,
-  },
-  {
-    name: "Mezeh Catering",
-    description: "A catering booking experience for Mezeh Mediterranean Grill.",
-    categories: ["web"],
-    technologies: ["React", "TypeScript", "Vite", "Tailwind CSS", "React Big Calendar"],
-    links: [{ label: "Open Mezeh Catering", href: "https://catering.mezeh.com/" }],
-    image: mezehCatering,
-  },
-  {
-    name: "Mezeh Frontend",
-    description: "The customer-facing web experience for Mezeh Mediterranean Grill.",
-    categories: ["web"],
-    technologies: ["Vue 3", "Vite", "Pinia", "Tailwind CSS", "Vue Router", "Axios", "Swiper", "Express.js", "Azure"],
-    links: [{ label: "Open Mezeh", href: "https://mezeh-frontend-production.azurewebsites.net/" }],
-    image: mezehFrontend,
   },
   {
     name: "Mezeh Mobile App",
