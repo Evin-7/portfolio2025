@@ -1834,17 +1834,31 @@ svg {
   .privacy-lead { font-size: 15px; }
 }
 
+@media (min-width: 921px) and (max-width: 1024px) and (pointer: coarse) {
+  .work-feature {
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(22px, 4vw, 32px);
+    padding-block: clamp(34px, 5vw, 50px);
+  }
+  .work-feature-visual { grid-column: 1; grid-row: 1; aspect-ratio: 1.6 / 1; }
+  .work-feature-copy { grid-column: 1; grid-row: 2; max-width: 720px; }
+  .work-feature-title { font-size: clamp(2.8rem, 8vw, 5rem); }
+  .work-feature-index { top: 62%; font-size: clamp(13rem, 36vw, 20rem); }
+}
+
 @media (max-width: 920px) {
   .projects-section::before { opacity: 0.35; filter: saturate(0.25); }
   .work-feature::before { opacity: 0.35; }
   .project-heading { align-items: flex-start; flex-direction: column; gap: 18px; }
   .project-heading .section-title { font-size: clamp(4.2rem, 13vw, 7.6rem); }
   .work-heading-note { max-width: 440px; }
-  .work-feature { min-height: 0; grid-template-columns: minmax(0, 1fr); gap: 30px; padding-block: 54px; }
+  .work-feature { min-height: 0; grid-template-columns: minmax(0, 1fr); gap: clamp(22px, 4vw, 32px); padding-block: clamp(34px, 5vw, 54px); }
   .work-feature-visual { grid-column: 1; grid-row: 1; aspect-ratio: 1.6 / 1; }
   .work-feature-copy { grid-column: 1; grid-row: 2; max-width: 720px; }
-  .work-feature-title { font-size: clamp(4rem, 12vw, 7rem); }
-  .work-feature-index { top: 62%; font-size: clamp(15rem, 44vw, 26rem); }
+  .work-feature-title { font-size: clamp(2.8rem, 8vw, 5rem); }
+  .work-feature-index { top: 62%; font-size: clamp(13rem, 36vw, 20rem); }
 }
 
 @media (max-width: 620px) {
@@ -1858,7 +1872,7 @@ svg {
   .work-feature-visual { aspect-ratio: 1.48 / 1; border-radius: 12px; }
   .work-feature-copy { max-width: 100%; }
   .work-feature-eyebrow { margin-bottom: 20px; font-size: 9px; }
-  .work-feature-title { font-size: clamp(3.2rem, 15.4vw, 5.4rem); }
+  .work-feature-title { font-size: clamp(2.8rem, 8vw, 3.4rem); }
   .work-feature-description { margin-top: 18px; font-size: 14px; }
   .work-feature-meta { margin-top: 19px; }
   .work-feature-actions { margin-top: 22px; }
