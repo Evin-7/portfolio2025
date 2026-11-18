@@ -53,7 +53,7 @@ const projects = [
     name: "Mezeh Catering",
     description: "A catering booking experience for Mezeh Mediterranean Grill.",
     categories: ["web"],
-    technologies: ["React", "TypeScript", "Vite", "Tailwind CSS", "React Big Calendar"],
+    technologies: ["Vue.js", "Vite", "Tailwind CSS"],
     links: [{ label: "Open Mezeh Catering", href: "https://catering.mezeh.com/" }],
     image: mezehCatering,
   },
