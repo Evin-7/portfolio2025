@@ -201,6 +201,7 @@ const projects = [
     name: "St. George CSI Church",
     description: "A heritage website for St. George CSI Church, paired with a companion admin app for managing site content and gallery albums.",
     categories: ["web", "backend", "full-stack"],
+    titleFit: 100,
     technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Framer Motion", "Swiper", "Axios", "EmailJS", "MongoDB", "Mongoose", "Cloudinary", "jose"],
     links: [{ label: "Visit St. George CSI Church", href: "https://stgeorgecsichurchofficial.com" }],
     image: stGeorgeCsi,
@@ -215,14 +216,14 @@ const filters = [
   { label: "Full Stack", value: "full-stack" },
 ];
 
-function ProjectTitle({ name, className = "" }) {
+function ProjectTitle({ name, className = "", fit = 130 }) {
   return (
     <h3 className={className} aria-label={name}>
       <span className="sr-only">{name}</span>
       <span
         className="work-feature-title-visual"
         aria-hidden="true"
-        style={{ "--title-fit": `${130 / Math.max(...name.split(" ").map((word) => word.length))}cqi` }}
+        style={{ "--title-fit": `${fit / Math.max(...name.split(" ").map((word) => word.length))}cqi` }}
       >
         {name.split(" ").flatMap((word, wordIndex) => [
           wordIndex > 0 ? " " : null,
@@ -271,7 +272,7 @@ function WorkFeature({ project, index, total }) {
           <span>Selected project</span>
           <span>{String(index + 1).padStart(2, "0")} <span aria-hidden="true">/</span> {String(total).padStart(2, "0")}</span>
         </p>
-        <ProjectTitle name={project.name} className="work-feature-title" />
+        <ProjectTitle name={project.name} className="work-feature-title" fit={project.titleFit} />
         <span className="work-feature-rule" aria-hidden="true" />
         <p className="work-feature-description">{project.description}</p>
         <div className="work-feature-meta">
