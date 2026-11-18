@@ -1349,7 +1349,8 @@ svg {
   box-shadow: 0 34px 100px rgba(0, 0, 0, 0.42);
   isolation: isolate;
 }
-.work-feature-image { display: block; width: 100%; height: 100%; object-fit: contain; }
+.work-feature-image { display: block; width: 100%; height: 100%; border-radius: inherit; object-fit: contain; }
+.work-feature-image--cover { object-fit: cover; }
 
 .experience-list {
   position: relative;

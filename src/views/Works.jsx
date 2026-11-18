@@ -151,6 +151,7 @@ const projects = [
     description: "A mobile ordering experience for Mezeh Mediterranean Grill.",
     categories: ["mobile"],
     technologies: ["React Native", "Expo", "Redux Toolkit"],
+    imageFit: "cover",
     links: [
       { label: "View on Google Play", href: "https://play.google.com/store/apps/details?id=com.mezeh.MezehApp&hl=en_IN" },
       { label: "View on the App Store", href: "https://apps.apple.com/us/app/mezeh-mediterranean-grill/id6747373231" },
@@ -288,7 +289,7 @@ function WorkFeature({ project, index, total }) {
       </div>
       <figure className="work-feature-visual">
         <Image
-          className="work-feature-image"
+          className={project.imageFit === "cover" ? "work-feature-image work-feature-image--cover" : "work-feature-image"}
           src={project.image}
           alt={project.name + " project preview"}
           width={project.image.width}
