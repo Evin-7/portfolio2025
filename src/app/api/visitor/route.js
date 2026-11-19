@@ -4,7 +4,6 @@ import {
   claimKey,
   decrementCounter,
   incrementCounter,
-  releaseKey,
 } from "../../../lib/visitorStore";
 import {
   getConsentFromRequest,
@@ -77,25 +76,15 @@ export async function POST(request) {
 
   const day = istDayKey();
   const networkDigest = getPseudonymousNetworkKey(request);
-  const visitorDigest = consent?.accepted && consent.id
-    ? createHmac("sha256", getHashSecret()).update(consent.id).digest("hex")
-    : networkDigest;
-  const visitorKey = "portfolio:visitors:seen:" + day + ":" + visitorDigest;
   const networkKey = "portfolio:visitors:rate:" + networkDigest + ":" + day;
   const dailyCountKey = "portfolio:visitors:total:" + day;
-  let visitorClaimed = false;
   let countIncremented = false;
 
   try {
-    visitorClaimed = await claimKey(visitorKey, 26 * 60 * 60);
-    if (!visitorClaimed) return json({ ok: true, recorded: false, duplicate: true });
-
     // A short-lived HMAC key limits abusive request bursts without retaining an IP address.
+    // Visits can notify again after this brief throttle window.
     const networkClaimed = await claimKey(networkKey, 60);
-    if (!networkClaimed) {
-      await releaseKey(visitorKey);
-      return json({ ok: true, recorded: false, rateLimited: true });
-    }
+    if (!networkClaimed) return json({ ok: true, recorded: false, rateLimited: true });
 
     const total = await incrementCounter(dailyCountKey, 8 * 24 * 60 * 60);
     countIncremented = true;
@@ -147,9 +136,6 @@ export async function POST(request) {
   } catch {
     if (countIncremented) {
       try { await decrementCounter(dailyCountKey); } catch { /* storage may be unavailable */ }
-    }
-    if (visitorClaimed) {
-      try { await releaseKey(visitorKey); } catch { /* storage may be unavailable */ }
     }
     console.error("Portfolio visitor notification could not be recorded");
     return json({ ok: true, recorded: false });
