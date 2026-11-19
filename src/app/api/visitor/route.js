@@ -19,7 +19,6 @@ import {
 import {
   istDayKey,
   istHourBucket,
-  istMonthKey,
   locationFromHeaders,
   makeVisitorEmail,
   normalizeReferral,
@@ -30,8 +29,6 @@ import {
 export const runtime = "nodejs";
 
 const DAILY_VISIT_CAP = 1200;
-const INDIVIDUAL_EMAIL_DAILY_CAP = 2;
-const INDIVIDUAL_EMAIL_MONTHLY_CAP = 25;
 
 function json(body, status = 200) {
   return Response.json(body, {
@@ -109,26 +106,12 @@ export async function POST(request) {
     await addAggregate(day, bucketId, details);
 
     if (getNotificationMode() === "individual") {
-      const dailyKey = "portfolio:visitors:individual-email-count:day:" + day;
-      const dailyAttempts = await incrementCounter(dailyKey, 8 * 24 * 60 * 60);
-      if (dailyAttempts <= INDIVIDUAL_EMAIL_DAILY_CAP) {
-        const month = istMonthKey();
-        const monthlyKey = "portfolio:visitors:individual-email-count:month:" + month;
-        const monthlyAttempts = await incrementCounter(monthlyKey, 40 * 24 * 60 * 60);
-        if (monthlyAttempts > INDIVIDUAL_EMAIL_MONTHLY_CAP) {
-          await decrementCounter(dailyKey);
-          await decrementCounter(monthlyKey);
-          return json({ ok: true, recorded: true });
-        }
-        const email = makeVisitorEmail({ ...details, date: new Date() });
-        try {
-          const result = await sendVisitorEmail(request, email);
-          if (!result.sent) console.error("Portfolio visitor notification delivery failed", { status: result.status || 0 });
-        } catch {
-          console.error("Portfolio visitor notification delivery failed");
-        }
-      } else {
-        await decrementCounter(dailyKey);
+      const email = makeVisitorEmail({ ...details, date: new Date() });
+      try {
+        const result = await sendVisitorEmail(request, email);
+        if (!result.sent) console.error("Portfolio visitor notification delivery failed", { status: result.status || 0 });
+      } catch {
+        console.error("Portfolio visitor notification delivery failed");
       }
     }
 

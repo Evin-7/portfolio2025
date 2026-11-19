@@ -25,7 +25,7 @@ export default function PrivacyPage() {
       <section>
         <h2>How it is used and retained</h2>
         <p>
-          The information is used to understand portfolio traffic and is sent to the portfolio owner through EmailJS. Individual visit alerts are capped at two attempts per IST day and 25 per IST calendar month; visits beyond those limits are not emailed. Grouped visit records expire after eight days. Raw IP addresses are not stored by this feature; short-lived keyed digests help prevent duplicate and abusive requests. Browser Do Not Track and Global Privacy Control signals are honored. The signed opt-out preference lasts up to six months. The owner relies on a legitimate-interest basis where local law permits it and must use prior opt-in where local law requires consent.
+          The information is used to understand portfolio traffic and is sent to the portfolio owner through EmailJS. Eligible visits can each generate an individual email alert. Grouped visit records expire after eight days. Raw IP addresses are not stored by this feature; short-lived keyed digests throttle rapid requests from the same network for one minute and help limit abusive bursts. Browser Do Not Track and Global Privacy Control signals are honored. The signed opt-out preference lasts up to six months. The owner relies on a legitimate-interest basis where local law permits it and must use prior opt-in where local law requires consent.
         </p>
       </section>
 
