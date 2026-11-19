@@ -97,7 +97,7 @@ export default function VisitorPrivacyConsent() {
         <p className="visitor-consent-eyebrow">Privacy choice</p>
         <h2 id="visitor-consent-title">Help improve this portfolio</h2>
         <p>
-          If you allow it, this site records an approximate country, region, city, page, and referral source from network information. A daily email summary is the default. No GPS or contact details are collected. <a href="/privacy">Read the privacy notice</a>.
+          If you allow it, this site records an approximate country, region, city, page, and referral source from network information. The owner may receive up to two individual visit emails per day, with a monthly limit of 25. No GPS or contact details are collected. <a href="/privacy">Read the privacy notice</a>.
         </p>
       </div>
       <div className="visitor-consent-actions">

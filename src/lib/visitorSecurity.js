@@ -39,7 +39,7 @@ export function getHashSecret() {
 }
 
 export function getNotificationMode() {
-  return process.env.VISITOR_NOTIFICATION_MODE === "individual" ? "individual" : "daily";
+  return process.env.VISITOR_NOTIFICATION_MODE === "daily" ? "daily" : "individual";
 }
 
 export function isSameOriginRequest(request) {
