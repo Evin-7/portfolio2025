@@ -1,5 +1,3 @@
-import PrivacyChoicesButton from "./PrivacyChoicesButton";
-
 const footerLinks = [
   ["GitHub", "https://github.com/Evin-7"],
   ["LinkedIn", "https://www.linkedin.com/in/evin-leyander-536a70236/"],
@@ -19,8 +17,7 @@ export default function Footer() {
           {footerLinks.map(([label, href]) => (
             <a key={label} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noopener noreferrer" : undefined}>{label}</a>
           ))}
-          <a href="/privacy">Privacy</a>
-          <PrivacyChoicesButton />
+          <a href="/privacy#visitor-notifications">Privacy &amp; visitor settings</a>
         </nav>
       </div>
       <div className="page-container footer-copyright">© {new Date().getFullYear()} Evin Leyander</div>

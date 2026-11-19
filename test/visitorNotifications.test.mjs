@@ -9,6 +9,7 @@ import {
   makeVisitorEmail,
   normalizeReferral,
   normalizeVisitedPage,
+  requiresExplicitVisitorConsent,
 } from "../src/lib/visitorNotifications.mjs";
 
 test("formats visit dates in India Standard Time", () => {
@@ -44,6 +45,21 @@ test("marks missing or partial Vercel location as unavailable or uncertain", () 
   assert.equal(locationFromHeaders(new Headers({ "x-vercel-ip-city": "New%20York" })).city, "New York");
 });
 
+test("requires explicit opt-in for consent-first regions and when country is unavailable", () => {
+  assert.equal(requiresExplicitVisitorConsent(new Headers({ "x-vercel-ip-country": "DE" })), true);
+  assert.equal(requiresExplicitVisitorConsent(new Headers({ "x-vercel-ip-country": "GB" })), true);
+  assert.equal(requiresExplicitVisitorConsent(new Headers({ "x-vercel-ip-country": "US" })), false);
+  assert.equal(requiresExplicitVisitorConsent(new Headers()), true);
+  assert.equal(
+    requiresExplicitVisitorConsent(new Headers({ "x-vercel-ip-country": "IN" }), new Date("2027-05-13T00:00:00+05:30")),
+    true,
+  );
+  assert.equal(
+    requiresExplicitVisitorConsent(new Headers({ "x-vercel-ip-country": "IN" }), new Date("2027-05-12T23:59:59+05:30")),
+    false,
+  );
+});
+
 test("email contains required summary fields and no precise or personal data", () => {
   const email = makeVisitorEmail({
     location: {
@@ -53,6 +69,8 @@ test("email contains required summary fields and no precise or personal data", (
       certainty: "Approximate; may be uncertain.",
     },
     page: "/",
+    pageUrl: "https://portfolio.example/",
+    deviceBrowser: "Desktop · macOS · Safari",
     source: "linkedin.com",
     date: new Date("2026-11-12T13:00:00.000Z"),
   });
@@ -62,7 +80,8 @@ test("email contains required summary fields and no precise or personal data", (
   assert.match(email.message, /City: Berlin/);
   assert.match(email.message, /Visited: November 12, 2026/);
   assert.match(email.message, /Time: 6:30 PM IST/);
-  assert.match(email.message, /Page: \/\n/);
+  assert.match(email.message, /Page URL: https:\/\/portfolio\.example\/\n/);
+  assert.match(email.message, /Device\/browser: Desktop · macOS · Safari/);
   assert.match(email.message, /Source: linkedin\.com/);
   assert.match(email.message, /Location certainty:/);
   assert.doesNotMatch(email.message, /latitude|longitude|street address|visitor email/i);

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import VisitorPrivacySettings from "../../components/VisitorPrivacySettings";
 
 export const metadata = {
   title: "Privacy — Evin Leyander",
@@ -11,29 +12,31 @@ export default function PrivacyPage() {
       <p className="section-kicker">Your choice</p>
       <h1>Privacy notice</h1>
       <p className="privacy-lead">
-        Visitor notifications are optional. Nothing is recorded for this feature unless you choose “Allow” in the notice on the site.
+        This portfolio processes limited visit information to understand its reach. You can manage visitor-location notifications below; no location-permission popup is used. Visitors from the EEA and UK, and visitors in India from 13 May 2027, are not recorded until they explicitly allow it.
       </p>
 
       <section>
         <h2>What is recorded</h2>
         <p>
-          After consent, the site records the page path, referring website’s domain (when available), approximate country, region, and city supplied by Vercel from network information, and a grouped hour of the visit in IST. The information can be unavailable or inaccurate, for example when a VPN, mobile carrier, or proxy is used. The site does not request browser geolocation and does not collect GPS coordinates, street address, name, or email address.
+          When you visit, Vercel supplies an approximate country, region, and city based on the network address used for the request. The site records the page URL without query strings or fragments, the visit time in IST, the referring website’s domain when available, and a coarse device and browser description from the standard browser header. The location may be unavailable or inaccurate, for example when a VPN, mobile carrier, or proxy is used. The site does not request GPS/browser geolocation or collect your name, email address, or street address.
         </p>
       </section>
 
       <section>
         <h2>How it is used and retained</h2>
         <p>
-          The data is grouped into daily counts by hour, approximate location, page, and referral domain. By default, the portfolio owner receives individual visit alerts, capped at two attempts per IST day and 25 per IST calendar month. Visits beyond these limits are not emailed. Daily summary mode is also available and sends at most one visitor email per IST day. Aggregates expire after eight days. A necessary, signed preference cookie remembers your choice for up to six months. Short-lived keyed digests are used to prevent duplicate and abusive requests; raw IP addresses are not stored by this feature. Browser Do Not Track and Global Privacy Control signals are honored.
+          The information is used to understand portfolio traffic and is sent to the portfolio owner through EmailJS. Individual visit alerts are capped at two attempts per IST day and 25 per IST calendar month; visits beyond those limits are not emailed. Grouped visit records expire after eight days. Raw IP addresses are not stored by this feature; short-lived keyed digests help prevent duplicate and abusive requests. Browser Do Not Track and Global Privacy Control signals are honored. The signed opt-out preference lasts up to six months. The owner relies on a legitimate-interest basis where local law permits it and must use prior opt-in where local law requires consent.
         </p>
       </section>
 
       <section>
-        <h2>Service providers and your choice</h2>
+        <h2>Service providers and your rights</h2>
         <p>
-          Vercel provides approximate network location. Upstash stores short-lived request controls and grouped counts. EmailJS sends the notification to the address configured by the site owner. Decline prevents this feature from recording a visit. You can change the saved choice using “Privacy choices” in the footer. The contact form is separate and continues to work as before.
+          Vercel provides approximate network location, Upstash stores short-lived request controls and grouped counts, and EmailJS sends alerts to the address configured by the site owner. Use the setting below to object to or resume this processing on this browser. You may also contact the site owner about applicable access or deletion rights. The contact form is separate and continues to work as before.
         </p>
       </section>
+
+      <VisitorPrivacySettings />
 
       <Link className="button button--outline privacy-back" href="/">Back to portfolio</Link>
     </main>

@@ -1,5 +1,5 @@
 import SmoothScroll from "../components/SmoothScroll";
-import VisitorPrivacyConsent from "../components/VisitorPrivacyConsent";
+import VisitorTracker from "../components/VisitorTracker";
 import "./globals.css";
 
 export const metadata = {
@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
           <style>{`.cinematic-intro{display:none!important}.hero-eyebrow,.hero-word,.hero-ctas,.hero-meta{opacity:1!important;transform:none!important;filter:none!important}`}</style>
         </noscript>
         <SmoothScroll>
-          <VisitorPrivacyConsent />
+          <VisitorTracker />
           {children}
         </SmoothScroll>
       </body>

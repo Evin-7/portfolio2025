@@ -25,6 +25,7 @@ import {
   makeVisitorEmail,
   normalizeReferral,
   normalizeVisitedPage,
+  requiresExplicitVisitorConsent,
 } from "../../../lib/visitorNotifications.mjs";
 
 export const runtime = "nodejs";
@@ -60,7 +61,8 @@ export async function POST(request) {
   if (!request.headers.get("content-type")?.toLowerCase().includes("application/json")) return json({ ok: false }, 415);
 
   const consent = getConsentFromRequest(request);
-  if (!consent?.accepted) return json({ ok: true, recorded: false });
+  if (hasPrivacyOptOut(request) || consent?.accepted === false) return json({ ok: true, recorded: false });
+  if (requiresExplicitVisitorConsent(request.headers) && consent?.accepted !== true) return json({ ok: true, recorded: false, consentRequired: true });
 
   let payload;
   try {
@@ -74,8 +76,10 @@ export async function POST(request) {
   if (Object.keys(payload).some((key) => !["page", "referrer"].includes(key))) return json({ ok: false }, 400);
 
   const day = istDayKey();
-  const visitorDigest = createHmac("sha256", getHashSecret()).update(consent.id).digest("hex");
   const networkDigest = getPseudonymousNetworkKey(request);
+  const visitorDigest = consent?.accepted && consent.id
+    ? createHmac("sha256", getHashSecret()).update(consent.id).digest("hex")
+    : networkDigest;
   const visitorKey = "portfolio:visitors:seen:" + day + ":" + visitorDigest;
   const networkKey = "portfolio:visitors:rate:" + networkDigest + ":" + day;
   const dailyCountKey = "portfolio:visitors:total:" + day;
@@ -102,9 +106,13 @@ export async function POST(request) {
     }
 
     const location = locationFromHeaders(request.headers);
+    const page = normalizeVisitedPage(payload.page);
+    const userAgent = request.headers.get("user-agent") || "";
     const details = {
       location,
-      page: normalizeVisitedPage(payload.page),
+      page,
+      pageUrl: new URL(page, request.url).origin + page,
+      deviceBrowser: describeDeviceBrowser(userAgent),
       source: normalizeReferral(payload.referrer, request.url),
       visitHour: istHourBucket(),
     };
@@ -146,4 +154,26 @@ export async function POST(request) {
     console.error("Portfolio visitor notification could not be recorded");
     return json({ ok: true, recorded: false });
   }
+}
+
+function describeDeviceBrowser(userAgent) {
+  if (typeof userAgent !== "string" || !userAgent) return "Unavailable";
+  const ua = userAgent.slice(0, 512);
+  const browser = /Edg\//.test(ua) ? "Edge"
+    : /OPR\//.test(ua) ? "Opera"
+      : /Firefox\//.test(ua) ? "Firefox"
+        : /Chrome\//.test(ua) ? "Chrome"
+          : /Safari\//.test(ua) ? "Safari"
+            : /MSIE|Trident\//.test(ua) ? "Internet Explorer"
+              : "Other browser";
+  const platform = /Android/.test(ua) ? "Android"
+    : /iPhone|iPad|iPod/.test(ua) ? "iOS"
+      : /Windows NT/.test(ua) ? "Windows"
+        : /Mac OS X/.test(ua) ? "macOS"
+          : /Linux/.test(ua) ? "Linux"
+            : "Unknown platform";
+  const device = /iPad|Tablet/.test(ua) ? "Tablet"
+    : /Mobi|iPhone|Android/.test(ua) ? "Mobile"
+      : "Desktop";
+  return `${device} · ${platform} · ${browser}`;
 }

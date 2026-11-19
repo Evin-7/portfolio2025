@@ -1,4 +1,16 @@
 const unsafeText = /[\u0000-\u001f\u007f]/g;
+const consentFirstCountries = new Set([
+  "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GB", "GR", "HR", "HU", "IE", "IS", "IT",
+  "LI", "LT", "LU", "LV", "MT", "NL", "NO", "PL", "PT", "RO", "SE", "SI", "SK",
+]);
+
+export function requiresExplicitVisitorConsent(headers, date = new Date()) {
+  const country = cleanLocationPart(headers.get("x-vercel-ip-country")).toUpperCase();
+  if (!country) return true;
+  if (consentFirstCountries.has(country)) return true;
+  // India’s DPDP Act core processing provisions are scheduled to commence 18 months after 13 Nov 2025.
+  return country === "IN" && date >= new Date("2027-05-13T00:00:00+05:30");
+}
 
 export function cleanLocationPart(value) {
   if (typeof value !== "string") return "";
@@ -94,7 +106,7 @@ export function locationFromHeaders(headers) {
   };
 }
 
-export function makeVisitorEmail({ location, page, source, date = new Date(), count = 1, title = "New Portfolio Visitor" }) {
+export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, source, date = new Date(), count = 1, title = "New Portfolio Visitor" }) {
   const { date: istDate, time: istTime } = formatIstDateTime(date);
   const countLine = count > 1 ? "Eligible visits recorded: " + count : "A visitor opened your portfolio.";
   return {
@@ -107,7 +119,8 @@ export function makeVisitorEmail({ location, page, source, date = new Date(), co
       "City: " + location.city,
       "Visited: " + istDate,
       "Time: " + istTime + " IST",
-      "Page: " + page,
+      "Page URL: " + (pageUrl || page),
+      "Device/browser: " + (deviceBrowser || "Unavailable"),
       "Source: " + source,
       "Location certainty: " + location.certainty,
       "",

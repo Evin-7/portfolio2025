@@ -4,9 +4,9 @@ Next.js portfolio site for Evin Leyander.
 
 ## Visitor notifications and privacy
 
-Visitor notifications are optional and require an explicit choice in the site's privacy notice. After consent, a same-origin server route records a page path, the referring domain when available, Vercel's approximate country/region/city headers, and a grouped visit hour in IST. It never requests browser geolocation or collects visitor contact details, GPS coordinates, street addresses, or raw IP addresses. Missing location headers are reported as unavailable.
+After the page renders, a lightweight same-origin request records the page URL, referring domain, coarse device/browser, and Vercel's approximate country/region/city headers. It never requests browser geolocation or stores raw IP addresses. Do Not Track, Global Privacy Control, and the visitor opt-out on `/privacy` are honored. Visitors from the EEA and UK, and visitors from India after the DPDP Act's scheduled commencement of its core processing provisions, are not recorded until they explicitly opt in through the privacy settings. If location headers are unavailable, the route fails closed until an explicit opt-in.
 
-Individual visitor emails are the default, capped at two attempts per IST day and 25 per IST calendar month. Set `VISITOR_NOTIFICATION_MODE=daily` to send a single daily summary instead. Aggregates expire after eight days. Both modes enforce consent, bot checks, HMAC-keyed request limits, and a global daily visit cap. Do Not Track and Global Privacy Control signals are honored. The contact form continues to use the existing browser EmailJS implementation.
+Individual visitor emails are the default, capped at two attempts per IST day and 25 per IST calendar month. Set `VISITOR_NOTIFICATION_MODE=daily` to send a single daily summary instead. Aggregates expire after eight days. Both modes enforce region-specific opt-in, browser opt-outs, bot checks, HMAC-keyed rate limits and duplicate protection, and a global daily visit cap. The contact form continues to use the existing browser EmailJS implementation.
 
 ### Configuration
 

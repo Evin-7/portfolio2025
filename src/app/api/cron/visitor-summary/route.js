@@ -37,7 +37,7 @@ function emailBody(rows, day) {
   for (const row of visible) {
     const place = [row.details.location.city, row.details.location.region, row.details.location.country].join(", ");
     lines.push(
-      String(row.count) + " visit(s) | " + row.details.visitHour + " | " + place + " | " + row.details.page + " | " + row.details.source +
+      String(row.count) + " visit(s) | " + row.details.visitHour + " | " + place + " | " + (row.details.pageUrl || row.details.page) + " | " + (row.details.deviceBrowser || "Device/browser unavailable") + " | " + row.details.source +
         " | " + row.details.location.certainty,
     );
   }
