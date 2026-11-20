@@ -2,6 +2,7 @@ import { isIP } from "node:net";
 import { geolocation, ipAddress } from "@vercel/functions";
 import {
   cleanLocationPart,
+  hasLocalSubdivision,
   locationFromProviderSources,
   normalizeCoordinates,
   requiresExplicitVisitorConsent,
@@ -234,6 +235,31 @@ async function fetchIpapiIs(ip, token, fetchImpl) {
   });
 }
 
+async function normalizeUnknownSubdivisions(sources, token, fetchImpl) {
+  const lookups = new Map();
+  return Promise.all(sources.map(async (source) => {
+    const { countryCode, region } = source;
+    if (!/^[A-Z]{2}$/.test(countryCode) || hasLocalSubdivision(countryCode, region)) return source;
+
+    const code = region.startsWith(countryCode + "-") ? region.slice(3) : region;
+    if (!/^[A-Z0-9]{1,3}$/.test(code)) return source;
+
+    const key = countryCode + "-" + code;
+    if (!lookups.has(key)) {
+      const url = "https://api.countrystatecity.in/v1/countries/" + countryCode + "/states/" + code;
+      lookups.set(key, fetchJson(url, {
+        headers: { "X-CSCAPI-KEY": token },
+        redirect: "error",
+      }, fetchImpl));
+    }
+    const data = await lookups.get(key);
+    const name = cleanLocationPart(data?.name);
+    if (!name || data.country_code !== countryCode || data.iso2 !== code) return source;
+
+    return { ...source, region: name };
+  }));
+}
+
 function unavailableLocation(providerTotal = 0) {
   return {
     country: "Unavailable",
@@ -296,12 +322,12 @@ export async function resolveVisitorLocation(request, {
   if (ip && env.IPAPI_TOKEN) lookups.push(fetchIpapiCo(ip, env.IPAPI_TOKEN, fetchImpl));
   if (ip) lookups.push(fetchIpapiIs(ip, env.IPAPI_IS_TOKEN, fetchImpl));
   providerTotal += lookups.length;
-  if (!ip) return sources.length ? locationFromProviderSources(sources, { providerTotal }) : unavailableLocation(providerTotal);
-
   const results = await Promise.all(lookups);
   sources.push(...results.filter(Boolean));
   if (sources.some((source) => source.crawlerDetected)) return { crawlerDetected: true };
-  return sources.length
-    ? locationFromProviderSources(sources, { providerTotal })
-    : unavailableLocation(providerTotal);
+  if (!sources.length) return unavailableLocation(providerTotal);
+  const normalized = env.COUNTRY_STATE_CITY_API_KEY
+    ? await normalizeUnknownSubdivisions(sources, env.COUNTRY_STATE_CITY_API_KEY, fetchImpl)
+    : sources;
+  return locationFromProviderSources(normalized, { providerTotal });
 }

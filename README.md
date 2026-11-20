@@ -26,6 +26,7 @@ Set these server-only Vercel environment variables:
 - `IPINFO_LITE_TOKEN` (optional [free IPinfo Lite token](https://ipinfo.io/dashboard/lite) for country and network organization, used when `IPINFO_TOKEN` is unset)
 - `IPAPI_IS_TOKEN` (optional [free IPapi.is key](https://ipapi.is/developers.html) for state estimates, a higher quota, and network indicators)
 - `IPAPI_TOKEN` (optional production API token)
+- `COUNTRY_STATE_CITY_API_KEY` (optional [Country State City API key](https://app.countrystatecity.in/) for state codes missing from the local dictionary. Only country and subdivision codes are sent.)
 
 IPapi.is is the production-compatible free fallback and does not require an account; its anonymous endpoint is limited to 30 lookups per caller IP per UTC day, and rate-limit responses fall back to Vercel. An optional `IPAPI_IS_TOKEN` uses the free account quota of 1,000 requests/day. The server uses at most one IPinfo endpoint per visit. IPinfo Lite can corroborate the country and contributes no state or city data. IPapi.co is skipped without `IPAPI_TOKEN`. Keep all tokens server-only. Production use of IPapi.co requires a production plan/token; do not use its public test endpoint for production traffic.
 

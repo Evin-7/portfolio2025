@@ -242,6 +242,10 @@ function countryIdentity(source) {
   return key ? { code: "", name: raw, key: "name:" + key } : null;
 }
 
+export function hasLocalSubdivision(countryCode, value) {
+  return subdivisionIndexes.get(normalizedGroupValue(countryCode))?.has(normalizedGroupValue(value)) ?? false;
+}
+
 function subdivisionIdentity(country, value) {
   const name = cleanLocationPart(value);
   const key = normalizedGroupValue(name);

@@ -412,3 +412,42 @@ test("keeps Vercel if IPinfo Lite fails or returns another IP", async () => {
     assert.equal(location.region, "Kerala");
   }
 });
+
+test("normalizes unknown state codes without sending the visitor IP to Country State City", async () => {
+  const calls = [];
+  const location = await resolveVisitorLocation(request("IN"), getLocationOptions({
+    env: { COUNTRY_STATE_CITY_API_KEY: "test-key" },
+    getIp: () => "",
+    getVercelLocation: () => ({ country: "IN", countryRegion: "IN-ZZ" }),
+    fetchImpl: async (url, options) => {
+      calls.push({ url, headers: options.headers });
+      return jsonResponse({ country_code: "IN", iso2: "ZZ", name: "Example State" });
+    },
+  }));
+  assert.deepEqual(calls, [{
+    url: "https://api.countrystatecity.in/v1/countries/IN/states/ZZ",
+    headers: { "X-CSCAPI-KEY": "test-key" },
+  }]);
+  assert.equal(location.region, "Example State");
+  assert.equal(location.fieldConfidence.region, "single");
+  assert.deepEqual(location.providerNames, ["vercel"]);
+});
+
+test("uses the local state dictionary and ignores mismatched remote codes", async () => {
+  const options = getLocationOptions({
+    env: { COUNTRY_STATE_CITY_API_KEY: "test-key" },
+    getIp: () => "",
+    fetchImpl: async () => jsonResponse({ country_code: "US", iso2: "ZZ", name: "Wrong State" }),
+  });
+  const known = await resolveVisitorLocation(request("IN"), {
+    ...options,
+    getVercelLocation: () => ({ country: "IN", countryRegion: "KL" }),
+    fetchImpl: async () => assert.fail("Known codes should not be looked up"),
+  });
+  assert.equal(known.region, "Kerala");
+  const unknown = await resolveVisitorLocation(request("IN"), {
+    ...options,
+    getVercelLocation: () => ({ country: "IN", countryRegion: "ZZ" }),
+  });
+  assert.equal(unknown.region, "ZZ");
+});
