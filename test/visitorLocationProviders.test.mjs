@@ -200,8 +200,9 @@ test("uses Vercel, IPinfo, and IPapi.is when their city and country agree", asyn
   assert.deepEqual(location.coordinates, { latitude: 9, longitude: 76.93 });
   assert.equal(location.providerCount, 3);
   assert.equal(location.providerTotal, 3);
-  assert.match(location.certainty, /3 of 3 location sources report the same city/);
-  assert.match(location.confidence, /cannot establish physical presence/);
+  assert.deepEqual(location.fieldConfidence, { country: "agree", region: "agree", city: "agree" });
+  assert.match(location.confidence, /city agrees across providers/);
+  assert.match(location.confidence, /do not establish physical presence/);
 });
 
 test("uses the two-provider majority and marks a conflicting provider uncertain", async () => {
@@ -215,11 +216,11 @@ test("uses the two-provider majority and marks a conflicting provider uncertain"
 
   assert.equal(location.city, "Punalur");
   assert.equal(location.providerCount, 3);
-  assert.match(location.certainty, /2 of 3 location sources report the selected city/);
-  assert.match(location.certainty, /Uncertain/);
+  assert.deepEqual(location.fieldConfidence, { country: "agree", region: "majority", city: "agree" });
+  assert.match(location.certainty, /provider estimates differ for region/);
 });
 
-test("reports only country when providers disagree on city but agree on country", async () => {
+test("retains agreed region when providers disagree on city", async () => {
   const location = await resolveVisitorLocation(request("US"), getLocationOptions({
     getVercelLocation: () => ({ country: "US", countryRegion: "VA", city: "Example City", latitude: 38, longitude: -77 }),
     fetchImpl: async () => jsonResponse(ipapiIsResponse({
@@ -233,11 +234,14 @@ test("reports only country when providers disagree on city but agree on country"
   }));
   assert.equal(location.country, "United States");
   assert.equal(location.countryCode, "US");
-  assert.equal(location.region, "Unavailable");
-  assert.equal(location.city, "Unavailable");
+  assert.equal(location.region, "Virginia");
+  assert.equal(location.city, "Uncertain");
   assert.equal(location.coordinates, undefined);
-  assert.match(location.certainty, /Only country is reported/);
-  assert.doesNotMatch(location.certainty, /0 provider result/);
+  assert.match(location.confidence, /country and region agree; city estimates conflict/i);
+  assert.deepEqual(location.cityEstimates, [
+    { provider: "vercel", value: "Example City" },
+    { provider: "ipapi.is", value: "Other City" },
+  ]);
   assert.equal(location.providerObservations.length, 2);
 });
 
@@ -259,7 +263,7 @@ test("does not mistake Vercel execution region for the visitor's region", async 
   assert.equal(location.region, "Unavailable");
 });
 
-test("reports country only when conflicting providers have a country majority but no city majority", async () => {
+test("retains country while reporting conflicting region and city estimates", async () => {
   const location = await resolveVisitorLocation(request("US"), getLocationOptions({
     env: { IPINFO_TOKEN: "token-one", IPAPI_TOKEN: "token-two" },
     getVercelLocation: () => ({ country: "US", countryRegion: "Massachusetts", city: "Boston", latitude: 42.36, longitude: -71.06 }),
@@ -271,11 +275,11 @@ test("reports country only when conflicting providers have a country majority bu
   }));
 
   assert.equal(location.country, "United States");
-  assert.equal(location.city, "Unavailable");
-  assert.equal(location.region, "Unavailable");
+  assert.equal(location.city, "Uncertain");
+  assert.equal(location.region, "Uncertain");
   assert.equal(location.coordinates, undefined);
   assert.equal(location.providerTotal, 4);
-  assert.match(location.certainty, /Only country is reported/);
+  assert.match(location.confidence, /region estimates conflict; city estimates conflict/i);
   assert.match(location.certainty, /Uncertain/);
 });
 

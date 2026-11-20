@@ -7,6 +7,7 @@ import {
   istHourBucket,
   istMonthKey,
   locationFromHeaders,
+  locationFromProviderSources,
   makeVisitorDailySummaryEmail,
   makeVisitorEmail,
   normalizeReferral,
@@ -169,6 +170,148 @@ test("email contains required summary fields and no precise or personal data", (
   assert.match(email.message, /Provider results:/);
   assert.match(email.message, /Location certainty:/);
   assert.doesNotMatch(email.message, /latitude|longitude|street address|visitor email/i);
+});
+
+test("normalizes country subdivisions so KL and Kerala agree while conflicting cities remain unverified", () => {
+  const location = locationFromProviderSources([
+    {
+      provider: "vercel",
+      country: "India",
+      countryCode: "IN",
+      region: "KL",
+      city: "Tirur",
+      coordinates: { latitude: 10.91, longitude: 75.92 },
+    },
+    {
+      provider: "ipapi.is",
+      country: "India",
+      countryCode: "IN",
+      region: "Kerala",
+      city: "Punalur",
+      coordinates: { latitude: 9.02, longitude: 76.93 },
+    },
+  ]);
+
+  assert.equal(location.country, "India");
+  assert.equal(location.region, "Kerala");
+  assert.equal(location.city, "Uncertain");
+  assert.deepEqual(location.fieldConfidence, { country: "agree", region: "agree", city: "conflicting" });
+  assert.equal(location.confidence.startsWith("Country and region agree; city estimates conflict."), true);
+  assert.deepEqual(location.cityEstimates, [
+    { provider: "vercel", value: "Tirur" },
+    { provider: "ipapi.is", value: "Punalur" },
+  ]);
+  assert.equal(location.coordinates, undefined);
+
+  const email = makeVisitorEmail({
+    location,
+    page: "/",
+    pageUrl: "https://portfolio.example/",
+    deviceBrowser: "Desktop · Windows · Chrome",
+    source: "Direct / unavailable",
+  });
+  assert.match(email.message, /Country: India/);
+  assert.match(email.message, /Region: Kerala/);
+  assert.match(email.message, /City: Uncertain \(Vercel: Tirur; IPapi\.is: Punalur\)/);
+  assert.match(email.message, /Conflicting city values are unverified IP estimates/);
+  assert.match(email.message, /Location confidence: Country and region agree; city estimates conflict/);
+  assert.doesNotMatch(email.message, /Approximate coordinates|Google Maps:/);
+});
+
+test("retains matching country when provider regions conflict", () => {
+  const location = locationFromProviderSources([
+    { provider: "vercel", country: "India", countryCode: "IN", region: "Kerala", city: "Example City", coordinates: { latitude: 9, longitude: 76 } },
+    { provider: "ipapi.is", country: "India", countryCode: "IN", region: "Tamil Nadu", city: "Example City", coordinates: { latitude: 11, longitude: 78 } },
+  ]);
+
+  assert.equal(location.country, "India");
+  assert.equal(location.region, "Uncertain");
+  assert.equal(location.city, "Example City");
+  assert.deepEqual(location.fieldConfidence, { country: "agree", region: "conflicting", city: "agree" });
+  assert.match(location.confidence, /country agrees across providers; region estimates conflict; city agrees across providers/i);
+  assert.equal(location.coordinates, undefined);
+});
+
+test("uses one provider as a low-confidence fallback", () => {
+  const location = locationFromProviderSources([
+    { provider: "vercel", country: "India", countryCode: "IN", region: "KL", city: "Tirur" },
+  ]);
+
+  assert.equal(location.country, "India");
+  assert.equal(location.region, "Kerala");
+  assert.equal(location.city, "Tirur");
+  assert.deepEqual(location.fieldConfidence, { country: "single", region: "single", city: "single" });
+  assert.match(location.certainty, /Single provider — approximate location/);
+});
+
+test("keeps available fields when other provider fields are missing", () => {
+  const location = locationFromProviderSources([
+    { provider: "vercel", country: "India", countryCode: "IN", region: "KL", city: "" },
+    { provider: "ipapi.is", country: "India", countryCode: "IN", region: "", city: "" },
+  ]);
+
+  assert.equal(location.country, "India");
+  assert.equal(location.region, "Kerala");
+  assert.equal(location.city, "Unavailable");
+  assert.deepEqual(location.fieldConfidence, { country: "agree", region: "single", city: "unavailable" });
+});
+
+test("does not report a selected country when providers identify different countries", () => {
+  const location = locationFromProviderSources([
+    { provider: "vercel", country: "United States", countryCode: "US", region: "Virginia", city: "Boydton" },
+    { provider: "ipapi.is", country: "India", countryCode: "IN", region: "Kerala", city: "Punalur" },
+  ]);
+
+  assert.equal(location.country, "Uncertain");
+  assert.equal(location.countryCode, undefined);
+  assert.equal(location.region, "Unavailable");
+  assert.equal(location.city, "Unavailable");
+  assert.equal(location.providerObservations.length, 2);
+  assert.deepEqual(location.fieldConfidence, { country: "conflicting", region: "unavailable", city: "unavailable" });
+});
+
+test("omits invalid provider coordinates", () => {
+  const location = locationFromProviderSources([
+    { provider: "ipapi.is", country: "India", countryCode: "IN", region: "Kerala", city: "Punalur", coordinates: { latitude: 91, longitude: 76 } },
+  ]);
+
+  assert.equal(location.city, "Punalur");
+  assert.equal(location.coordinates, undefined);
+});
+
+test("daily summary keeps agreed region and labels conflicting city estimates", () => {
+  const email = makeVisitorDailySummaryEmail([{
+    count: 1,
+    details: {
+      location: {
+        country: "India",
+        countryCode: "IN",
+        region: "Kerala",
+        city: "Uncertain",
+        cityEstimates: [
+          { provider: "vercel", value: "Tirur" },
+          { provider: "ipapi.is", value: "Punalur" },
+        ],
+        fieldConfidence: { country: "agree", region: "agree", city: "conflicting" },
+        providerObservations: [
+          { provider: "vercel", country: "India", region: "KL", city: "Tirur" },
+          { provider: "ipapi.is", country: "India", region: "Kerala", city: "Punalur" },
+        ],
+        confidence: "Country and region agree; city estimates conflict.",
+        certainty: "City estimates conflict.",
+      },
+      visitHour: "9 AM IST",
+      page: "/",
+      pageUrl: "https://portfolio.example/",
+      deviceBrowser: "Desktop · Windows · Chrome",
+      source: "Direct / unavailable",
+    },
+  }], "20261120", new Date("2026-11-20T03:30:00.000Z"));
+
+  assert.match(email.message, /Uncertain \(Vercel: Tirur; IPapi\.is: Punalur\), Kerala, India/);
+  assert.match(email.message, /Conflicting city values are unverified IP estimates/);
+  assert.match(email.message, /Location confidence: Country and region agree; city estimates conflict/);
+  assert.doesNotMatch(email.message, /Approximate coordinates|Google Maps:/);
 });
 
 test("omits the coordinate line when coordinates are unavailable", () => {
