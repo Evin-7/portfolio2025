@@ -74,6 +74,15 @@ export function normalizePublicVisitorIp(value) {
   return "";
 }
 
+function sameLookupAddress(requested, returned) {
+  const address = normalizePublicVisitorIp(returned);
+  if (!address) return false;
+  const key = (ip) => isIP(ip) === 4
+    ? ipv6Bytes("::ffff:" + ip).join(",")
+    : ipv6Bytes(ip).join(",");
+  return key(requested) === key(address);
+}
+
 function cleanProviderValue(value) {
   if (typeof value === "number" && Number.isFinite(value)) return cleanLocationPart(String(value));
   return cleanLocationPart(value);
@@ -105,7 +114,7 @@ function providerSource(provider, data, fields = {}) {
     countryCode: /^[A-Z]{2}$/.test(code) ? code : "",
     region: cleanProviderValue(fields.region),
     city: cleanProviderValue(fields.city),
-    district: cleanProviderValue(fields.district),
+    timezone: cleanProviderValue(fields.timezone),
     postalCode: cleanProviderValue(fields.postalCode),
     organization: cleanProviderValue(fields.organization),
   };
@@ -115,14 +124,17 @@ function providerSource(provider, data, fields = {}) {
     ["is_vpn", "Provider identifies a VPN"],
     ["is_proxy", "Provider identifies a proxy"],
     ["is_tor", "Provider identifies a Tor exit"],
-    ["is_crawler", "Provider identifies crawler traffic"],
+    ["is_relay", "Provider identifies a privacy relay"],
+    ["is_anycast", "Provider identifies an anycast network"],
   ]) {
-    if (data[field] === true) networkIndicators.push(label);
+    if (field === "is_vpn" ? Boolean(data[field]) : data[field] === true) networkIndicators.push(label);
   }
   if (/\b(cloud|hosting|data[ -]?cent(?:er|re)|vps|colocation|server farm)\b/i.test(source.organization)) {
     networkIndicators.push("Provider organization suggests cloud or hosting infrastructure; VPN/proxy status is unconfirmed");
   }
+  if (data.egress_service?.type) networkIndicators.push("Provider identifies an egress service");
   if (networkIndicators.length) source.networkIndicators = networkIndicators;
+  if (data.is_crawler === true || (typeof data.is_crawler === "string" && data.is_crawler.trim())) source.crawlerDetected = true;
   const coordinates = normalizeCoordinates({ latitude: fields.latitude, longitude: fields.longitude });
   if (coordinates) source.coordinates = coordinates;
   return Object.values(source).some((value) => value && value !== provider) || source.coordinates ? source : null;
@@ -148,17 +160,18 @@ async function fetchIpinfo(ip, token, fetchImpl) {
   const data = await fetchJson(url, {
     headers: { Authorization: "Bearer " + token },
   }, fetchImpl);
+  const geo = data?.geo;
   const [latitude, longitude] = typeof data?.loc === "string" ? data.loc.split(",") : [];
   return providerSource("ipinfo", data, {
-    country: data?.country,
-    countryCode: data?.country,
-    region: data?.region,
-    city: data?.city,
-    district: data?.district,
-    postalCode: data?.postal,
-    organization: data?.org,
-    latitude,
-    longitude,
+    country: geo?.country || data?.country,
+    countryCode: geo?.country_code || data?.country_code || data?.country,
+    region: geo?.region || geo?.region_code || data?.region,
+    city: geo?.city || data?.city,
+    timezone: geo?.timezone || data?.timezone,
+    postalCode: geo?.postal_code || data?.postal,
+    organization: data?.as?.name || data?.asn_name || data?.org,
+    latitude: geo?.latitude ?? latitude,
+    longitude: geo?.longitude ?? longitude,
   });
 }
 
@@ -170,7 +183,7 @@ async function fetchIpapiCo(ip, token, fetchImpl) {
     countryCode: data?.country_code,
     region: data?.region,
     city: data?.city,
-    district: data?.district,
+    timezone: data?.timezone,
     postalCode: data?.postal,
     organization: data?.org,
     latitude: data?.latitude,
@@ -186,6 +199,8 @@ async function fetchIpapiIs(ip, token, fetchImpl) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   }, fetchImpl);
+  // IPapi.is echoes the lookup address. Accept equivalent IPv6 spellings.
+  if (!sameLookupAddress(ip, data?.ip)) return null;
   const location = data?.location || {};
   const company = data?.company;
   const companyEntry = Array.isArray(company) ? company[0] : company;
@@ -197,7 +212,7 @@ async function fetchIpapiIs(ip, token, fetchImpl) {
     countryCode: location.country_code || data?.country_code,
     region: location.state || data?.region,
     city: location.city || data?.city,
-    district: location.district || data?.district,
+    timezone: location.timezone || data?.timezone,
     postalCode: location.zip || data?.postal,
     organization,
     latitude: location.latitude ?? data?.lat,
@@ -243,7 +258,7 @@ export async function resolveVisitorLocation(request, {
       // not the visitor's state/region. Use only countryRegion for visitor geography.
       region: value?.countryRegion,
       city: value?.city,
-      district: value?.district,
+      timezone: request.headers.get("x-vercel-ip-timezone"),
       postalCode: value?.postalCode || request.headers.get("x-vercel-ip-postal-code"),
       latitude: value?.latitude,
       longitude: value?.longitude,
@@ -270,6 +285,7 @@ export async function resolveVisitorLocation(request, {
 
   const results = await Promise.all(lookups);
   sources.push(...results.filter(Boolean));
+  if (sources.some((source) => source.crawlerDetected)) return { crawlerDetected: true };
   return sources.length
     ? locationFromProviderSources(sources, { providerTotal })
     : unavailableLocation(providerTotal);

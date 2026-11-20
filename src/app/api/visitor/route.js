@@ -20,7 +20,6 @@ import {
   istDayKey,
   istHourBucket,
   makeVisitorEmail,
-  normalizeCoordinates,
   normalizeReferral,
   normalizeVisitedPage,
   requiresExplicitVisitorConsent,
@@ -55,6 +54,7 @@ export async function POST(request) {
   if (hasPrivacyOptOut(request) || consent?.accepted === false) return json({ ok: true, recorded: false });
   if (requiresExplicitVisitorConsent(request.headers) && consent?.accepted !== true) return json({ ok: true, recorded: false, consentRequired: true });
 
+  const visitedAt = new Date();
   let payload;
   try {
     const text = await request.text();
@@ -64,9 +64,10 @@ export async function POST(request) {
     return json({ ok: false }, 400);
   }
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) return json({ ok: false }, 400);
+  // Older open tabs may still send deviceCoordinates. Ignore it entirely.
   if (Object.keys(payload).some((key) => !["page", "referrer", "deviceCoordinates"].includes(key))) return json({ ok: false }, 400);
 
-  const day = istDayKey();
+  const day = istDayKey(visitedAt);
   const networkDigest = getPseudonymousNetworkKey(request);
   const networkKey = "portfolio:visitors:rate:" + networkDigest + ":" + day;
   const dailyCountKey = "portfolio:visitors:total:" + day;
@@ -87,13 +88,12 @@ export async function POST(request) {
     }
 
     const location = await resolveVisitorLocation(request, {
-      trackingEligible: true,
+      trackingEligible: !isLocalTestMode(),
       consentAccepted: consent?.accepted === true,
     });
-    const deviceCoordinates = normalizeCoordinates(payload.deviceCoordinates);
-    if (deviceCoordinates) {
-      location.coordinates = deviceCoordinates;
-      location.coordinateSource = "device";
+    if (location.crawlerDetected) {
+      await decrementCounter(dailyCountKey);
+      return json({ ok: true, recorded: false });
     }
     const page = normalizeVisitedPage(payload.page);
     const userAgent = request.headers.get("user-agent") || "";
@@ -103,13 +103,13 @@ export async function POST(request) {
       pageUrl: new URL(page, request.url).origin + page,
       deviceBrowser: describeDeviceBrowser(userAgent),
       source: normalizeReferral(payload.referrer, request.url),
-      visitHour: istHourBucket(),
+      visitHour: istHourBucket(visitedAt),
     };
     const bucketId = createHmac("sha256", getHashSecret()).update(JSON.stringify(details)).digest("hex");
     await addAggregate(day, bucketId, details);
 
     if (getNotificationMode() === "individual") {
-      const email = makeVisitorEmail({ ...details, date: new Date() });
+      const email = makeVisitorEmail({ ...details, date: visitedAt });
       try {
         const result = await sendVisitorEmail(request, email);
         if (!result.sent) console.error("Portfolio visitor notification delivery failed", { status: result.status || 0 });

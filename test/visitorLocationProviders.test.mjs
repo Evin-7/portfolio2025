@@ -14,6 +14,7 @@ function request(country = "US", headers = {}) {
 
 function ipapiIsResponse(overrides = {}) {
   return {
+    ip: "8.8.8.8",
     is_bogon: false,
     city: "Punalūr",
     region: "Kerala",
@@ -152,13 +153,14 @@ test("does not send reserved or invalid trusted IP values to providers", async (
 
 test("sends a validated public IPv6 address explicitly to IPapi.is", async () => {
   let body;
-  await resolveVisitorLocation(request("US"), getLocationOptions({
+  const location = await resolveVisitorLocation(request("US"), getLocationOptions({
     getIp: () => "2001:4860:4860::8888",
     fetchImpl: async (_url, options) => {
       body = JSON.parse(options.body);
-      return jsonResponse(ipapiIsResponse());
+      return jsonResponse(ipapiIsResponse({ ip: "2001:4860:4860:0:0:0:0:8888" }));
     },
   }));
+  assert.equal(location.providerCount, 1);
   assert.deepEqual(body, { q: "2001:4860:4860::8888" });
 });
 
@@ -190,13 +192,14 @@ test("uses Vercel, IPinfo, and IPapi.is when their city and country agree", asyn
     env: { IPINFO_TOKEN: "private-test-token" },
     getVercelLocation: () => ({ country: "IN", countryRegion: "Kerala", city: "Punalur", latitude: 9, longitude: 76.93333 }),
     fetchImpl: async (url) => String(url).includes("api.ipinfo.io")
-      ? jsonResponse({ country: "IN", region: "Kerala", city: "Punalur", loc: "9,76.93333", postal: "691331", org: "Kerala Fibre Optic Network Limited" })
+      ? jsonResponse({ geo: { country: "India", country_code: "IN", region: "Kerala", city: "Punalur", latitude: 9, longitude: 76.93333, postal_code: "691331", timezone: "Asia/Kolkata" }, as: { name: "Kerala Fibre Optic Network Limited" } })
       : jsonResponse(ipapiIsResponse({ city: "Punalur" })),
   }));
 
   assert.equal(location.country, "India");
   assert.equal(location.city, "Punalur");
   assert.equal(location.postalCode, "691331");
+  assert.equal(location.timezone, "Asia/Kolkata");
   assert.deepEqual(location.coordinates, { latitude: 9, longitude: 76.93 });
   assert.equal(location.providerCount, 3);
   assert.equal(location.providerTotal, 3);
@@ -248,7 +251,7 @@ test("retains agreed region when providers disagree on city", async () => {
 test("marks cloud organization labels as a possible infrastructure exit, not a confirmed VPN", async () => {
   const location = await resolveVisitorLocation(request("US"), getLocationOptions({
     getIp: () => "1.1.1.1",
-    fetchImpl: async () => jsonResponse(ipapiIsResponse({ country: "United States", country_code: "US", region: "Virginia", city: "Example City", company: "cloud" })),
+    fetchImpl: async () => jsonResponse(ipapiIsResponse({ country: "United States", country_code: "US", region: "Virginia", city: "Example City", company: "cloud", ip: "1.1.1.1" })),
   }));
   assert.match(location.networkIndicators.join(" "), /suggests cloud or hosting infrastructure/);
   assert.match(location.networkIndicators.join(" "), /VPN\/proxy status is unconfirmed/);
@@ -333,4 +336,48 @@ test("does not call external providers without a trusted visitor IP", async () =
   assert.equal(calls, 0);
   assert.equal(location.city, "Boydton");
   assert.equal(location.providerTotal, 1);
+});
+
+
+test("discards IPapi.is data for a different or unverified request IP", async () => {
+  for (const ip of ["1.1.1.1", undefined]) {
+    const location = await resolveVisitorLocation(request("IN"), getLocationOptions({
+      getVercelLocation: () => ({ country: "IN", countryRegion: "KL", city: "Tirur" }),
+      fetchImpl: async () => jsonResponse(ipapiIsResponse({ ip, country: "United States", city: "Dulles Town Center" })),
+    }));
+    assert.deepEqual(location.providerNames, ["vercel"]);
+    assert.equal(location.city, "Tirur");
+  }
+});
+
+test("hides coordinates and postal codes for VPNs, proxies, and hosting networks", async () => {
+  for (const flag of ["is_vpn", "is_proxy", "is_datacenter"]) {
+    const location = await resolveVisitorLocation(request("IN"), getLocationOptions({
+      fetchImpl: async () => jsonResponse(ipapiIsResponse({ [flag]: true, postal: "691331" })),
+    }));
+    assert.equal(location.city, "Punalūr");
+    assert.equal(location.networkIndicators.length, 1);
+    assert.equal(location.coordinates, undefined);
+    assert.equal(location.postalCode, undefined);
+  }
+});
+
+test("recognizes documented named crawler results", async () => {
+  const location = await resolveVisitorLocation(request(), getLocationOptions({
+    fetchImpl: async () => jsonResponse(ipapiIsResponse({ is_crawler: "ExampleBot" })),
+  }));
+  assert.deepEqual(location, { crawlerDetected: true });
+});
+
+test("missing trusted geolocation and IP yields unavailable data without a lookup", async () => {
+  const location = await resolveVisitorLocation(new Request("https://portfolio.example/api/visitor"), {
+    ...getLocationOptions({
+      getIp: undefined,
+      getVercelLocation: undefined,
+      fetchImpl: async () => assert.fail("No IP to look up"),
+    }),
+    consentAccepted: true,
+  });
+  assert.equal(location.country, "Unavailable");
+  assert.equal(location.providerCount, 0);
 });

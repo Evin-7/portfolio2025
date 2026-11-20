@@ -128,7 +128,7 @@ test("email contains required summary fields and no precise or personal data", (
       countryCode: "DE",
       region: "Berlin",
       city: "Berlin",
-      district: "Mitte",
+      timezone: "Europe/Berlin",
       postalCode: "10115",
       organization: "Example ISP",
       coordinates: { latitude: 52.52, longitude: 13.4 },
@@ -154,14 +154,17 @@ test("email contains required summary fields and no precise or personal data", (
   assert.match(email.message, /Country code: DE/);
   assert.match(email.message, /Region: Berlin/);
   assert.match(email.message, /City: Berlin \(IP estimate\)/);
-  assert.match(email.message, /District: Mitte/);
-  assert.match(email.message, /Postal code: 10115/);
-  assert.match(email.message, /Approximate coordinates \(IP-based, city-level\): 52\.52, 13\.40/);
-  assert.match(email.message, /Google Maps: https:\/\/www\.google\.com\/maps\?q=52\.52,13\.40/);
+  assert.doesNotMatch(email.message, /District:/);
+  assert.match(email.message, /Timezone \(IP estimate\): Europe\/Berlin/);
+  assert.match(email.message, /Postal code \(IP estimate\): Unavailable/);
+  assert.doesNotMatch(email.message, /Approximate coordinates/);
+  assert.doesNotMatch(email.message, /Google Maps:/);
+  assert.match(email.message, /Network exit estimate:/);
   assert.match(email.message, /Network organization \/ ISP: Example ISP/);
   assert.match(email.message, /Network indicator: Provider organization suggests cloud or hosting infrastructure/);
   assert.match(email.message, /Visited: November 12, 2026/);
   assert.match(email.message, /Time: 6:30 PM IST/);
+  assert.match(email.message, /Time \(UTC\): 2026-11-12T13:00:00.000Z/);
   assert.match(email.message, /Page URL: https:\/\/portfolio\.example\/\n/);
   assert.match(email.message, /Device\/browser: Desktop · macOS · Safari/);
   assert.match(email.message, /Source: linkedin\.com/);
@@ -353,7 +356,7 @@ test("daily summary includes approximate location details, providers, coordinate
   assert.equal(email.subject, "New Portfolio Visitor");
   assert.match(email.message, /Punalur \(IP estimate\), Kerala, India/);
   assert.match(email.message, /Country code: IN/);
-  assert.match(email.message, /Postal code: 691331/);
+  assert.match(email.message, /Postal code \(IP estimate\): 691331/);
   assert.match(email.message, /Network organization \/ ISP: Example ISP/);
   assert.match(email.message, /Location providers: ipapi\.is \(1 usable of 2 checked\)/);
   assert.match(email.message, /Approximate coordinates \(IP-based, city-level\): 9\.00, 76\.93/);

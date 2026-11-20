@@ -129,17 +129,15 @@ export function approximateCoordinatesFromHeaders(headers, {
 }
 
 export function formatApproximateCoordinates(location) {
-  if (isCityConflict(location)) return "";
+  if (isCityConflict(location) || location?.networkIndicators?.length || location?.coordinateSource === "device") return "";
   const { latitude, longitude } = location?.coordinates || {};
   if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return "";
-  const label = location.coordinateSource === "device"
-    ? "Approximate coordinates (device location, rounded)"
-    : "Approximate coordinates (IP-based, city-level)";
+  const label = "Approximate coordinates (IP-based, city-level)";
   return `${label}: ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
 }
 
 export function formatGoogleMapsLink(location) {
-  if (isCityConflict(location)) return "";
+  if (isCityConflict(location) || location?.networkIndicators?.length || location?.coordinateSource === "device") return "";
   const { latitude, longitude } = location?.coordinates || {};
   if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return "";
   return `https://www.google.com/maps?q=${latitude.toFixed(2)},${longitude.toFixed(2)}`;
@@ -297,12 +295,11 @@ function consensusCoordinates(sources) {
 }
 
 export function locationFromProviderSources(sources, { providerTotal } = {}) {
-  const usable = Array.isArray(sources)
-    ? sources.filter((source) => source && (
+  const observations = Array.isArray(sources) ? sources.filter(Boolean) : [];
+  const usable = observations.filter((source) => (
       normalizedGroupValue(source.country) || normalizedGroupValue(source.region) || normalizedGroupValue(source.city) ||
       normalizeCoordinates(source.coordinates)
-    ))
-    : [];
+    ));
   const total = Number.isInteger(providerTotal) && providerTotal >= usable.length ? providerTotal : usable.length;
   const providerNames = usable.map((source) => source.provider || "unknown");
   if (usable.length === 0) {
@@ -340,10 +337,10 @@ export function locationFromProviderSources(sources, { providerTotal } = {}) {
     return value ? { key: normalizedGroupValue(value), name: value } : null;
   });
   const city = rawCity;
-  const coordinates = city.status !== "conflicting" && region.status !== "conflicting"
+  const networkIndicators = collectNetworkIndicators(observations);
+  const coordinates = !networkIndicators.length && city.status !== "conflicting" && region.status !== "conflicting"
     ? consensusCoordinates(city.sources)
     : undefined;
-  const networkIndicators = collectNetworkIndicators(usable);
   const providerConflict = [country, region, city].some((field) => field.status === "conflicting" || field.status === "majority");
   const countryDisplay = country.status === "conflicting" ? "Uncertain" : country.identity?.name || "Unavailable";
   const regionDisplay = region.status === "conflicting" ? "Uncertain" : region.identity?.name || "Unavailable";
@@ -352,9 +349,15 @@ export function locationFromProviderSources(sources, { providerTotal } = {}) {
   const supportingSources = city.sources.length ? city.sources : region.sources.length ? region.sources : country.sources;
   const first = (key) => [...supportingSources].sort((left, right) => sourcePriority(left) - sourcePriority(right)).find((source) => source[key])?.[key];
   const cityEstimates = city.status === "conflicting" ? providerEstimates(city.sources, "city") : [];
-  const district = city.status !== "conflicting" && region.status !== "conflicting" ? first("district") : "";
-  const postalCode = city.status !== "conflicting" && region.status !== "conflicting" ? first("postalCode") : "";
-  const organization = first("organization");
+  const matchingValue = (key) => {
+    const values = new Set(supportingSources.map((source) => source[key]).filter(Boolean));
+    return values.size === 1 ? [...values][0] : undefined;
+  };
+  const postalCode = !networkIndicators.length && city.identity && region.status !== "conflicting"
+    ? matchingValue("postalCode")
+    : undefined;
+  const timezone = matchingValue("timezone");
+  const organization = first("organization") || observations.find((source) => source.organization)?.organization;
   const fieldConfidence = { country: country.status, region: region.status, city: city.status };
   const confidence = confidenceSummary(fieldConfidence);
   const certainty = providerConflict
@@ -375,7 +378,7 @@ export function locationFromProviderSources(sources, { providerTotal } = {}) {
     region: regionDisplay,
     city: cityDisplay,
     ...(cityEstimates.length ? { cityEstimates } : {}),
-    ...(district ? { district } : {}),
+    ...(timezone ? { timezone } : {}),
     ...(postalCode ? { postalCode } : {}),
     ...(organization ? { organization } : {}),
     ...(coordinates ? { coordinates } : {}),
@@ -420,9 +423,7 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
   const coordinates = formatApproximateCoordinates(location);
   const providerLine = formatLocationProviderLine(location);
   const coordinatesLink = formatGoogleMapsLink(location);
-  const confidence = location.confidence || (location.coordinateSource === "device"
-    ? "Previously granted device location; rounded before transmission."
-    : location.country !== "Unavailable"
+  const confidence = location.confidence || (location.country !== "Unavailable"
       ? "Low — approximate IP estimate; provider agreement cannot establish physical presence."
       : "Unavailable — no usable location data.");
   const providerResults = location.providerObservations?.length > 1
@@ -444,23 +445,25 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
       ...(isCityConflict(location)
         ? ["Conflicting city values are unverified IP estimates, not a confirmed physical location."]
         : []),
-      ...(location.district ? ["District: " + location.district] : []),
-      ...(location.postalCode ? ["Postal code: " + location.postalCode] : []),
+      "Postal code (IP estimate): " + (networkIndicators.length ? "Unavailable" : location.postalCode || "Unavailable"),
+      "Timezone (IP estimate): " + (location.timezone || "Unavailable"),
       ...(coordinates ? [coordinates] : []),
       ...(coordinatesLink ? ["Google Maps: " + coordinatesLink] : []),
       ...(location.organization ? ["Network organization / ISP: " + location.organization] : []),
       ...(networkIndicators.length ? ["Network indicator: " + networkIndicators.join("; ")] : []),
+      ...(networkIndicators.length ? ["Network exit estimate: The reported place may be the network exit. The visitor’s physical location is unknown."] : []),
       "Visited: " + istDate,
       "Time: " + istTime + " IST",
+      "Time (UTC): " + date.toISOString(),
       "Page URL: " + (pageUrl || page),
       "Device/browser: " + (deviceBrowser || "Unavailable"),
-      "Source: " + source,
+      "Source: " + (source || "Unavailable"),
       ...(providerLine ? [providerLine] : []),
       ...(providerResults.length ? ["Provider results: " + providerResults.join(" | ")] : []),
       "Location confidence: " + confidence,
       "Location certainty: " + location.certainty,
       "",
-      "IP-based location is an approximate, low-confidence estimate; provider agreement does not establish physical presence. Eligible visits share the trusted visitor IP with Vercel and IPapi.is, and with IPinfo or IPapi.co only when their server-side tokens are configured. Country, region, and city confidence are evaluated independently; conflicting city values are shown as unverified estimates and coordinates are omitted. A possible cloud/hosting indicator comes from provider metadata and does not confirm a VPN or proxy. Device coordinates are used only when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates are stored by this site.",
+      "IP-based location is an approximate, low-confidence estimate; provider agreement does not establish physical presence. Eligible visits share the trusted visitor IP with Vercel and IPapi.is, and with IPinfo or IPapi.co only when their server-side tokens are configured. Country, region, and city confidence are evaluated independently; conflicting city values are shown as unverified estimates and coordinates are omitted. A possible cloud/hosting indicator comes from provider metadata and does not confirm a VPN or proxy. This feature uses IP location only. Raw IP addresses are not stored by this feature.",
     ].join("\n"),
   };
 }
@@ -491,10 +494,13 @@ export function makeVisitorDailySummaryEmail(rows, day, date = new Date()) {
         " | " + (location.certainty || "Location certainty unavailable"),
     );
     if (location.countryCode) lines.push("Country code: " + location.countryCode);
-    if (location.district) lines.push("District: " + location.district);
-    if (location.postalCode) lines.push("Postal code: " + location.postalCode);
+    if (location.postalCode && !location.networkIndicators?.length) lines.push("Postal code (IP estimate): " + location.postalCode);
+    if (location.timezone) lines.push("Timezone (IP estimate): " + location.timezone);
     if (location.organization) lines.push("Network organization / ISP: " + location.organization);
-    if (location.networkIndicators?.length) lines.push("Network indicator: " + location.networkIndicators.join("; "));
+    if (location.networkIndicators?.length) {
+      lines.push("Network indicator: " + location.networkIndicators.join("; "));
+      lines.push("Network exit estimate: The reported place may be the network exit. The visitor’s physical location is unknown.");
+    }
     const providerLine = formatLocationProviderLine(location);
     if (providerLine) lines.push(providerLine);
     if (location.providerObservations?.length > 1) {
@@ -508,9 +514,7 @@ export function makeVisitorDailySummaryEmail(rows, day, date = new Date()) {
       lines.push("Conflicting city values are unverified IP estimates, not a confirmed physical location.");
     }
     if (location.confidence) lines.push("Location confidence: " + location.confidence);
-    else lines.push("Location confidence: " + (location.coordinateSource === "device"
-      ? "Previously granted device location; rounded before transmission."
-      : location.country && location.country !== "Unavailable"
+    else lines.push("Location confidence: " + (location.country && location.country !== "Unavailable"
         ? "Low — approximate IP estimate; provider agreement cannot establish physical presence."
         : "Unavailable — no usable location data."));
     const coordinates = formatApproximateCoordinates(location);
@@ -519,7 +523,7 @@ export function makeVisitorDailySummaryEmail(rows, day, date = new Date()) {
     if (mapLink) lines.push("Google Maps: " + mapLink);
   }
   if (omitted) lines.push("", "Additional grouped visits not listed: " + omitted);
-  lines.push("", "IP-based location and coordinates are approximate, low-confidence estimates; provider agreement does not establish physical presence. Eligible requests use Vercel and IPapi.is; IPinfo and IPapi.co are used only when their server-side tokens are configured. IPapi.is rate limits or outages fall back to available Vercel data. Country, region, and city confidence are evaluated independently; conflicting city values are shown as unverified estimates and coordinates are omitted. A possible cloud/hosting indicator from provider data does not confirm a VPN or proxy. Device coordinates are only read when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates were stored by this site.");
+  lines.push("", "IP-based location and coordinates are approximate, low-confidence estimates; provider agreement does not establish physical presence. Eligible requests use Vercel and IPapi.is; IPinfo and IPapi.co are used only when their server-side tokens are configured. IPapi.is rate limits or outages fall back to available Vercel data. Country, region, and city confidence are evaluated independently; conflicting city values are shown as unverified estimates and coordinates are omitted. A possible cloud/hosting indicator from provider data does not confirm a VPN or proxy. This feature uses IP location only. Raw IP addresses are not stored by this feature.");
   return { subject: "New Portfolio Visitor", message: lines.join("\n") };
 }
 
