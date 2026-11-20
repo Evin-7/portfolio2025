@@ -128,6 +128,42 @@ export function approximateCoordinatesFromHeaders(headers, {
   return { latitude, longitude };
 }
 
+export function flagLocationOffsetMismatch(location, browserOffset, date) {
+  if (!location.timezone || !Number.isInteger(browserOffset) || Math.abs(browserOffset) > 14 * 60) return location;
+
+  let offset;
+  try {
+    offset = new Intl.DateTimeFormat("en-US", {
+      timeZone: location.timezone,
+      timeZoneName: "longOffset",
+    }).formatToParts(date).find(({ type }) => type === "timeZoneName")?.value;
+  } catch {
+    return location;
+  }
+
+  const parts = /^GMT([+-])(\d{2}):(\d{2})$/.exec(offset);
+  if (!parts && offset !== "GMT") return location;
+  const ipOffset = parts
+    ? (parts[1] === "-" ? -1 : 1) * (Number(parts[2]) * 60 + Number(parts[3]))
+    : 0;
+  if (Math.abs(ipOffset - browserOffset) < 180) return location;
+
+  const flagged = { ...location, browserOffsetMismatch: true };
+  delete flagged.coordinates;
+  delete flagged.postalCode;
+  return flagged;
+}
+
+function countryEstimateNotice(location) {
+  if (location.browserOffsetMismatch) {
+    return "Visitor country: Unverified. The browser UTC offset differs substantially from the IP timezone.";
+  }
+  if (location.networkIndicators?.length) {
+    return "Visitor country: Unverified. The IP country may represent a network exit.";
+  }
+  return "";
+}
+
 export function formatApproximateCoordinates(location) {
   if (isCityConflict(location) || location?.networkIndicators?.length || location?.coordinateSource === "device") return "";
   const { latitude, longitude } = location?.coordinates || {};
@@ -438,7 +474,8 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
     message: [
       countLine,
       "",
-      "Country: " + location.country,
+      "Country (IP estimate): " + location.country,
+      ...(countryEstimateNotice(location) ? [countryEstimateNotice(location)] : []),
       ...(location.countryCode ? ["Country code: " + location.countryCode] : []),
       "Region: " + location.region,
       "City: " + formatCity(location) + (location.city !== "Unavailable" && !isCityConflict(location) ? " (IP estimate)" : ""),
@@ -493,6 +530,7 @@ export function makeVisitorDailySummaryEmail(rows, day, date = new Date()) {
       String(row.count) + " visit(s) | " + row.details.visitHour + " | " + place + " | " + (row.details.pageUrl || row.details.page) + " | " + (row.details.deviceBrowser || "Device/browser unavailable") + " | " + row.details.source +
         " | " + (location.certainty || "Location certainty unavailable"),
     );
+    if (countryEstimateNotice(location)) lines.push(countryEstimateNotice(location));
     if (location.countryCode) lines.push("Country code: " + location.countryCode);
     if (location.postalCode && !location.networkIndicators?.length) lines.push("Postal code (IP estimate): " + location.postalCode);
     if (location.timezone) lines.push("Timezone (IP estimate): " + location.timezone);

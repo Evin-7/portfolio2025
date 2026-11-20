@@ -17,6 +17,7 @@ import {
   visitorFeatureEnabled,
 } from "../../../lib/visitorSecurity";
 import {
+  flagLocationOffsetMismatch,
   istDayKey,
   istHourBucket,
   makeVisitorEmail,
@@ -65,7 +66,7 @@ export async function POST(request) {
   }
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) return json({ ok: false }, 400);
   // Older open tabs may still send deviceCoordinates. Ignore it entirely.
-  if (Object.keys(payload).some((key) => !["page", "referrer", "deviceCoordinates"].includes(key))) return json({ ok: false }, 400);
+  if (Object.keys(payload).some((key) => !["page", "referrer", "deviceCoordinates", "utcOffsetMinutes"].includes(key))) return json({ ok: false }, 400);
 
   const day = istDayKey(visitedAt);
   const networkDigest = getPseudonymousNetworkKey(request);
@@ -98,7 +99,7 @@ export async function POST(request) {
     const page = normalizeVisitedPage(payload.page);
     const userAgent = request.headers.get("user-agent") || "";
     const details = {
-      location,
+      location: flagLocationOffsetMismatch(location, payload.utcOffsetMinutes, visitedAt),
       page,
       pageUrl: new URL(page, request.url).origin + page,
       deviceBrowser: describeDeviceBrowser(userAgent),

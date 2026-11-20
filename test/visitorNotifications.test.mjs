@@ -9,6 +9,7 @@ import {
   locationFromHeaders,
   locationFromProviderSources,
   makeVisitorDailySummaryEmail,
+  flagLocationOffsetMismatch,
   makeVisitorEmail,
   normalizeReferral,
   normalizeVisitedPage,
@@ -150,7 +151,7 @@ test("email contains required summary fields and no precise or personal data", (
     date: new Date("2026-11-12T13:00:00.000Z"),
   });
   assert.equal(email.subject, "New Portfolio Visitor");
-  assert.match(email.message, /Country: Germany/);
+  assert.match(email.message, /Country \(IP estimate\): Germany/);
   assert.match(email.message, /Country code: DE/);
   assert.match(email.message, /Region: Berlin/);
   assert.match(email.message, /City: Berlin \(IP estimate\)/);
@@ -213,7 +214,7 @@ test("normalizes country subdivisions so KL and Kerala agree while conflicting c
     deviceBrowser: "Desktop · Windows · Chrome",
     source: "Direct / unavailable",
   });
-  assert.match(email.message, /Country: India/);
+  assert.match(email.message, /Country \(IP estimate\): India/);
   assert.match(email.message, /Region: Kerala/);
   assert.match(email.message, /City: Uncertain \(Vercel: Tirur; IPapi\.is: Punalur\)/);
   assert.match(email.message, /Conflicting city values are unverified IP estimates/);
@@ -364,4 +365,32 @@ test("daily summary includes approximate location details, providers, coordinate
   assert.match(email.message, /Location confidence:/);
   assert.match(email.message, /IPapi\.is rate limits or outages fall back to available Vercel data/);
   assert.doesNotMatch(email.message, /144\.16\.176\.142|203\.0\.113\.1/);
+});
+
+
+test("a large browser offset mismatch flags the visitor country and hides the IP map", () => {
+  const date = new Date("2026-11-20T13:02:34.305Z");
+  const ipLocation = {
+    country: "United States",
+    region: "Iowa",
+    city: "Des Moines",
+    timezone: "America/Chicago",
+    postalCode: "50309",
+    coordinates: { latitude: 41.60, longitude: -93.61 },
+  };
+  const location = flagLocationOffsetMismatch(ipLocation, 330, date);
+  assert.equal(location.browserOffsetMismatch, true);
+  assert.equal(location.coordinates, undefined);
+  assert.equal(location.postalCode, undefined);
+  assert.equal(location.utcOffsetMinutes, undefined);
+
+  const email = makeVisitorEmail({ location, page: "/", date });
+  assert.match(email.message, /Country \(IP estimate\): United States/);
+  assert.match(email.message, /Visitor country: Unverified/);
+  assert.doesNotMatch(email.message, /Google Maps:/);
+  assert.equal(flagLocationOffsetMismatch(ipLocation, -360, date), ipLocation);
+  assert.equal(flagLocationOffsetMismatch(ipLocation, undefined, date), ipLocation);
+  assert.equal(flagLocationOffsetMismatch(ipLocation, 900, date), ipLocation);
+  const summer = new Date("2026-07-20T14:00:00Z");
+  assert.equal(flagLocationOffsetMismatch(ipLocation, -300, summer), ipLocation);
 });

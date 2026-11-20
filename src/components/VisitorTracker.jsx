@@ -29,6 +29,7 @@ export default function VisitorTracker() {
         body: JSON.stringify({
           page: pathname || "/",
           referrer,
+          utcOffsetMinutes: -new Date().getTimezoneOffset(),
         }),
       }).catch(() => {
         // Visitor notifications are optional and never affect page rendering.
