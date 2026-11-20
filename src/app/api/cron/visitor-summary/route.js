@@ -9,11 +9,7 @@ import {
   sendVisitorEmail,
   visitorFeatureEnabled,
 } from "../../../../lib/visitorSecurity";
-import {
-  formatApproximateCoordinates,
-  formatIstDateTime,
-  istDayKey,
-} from "../../../../lib/visitorNotifications.mjs";
+import { istDayKey, makeVisitorDailySummaryEmail } from "../../../../lib/visitorNotifications.mjs";
 
 export const runtime = "nodejs";
 
@@ -22,37 +18,6 @@ function json(body, status = 200) {
     status,
     headers: { "Cache-Control": "no-store, max-age=0" },
   });
-}
-
-function emailBody(rows, day) {
-  const sorted = [...rows].sort((a, b) => b.count - a.count);
-  const visible = sorted.slice(0, 60);
-  const omitted = sorted.slice(60).reduce((sum, row) => sum + row.count, 0);
-  const total = rows.reduce((sum, row) => sum + row.count, 0);
-  const summaryTime = formatIstDateTime(new Date());
-  const lines = [
-    "Daily portfolio visitor summary",
-    "Date covered: " + day.slice(0, 4) + "-" + day.slice(4, 6) + "-" + day.slice(6, 8) + " (IST)",
-    "Summary sent: " + summaryTime.date + " at " + summaryTime.time + " IST",
-    "Visit times below are grouped by hour; individual timestamps are not retained.",
-    "Eligible visits recorded: " + total,
-    "",
-  ];
-  for (const row of visible) {
-    const place = [row.details.location.city, row.details.location.region, row.details.location.country].join(", ");
-    lines.push(
-      String(row.count) + " visit(s) | " + row.details.visitHour + " | " + place + " | " + (row.details.pageUrl || row.details.page) + " | " + (row.details.deviceBrowser || "Device/browser unavailable") + " | " + row.details.source +
-        " | " + row.details.location.certainty,
-    );
-    if (Number.isInteger(row.details.location.providerCount)) {
-      lines.push("Location providers: " + row.details.location.providerCount + " of 3 responded");
-    }
-    const coordinates = formatApproximateCoordinates(row.details.location);
-    if (coordinates) lines.push(coordinates);
-  }
-  if (omitted) lines.push("", "Additional grouped visits not listed: " + omitted);
-  lines.push("", "IP-based coordinates are approximate city-level estimates. When configured, the site shares the visitor IP with Vercel, IPinfo, and IPapi.co to estimate location; provider results may disagree. Device coordinates are only read when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates were stored by this site.");
-  return { subject: "New Portfolio Visitor", message: lines.join("\n") };
 }
 
 export async function GET(request) {
@@ -83,7 +48,7 @@ export async function GET(request) {
     }
 
     deliveryAttempted = true;
-    const result = await sendVisitorEmail(request, emailBody(rows, day));
+    const result = await sendVisitorEmail(request, makeVisitorDailySummaryEmail(rows, day));
     if (!result.sent) {
       // Keep the idempotency marker after uncertain delivery to avoid duplicate emails.
       if (result.status >= 400 && result.status < 500) await releaseKey(sentKey);

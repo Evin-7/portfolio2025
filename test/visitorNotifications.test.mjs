@@ -7,6 +7,7 @@ import {
   istHourBucket,
   istMonthKey,
   locationFromHeaders,
+  makeVisitorDailySummaryEmail,
   makeVisitorEmail,
   normalizeReferral,
   normalizeVisitedPage,
@@ -122,12 +123,18 @@ test("requires explicit opt-in for consent-first regions and when country is una
 test("email contains required summary fields and no precise or personal data", () => {
   const email = makeVisitorEmail({
     location: {
-      country: "DE",
+      country: "Germany",
+      countryCode: "DE",
       region: "Berlin",
       city: "Berlin",
+      district: "Mitte",
+      postalCode: "10115",
+      organization: "Example ISP",
       coordinates: { latitude: 52.52, longitude: 13.4 },
       certainty: "Approximate; may be uncertain.",
       providerCount: 3,
+      providerTotal: 3,
+      providerNames: ["vercel", "ipinfo", "ipapi.is"],
     },
     page: "/",
     pageUrl: "https://portfolio.example/",
@@ -136,16 +143,21 @@ test("email contains required summary fields and no precise or personal data", (
     date: new Date("2026-11-12T13:00:00.000Z"),
   });
   assert.equal(email.subject, "New Portfolio Visitor");
-  assert.match(email.message, /Country: DE/);
+  assert.match(email.message, /Country: Germany/);
+  assert.match(email.message, /Country code: DE/);
   assert.match(email.message, /Region: Berlin/);
-  assert.match(email.message, /City: Berlin/);
+  assert.match(email.message, /City: Berlin \(IP estimate\)/);
+  assert.match(email.message, /District: Mitte/);
+  assert.match(email.message, /Postal code: 10115/);
   assert.match(email.message, /Approximate coordinates \(IP-based, city-level\): 52\.52, 13\.40/);
+  assert.match(email.message, /Google Maps: https:\/\/www\.google\.com\/maps\?q=52\.52,13\.40/);
+  assert.match(email.message, /Network organization \/ ISP: Example ISP/);
   assert.match(email.message, /Visited: November 12, 2026/);
   assert.match(email.message, /Time: 6:30 PM IST/);
   assert.match(email.message, /Page URL: https:\/\/portfolio\.example\/\n/);
   assert.match(email.message, /Device\/browser: Desktop · macOS · Safari/);
   assert.match(email.message, /Source: linkedin\.com/);
-  assert.match(email.message, /Location providers: 3 of 3 responded/);
+  assert.match(email.message, /Location providers: vercel, ipinfo, ipapi\.is \(3 usable of 3 checked\)/);
   assert.match(email.message, /Location certainty:/);
   assert.doesNotMatch(email.message, /latitude|longitude|street address|visitor email/i);
 });
@@ -158,4 +170,41 @@ test("omits the coordinate line when coordinates are unavailable", () => {
     source: "Direct / unavailable",
   });
   assert.doesNotMatch(email.message, /Approximate coordinates \(IP-based, city-level\):/);
+});
+
+test("daily summary includes approximate location details, providers, coordinates, and map link", () => {
+  const email = makeVisitorDailySummaryEmail([{
+    count: 2,
+    details: {
+      location: {
+        country: "India",
+        countryCode: "IN",
+        region: "Kerala",
+        city: "Punalur",
+        postalCode: "691331",
+        organization: "Example ISP",
+        coordinates: { latitude: 9, longitude: 76.93 },
+        certainty: "Single provider — approximate location.",
+        providerCount: 1,
+        providerTotal: 2,
+        providerNames: ["ipapi.is"],
+      },
+      visitHour: "9 AM IST",
+      page: "/",
+      pageUrl: "https://portfolio.example/",
+      deviceBrowser: "Desktop · macOS · Safari",
+      source: "Direct / unavailable",
+    },
+  }], "20261120", new Date("2026-11-20T03:30:00.000Z"));
+
+  assert.equal(email.subject, "New Portfolio Visitor");
+  assert.match(email.message, /Punalur \(IP estimate\), Kerala, India/);
+  assert.match(email.message, /Country code: IN/);
+  assert.match(email.message, /Postal code: 691331/);
+  assert.match(email.message, /Network organization \/ ISP: Example ISP/);
+  assert.match(email.message, /Location providers: ipapi\.is \(1 usable of 2 checked\)/);
+  assert.match(email.message, /Approximate coordinates \(IP-based, city-level\): 9\.00, 76\.93/);
+  assert.match(email.message, /Google Maps: https:\/\/www\.google\.com\/maps\?q=9\.00,76\.93/);
+  assert.match(email.message, /IPapi\.is rate limits or outages fall back to available Vercel data/);
+  assert.doesNotMatch(email.message, /144\.16\.176\.142|203\.0\.113\.1/);
 });

@@ -135,6 +135,18 @@ export function formatApproximateCoordinates(location) {
   return `${label}: ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
 }
 
+export function formatGoogleMapsLink(location) {
+  const { latitude, longitude } = location?.coordinates || {};
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return "";
+  return `https://www.google.com/maps?q=${latitude.toFixed(2)},${longitude.toFixed(2)}`;
+}
+
+export function formatLocationProviderLine(location) {
+  if (!Number.isInteger(location?.providerCount)) return "";
+  const names = location.providerNames?.length ? location.providerNames.join(", ") : "none returned usable data";
+  return `Location providers: ${names} (${location.providerCount} usable of ${location.providerTotal ?? location.providerCount} checked)`;
+}
+
 export function locationFromHeaders(headers, options) {
   const country = cleanLocationPart(headers.get("x-vercel-ip-country"));
   const region = cleanLocationPart(headers.get("x-vercel-ip-country-region"));
@@ -168,7 +180,10 @@ function largestGroup(groups) {
 }
 
 function sourcePriority(source) {
-  return source.provider === "vercel" ? 0 : source.provider === "ipinfo" ? 1 : 2;
+  return source.provider === "vercel" ? 0
+    : source.provider === "ipinfo" ? 1
+      : source.provider === "ipapi.co" ? 2
+        : 3;
 }
 
 function locationFields(sources) {
@@ -178,26 +193,34 @@ function locationFields(sources) {
   const coordinates = normalizeCoordinates(citySource?.coordinates) || ranked.map((source) => normalizeCoordinates(source.coordinates)).find(Boolean);
   return {
     country: first("country") || "Unavailable",
+    ...(first("countryCode") ? { countryCode: first("countryCode") } : {}),
     region: first("region") || "Unavailable",
     city: first("city") || "Unavailable",
+    ...(first("district") ? { district: first("district") } : {}),
+    ...(first("postalCode") ? { postalCode: first("postalCode") } : {}),
+    ...(first("organization") ? { organization: first("organization") } : {}),
     ...(coordinates ? { coordinates } : {}),
   };
 }
 
-export function locationFromProviderSources(sources) {
+export function locationFromProviderSources(sources, { providerTotal } = {}) {
   const usable = Array.isArray(sources)
     ? sources.filter((source) => source && (
       normalizedGroupValue(source.country) || normalizedGroupValue(source.region) || normalizedGroupValue(source.city) ||
       normalizeCoordinates(source.coordinates)
     ))
     : [];
+  const total = Number.isInteger(providerTotal) && providerTotal >= usable.length ? providerTotal : usable.length;
+  const providerNames = usable.map((source) => source.provider || "unknown");
   if (usable.length === 0) {
     return {
       country: "Unavailable",
       region: "Unavailable",
       city: "Unavailable",
-      certainty: "Unavailable; no IP location providers returned usable data.",
+      certainty: "Unavailable; no IP location provider returned usable data.",
       providerCount: 0,
+      providerTotal: total,
+      providerNames,
     };
   }
 
@@ -222,6 +245,8 @@ export function locationFromProviderSources(sources) {
         ? `Uncertain; ${cityWinner.length} of ${usable.length} location sources agree on city. Using the majority result; other source(s) conflict. A VPN, mobile carrier, or proxy may make it inaccurate.`
         : `Approximate; ${cityWinner.length} of ${usable.length} location sources agree on city. A VPN, mobile carrier, or proxy may make it inaccurate.`,
       providerCount: usable.length,
+      providerTotal: total,
+      providerNames,
     };
   }
 
@@ -229,16 +254,20 @@ export function locationFromProviderSources(sources) {
   if (usable.length === 1) {
     return {
       ...fallback,
-      certainty: `Low confidence; only ${usable[0].provider || "one location source"} returned usable data. This is an approximate network location and may be inaccurate.`,
+      certainty: `Single provider — approximate location. Only ${usable[0].provider || "one location source"} returned usable data; this network estimate may be inaccurate.`,
       providerCount: 1,
+      providerTotal: total,
+      providerNames,
     };
   }
 
   const preferredSource = [...usable].sort((left, right) => sourcePriority(left) - sourcePriority(right))[0];
   return {
     ...fallback,
-    certainty: `Uncertain; location sources conflict or do not share a city. Fallback: prefer Vercel data, then IPinfo, then IPapi.co, filling missing fields from the next available source. Selected source: ${preferredSource.provider || "unknown"}.`,
+    certainty: `Uncertain; location sources conflict or do not share a city. Fallback: prefer Vercel data, then IPinfo, then IPapi.co, then IPapi.is, filling missing fields from the next available source. Selected source: ${preferredSource.provider || "unknown"}.`,
     providerCount: usable.length,
+    providerTotal: total,
+    providerNames,
   };
 }
 
@@ -246,25 +275,70 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
   const { date: istDate, time: istTime } = formatIstDateTime(date);
   const countLine = count > 1 ? "Eligible visits recorded: " + count : "A visitor opened your portfolio.";
   const coordinates = formatApproximateCoordinates(location);
+  const providerLine = formatLocationProviderLine(location);
+  const coordinatesLink = formatGoogleMapsLink(location);
   return {
     subject: title,
     message: [
       countLine,
       "",
       "Country: " + location.country,
+      ...(location.countryCode ? ["Country code: " + location.countryCode] : []),
       "Region: " + location.region,
-      "City: " + location.city,
+      "City: " + location.city + (location.city !== "Unavailable" ? " (IP estimate)" : ""),
+      ...(location.district ? ["District: " + location.district] : []),
+      ...(location.postalCode ? ["Postal code: " + location.postalCode] : []),
       ...(coordinates ? [coordinates] : []),
+      ...(coordinatesLink ? ["Google Maps: " + coordinatesLink] : []),
+      ...(location.organization ? ["Network organization / ISP: " + location.organization] : []),
       "Visited: " + istDate,
       "Time: " + istTime + " IST",
       "Page URL: " + (pageUrl || page),
       "Device/browser: " + (deviceBrowser || "Unavailable"),
       "Source: " + source,
-      ...(Number.isInteger(location.providerCount) ? [`Location providers: ${location.providerCount} of 3 responded`] : []),
+      ...(providerLine ? [providerLine] : []),
       "Location certainty: " + location.certainty,
       "",
-      "IP-based location is approximate and may be uncertain. When configured, the site shares the visitor IP with Vercel, IPinfo, and IPapi.co to estimate location. If sources conflict, Vercel is preferred, then IPinfo, then IPapi.co; the email marks the result uncertain. A single available source is reported as low confidence. Device coordinates are used only when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates are stored by this site.",
+      "IP-based location is approximate and may be uncertain. For eligible visits, the site shares the trusted visitor IP with Vercel and IPapi.is, and with IPinfo or IPapi.co only when their server-side tokens are configured. If providers conflict, the email marks the result uncertain and prefers Vercel, then IPinfo, IPapi.co, and IPapi.is, filling missing fields from other sources. A single result is reported as a single-provider estimate. Device coordinates are used only when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates are stored by this site.",
     ].join("\n"),
   };
+}
+
+export function makeVisitorDailySummaryEmail(rows, day, date = new Date()) {
+  const sorted = [...rows].sort((a, b) => b.count - a.count);
+  const visible = sorted.slice(0, 60);
+  const omitted = sorted.slice(60).reduce((sum, row) => sum + row.count, 0);
+  const total = rows.reduce((sum, row) => sum + row.count, 0);
+  const summaryTime = formatIstDateTime(date);
+  const lines = [
+    "Daily portfolio visitor summary",
+    "Date covered: " + day.slice(0, 4) + "-" + day.slice(4, 6) + "-" + day.slice(6, 8) + " (IST)",
+    "Summary sent: " + summaryTime.date + " at " + summaryTime.time + " IST",
+    "Visit times below are grouped by hour; individual timestamps are not retained.",
+    "Eligible visits recorded: " + total,
+    "",
+  ];
+  for (const row of visible) {
+    const location = row.details.location || {};
+    const city = location.city && location.city !== "Unavailable" ? location.city + " (IP estimate)" : location.city || "Unavailable";
+    const place = [city, location.region, location.country].filter(Boolean).join(", ");
+    lines.push(
+      String(row.count) + " visit(s) | " + row.details.visitHour + " | " + place + " | " + (row.details.pageUrl || row.details.page) + " | " + (row.details.deviceBrowser || "Device/browser unavailable") + " | " + row.details.source +
+        " | " + (location.certainty || "Location certainty unavailable"),
+    );
+    if (location.countryCode) lines.push("Country code: " + location.countryCode);
+    if (location.district) lines.push("District: " + location.district);
+    if (location.postalCode) lines.push("Postal code: " + location.postalCode);
+    if (location.organization) lines.push("Network organization / ISP: " + location.organization);
+    const providerLine = formatLocationProviderLine(location);
+    if (providerLine) lines.push(providerLine);
+    const coordinates = formatApproximateCoordinates(location);
+    if (coordinates) lines.push(coordinates);
+    const mapLink = formatGoogleMapsLink(location);
+    if (mapLink) lines.push("Google Maps: " + mapLink);
+  }
+  if (omitted) lines.push("", "Additional grouped visits not listed: " + omitted);
+  lines.push("", "IP-based coordinates are approximate city-level estimates. Eligible requests use Vercel and IPapi.is; IPinfo and IPapi.co are used only when their server-side tokens are configured. IPapi.is rate limits or outages fall back to available Vercel data. Provider results may disagree. Device coordinates are only read when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates were stored by this site.");
+  return { subject: "New Portfolio Visitor", message: lines.join("\n") };
 }
 
