@@ -192,7 +192,7 @@ test("uses Vercel, IPinfo, and IPapi.is when their city and country agree", asyn
     env: { IPINFO_TOKEN: "private-test-token" },
     getVercelLocation: () => ({ country: "IN", countryRegion: "Kerala", city: "Punalur", latitude: 9, longitude: 76.93333 }),
     fetchImpl: async (url) => String(url).includes("api.ipinfo.io")
-      ? jsonResponse({ geo: { country: "India", country_code: "IN", region: "Kerala", city: "Punalur", latitude: 9, longitude: 76.93333, postal_code: "691331", timezone: "Asia/Kolkata" }, as: { name: "Kerala Fibre Optic Network Limited" } })
+      ? jsonResponse({ ip: "8.8.8.8", geo: { country: "India", country_code: "IN", region: "Kerala", city: "Punalur", latitude: 9, longitude: 76.93333, postal_code: "691331", timezone: "Asia/Kolkata" }, as: { name: "Kerala Fibre Optic Network Limited" } })
       : jsonResponse(ipapiIsResponse({ city: "Punalur" })),
   }));
 
@@ -213,7 +213,7 @@ test("uses the two-provider majority and marks a conflicting provider uncertain"
     env: { IPINFO_TOKEN: "private-test-token" },
     getVercelLocation: () => ({ country: "IN", countryRegion: "Kerala", city: "Punalur", latitude: 9, longitude: 76.93333 }),
     fetchImpl: async (url) => String(url).includes("api.ipinfo.io")
-      ? jsonResponse({ country: "IN", region: "Tamil Nadu", city: "Chennai", loc: "13.08,80.27" })
+      ? jsonResponse({ ip: "8.8.8.8", country: "IN", region: "Tamil Nadu", city: "Chennai", loc: "13.08,80.27" })
       : jsonResponse(ipapiIsResponse({ city: "Punalur" })),
   }));
 
@@ -271,8 +271,8 @@ test("retains country while reporting conflicting region and city estimates", as
     env: { IPINFO_TOKEN: "token-one", IPAPI_TOKEN: "token-two" },
     getVercelLocation: () => ({ country: "US", countryRegion: "Massachusetts", city: "Boston", latitude: 42.36, longitude: -71.06 }),
     fetchImpl: async (url) => {
-      if (String(url).includes("api.ipinfo.io")) return jsonResponse({ country: "US", region: "Florida", city: "Miami", loc: "25.76,-80.19" });
-      if (String(url).includes("ipapi.co")) return jsonResponse({ country_code: "US", region: "Texas", city: "Austin", latitude: 30.27, longitude: -97.74 });
+      if (String(url).includes("api.ipinfo.io")) return jsonResponse({ ip: "8.8.8.8", country: "US", region: "Florida", city: "Miami", loc: "25.76,-80.19" });
+      if (String(url).includes("ipapi.co")) return jsonResponse({ ip: "8.8.8.8", country_code: "US", region: "Texas", city: "Austin", latitude: 30.27, longitude: -97.74 });
       return jsonResponse(ipapiIsResponse({ country: "India", region: "Kerala", city: "Punalur" }));
     },
   }));
@@ -450,4 +450,81 @@ test("uses the local state dictionary and ignores mismatched remote codes", asyn
     getVercelLocation: () => ({ country: "IN", countryRegion: "ZZ" }),
   });
   assert.equal(unknown.region, "ZZ");
+});
+
+test("every provider uses the trusted incoming IP and mismatched replies are discarded", async () => {
+  const calls = [];
+  const diagnostics = [];
+  const now = Date.parse("2026-11-20T12:00:00Z");
+  const location = await resolveVisitorLocation(request("IN", { "x-real-ip": "8.8.8.8", "x-forwarded-for": "1.1.1.1" }), getLocationOptions({
+    now,
+    logDiagnostic: (entry) => diagnostics.push(entry),
+    getIp: undefined,
+    getVercelLocation: () => ({ country: "IN", countryRegion: "KL" }),
+    env: {
+      IPINFO_TOKEN: "test-ipinfo",
+      IPAPI_TOKEN: "test-ipapi",
+      MAXMIND_ACCOUNT_ID: "test-account",
+      MAXMIND_LICENSE_KEY: "test-license",
+      VISITOR_GEO_DIAGNOSTICS_UNTIL: "2026-11-20T13:00:00Z",
+    },
+    fetchImpl: async (url, options) => {
+      const host = new URL(url).hostname;
+      calls.push([host, host === "api.ipapi.is" ? JSON.parse(options.body).q : new URL(url).pathname, options.redirect]);
+      if (host === "geolite.info") {
+        assert.equal(options.headers.Authorization, "Basic " + Buffer.from("test-account:test-license").toString("base64"));
+        return jsonResponse({ country: { iso_code: "DE" }, traits: { ip_address: "8.8.8.8" } });
+      }
+      return jsonResponse({ ip: "1.1.1.1", country_code: "US" });
+    },
+  }));
+  assert.deepEqual(calls, [
+    ["api.ipinfo.io", "/lookup/8.8.8.8", "error"],
+    ["ipapi.co", "/8.8.8.8/json/", "error"],
+    ["api.ipapi.is", "8.8.8.8", "error"],
+    ["geolite.info", "/geoip/v2.1/country/8.8.8.8", "error"],
+  ]);
+  assert.deepEqual(location.providerNames, ["vercel", "maxmind"]);
+  assert.equal(location.country, "Uncertain");
+  assert.equal(location.fieldConfidence.country, "conflicting");
+  assert.equal(diagnostics.length, 1);
+  assert.equal(diagnostics[0].fieldConfidence.country, "conflicting");
+  assert.equal(diagnostics[0].providers.filter(({ status }) => status === "unverified_response_ip").length, 3);
+  assert.doesNotMatch(JSON.stringify(diagnostics), /8\.8\.8\.8|1\.1\.1\.1|test-license/);
+});
+
+test("expired diagnostics and missing IP headers never produce outbound lookups", async () => {
+  const location = await resolveVisitorLocation(request("US", { "x-forwarded-for": "1.1.1.1" }), getLocationOptions({
+    now: Date.parse("2026-11-20T12:00:00Z"),
+    getIp: undefined,
+    getVercelLocation: () => ({ country: "US", countryRegion: "IA" }),
+    env: {
+      IPINFO_LITE_TOKEN: "test-lite",
+      MAXMIND_ACCOUNT_ID: "test-account",
+      MAXMIND_LICENSE_KEY: "test-license",
+      VISITOR_GEO_DIAGNOSTICS_UNTIL: "2026-11-20T11:00:00Z",
+    },
+    logDiagnostic: () => assert.fail("Expired diagnostics must stay disabled"),
+    fetchImpl: async () => assert.fail("Missing trusted IP must skip all IP lookups"),
+  }));
+  assert.deepEqual(location.providerNames, ["vercel"]);
+  assert.equal(location.region, "Iowa");
+});
+
+test("reads explicit proxy, VPN and hosting signals from nested IPinfo metadata", async () => {
+  const location = await resolveVisitorLocation(request(), getLocationOptions({
+    env: { IPINFO_TOKEN: "test-ipinfo" },
+    fetchImpl: async (url) => new URL(url).hostname === "api.ipinfo.io"
+      ? jsonResponse({
+        ip: "8.8.8.8",
+        geo: { country_code: "US", country: "United States", region: "Iowa", city: "Des Moines" },
+        as: { name: "Example Network", type: "hosting" },
+        is_anonymous: true,
+        anonymous: { is_vpn: true, is_res_proxy: true },
+      })
+      : jsonResponse({}, 503),
+  }));
+  assert.equal(location.country, "United States");
+  assert.equal(location.city, "Des Moines");
+  assert.match(location.networkIndicators.join(" "), /anonymizing.*data-center.*VPN.*proxy/);
 });

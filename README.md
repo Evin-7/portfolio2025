@@ -30,6 +30,12 @@ Set these server-only Vercel environment variables:
 
 IPapi.is is the production-compatible free fallback and does not require an account; its anonymous endpoint is limited to 30 lookups per caller IP per UTC day, and rate-limit responses fall back to Vercel. An optional `IPAPI_IS_TOKEN` uses the free account quota of 1,000 requests/day. The server uses at most one IPinfo endpoint per visit. IPinfo Lite can corroborate the country and contributes no state or city data. IPapi.co is skipped without `IPAPI_TOKEN`. Keep all tokens server-only. Production use of IPapi.co requires a production plan/token; do not use its public test endpoint for production traffic.
 
+For optional country corroboration, set `MAXMIND_ACCOUNT_ID` and `MAXMIND_LICENSE_KEY` for a [MaxMind GeoLite account](https://dev.maxmind.com/geoip/docs/web-services/requests/). Both are server-only. MaxMind receives the validated request IP and contributes a country result, with network indicators when available. The free country service has limited network data.
+
+For a short production investigation, set `VISITOR_GEO_DIAGNOSTICS_UNTIL` to an ISO UTC timestamp less than 24 hours ahead and redeploy. The runtime log entry `Portfolio visitor geo diagnostic` contains the IP source, address family, provider outcomes, country codes and network indicators, and agreement or conflict at each location level. It contains no raw IPs, request identifiers, coordinates, user agents, or credentials. Logging stops at the specified time. Historical email estimates cannot be traced to an IP from these diagnostic records.
+
+On the Vercel production domain, `ipAddress(request)` reads Vercel’s `x-real-ip` header. Every outbound IP lookup uses that same validated public address and checks the address echoed in the response. Vercel's location headers are derived separately at its network edge. Requests without a valid public address use available Vercel data only. Country State City receives only country and subdivision codes.
+
 Copy `.env.example` as a reference. Vercel Cron calls `/api/cron/visitor-summary` daily at 00:05 IST to send the preceding day's summary. A delivery attempt is marked before contacting EmailJS to avoid duplicate messages if the provider response is lost. Until the required Vercel variables are configured, the feature stays disabled.
 
 ## Development

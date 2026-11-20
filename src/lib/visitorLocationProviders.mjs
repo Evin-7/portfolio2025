@@ -3,12 +3,15 @@ import { geolocation, ipAddress } from "@vercel/functions";
 import {
   cleanLocationPart,
   hasLocalSubdivision,
+  locationCountryCode,
   locationFromProviderSources,
   normalizeCoordinates,
   requiresExplicitVisitorConsent,
 } from "./visitorNotifications.mjs";
 
 const PROVIDER_TIMEOUT_MS = 2500;
+const MAX_DIAGNOSTIC_WINDOW_MS = 24 * 60 * 60 * 1000;
+const UNVERIFIED_RESPONSE_IP = Symbol("unverified response IP");
 
 function isPublicIpv4(ip) {
   const [first, second, third] = ip.split(".").map(Number);
@@ -121,6 +124,7 @@ function providerSource(provider, data, fields = {}) {
   };
   const networkIndicators = [];
   for (const [field, label] of [
+    ["is_anonymous", "Provider identifies an anonymizing network"],
     ["is_datacenter", "Provider identifies a data-center network"],
     ["is_vpn", "Provider identifies a VPN"],
     ["is_proxy", "Provider identifies a proxy"],
@@ -145,6 +149,7 @@ async function fetchJson(url, options, fetchImpl) {
   try {
     const response = await fetchImpl(url, {
       ...options,
+      redirect: "error",
       cache: "no-store",
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
@@ -156,14 +161,28 @@ async function fetchJson(url, options, fetchImpl) {
   }
 }
 
+function lookupAddressVerified(ip, data, returnedIp = data?.ip) {
+  if (!data || data.error || data.code) return null;
+  return sameLookupAddress(ip, returnedIp) ? data : UNVERIFIED_RESPONSE_IP;
+}
+
 async function fetchIpinfo(ip, token, fetchImpl) {
   const url = "https://api.ipinfo.io/lookup/" + encodeURIComponent(ip);
   const data = await fetchJson(url, {
     headers: { Authorization: "Bearer " + token },
   }, fetchImpl);
-  const geo = data?.geo;
+  const verified = lookupAddressVerified(ip, data);
+  if (!verified || verified === UNVERIFIED_RESPONSE_IP) return verified;
+  const geo = data.geo;
   const [latitude, longitude] = typeof data?.loc === "string" ? data.loc.split(",") : [];
-  return providerSource("ipinfo", data, {
+  return providerSource("ipinfo", {
+    ...data,
+    is_datacenter: data.is_hosting === true || data.privacy?.hosting === true || data.as?.type === "hosting",
+    is_vpn: data.is_vpn === true || data.anonymous?.is_vpn === true || data.privacy?.vpn === true,
+    is_proxy: data.is_proxy === true || data.anonymous?.is_proxy === true || data.anonymous?.is_res_proxy === true || data.privacy?.proxy === true,
+    is_tor: data.is_tor === true || data.anonymous?.is_tor === true || data.privacy?.tor === true,
+    is_relay: data.is_relay === true || data.anonymous?.is_relay === true || data.privacy?.relay === true,
+  }, {
     country: geo?.country || data?.country,
     countryCode: geo?.country_code || data?.country_code || data?.country,
     region: geo?.region || geo?.region_code || data?.region,
@@ -181,7 +200,9 @@ async function fetchIpinfoLite(ip, token, fetchImpl) {
   const data = await fetchJson(url, {
     headers: { Authorization: "Bearer " + token },
   }, fetchImpl);
-  if (!sameLookupAddress(ip, data?.ip) || !/^[A-Z]{2}$/.test(data.country_code)) return null;
+  const verified = lookupAddressVerified(ip, data);
+  if (!verified || verified === UNVERIFIED_RESPONSE_IP) return verified;
+  if (!/^[A-Z]{2}$/.test(data.country_code)) return null;
 
   return providerSource("ipinfo-lite", data, {
     country: data.country,
@@ -193,6 +214,8 @@ async function fetchIpinfoLite(ip, token, fetchImpl) {
 async function fetchIpapiCo(ip, token, fetchImpl) {
   const url = "https://ipapi.co/" + encodeURIComponent(ip) + "/json/?key=" + encodeURIComponent(token);
   const data = await fetchJson(url, {}, fetchImpl);
+  const verified = lookupAddressVerified(ip, data);
+  if (!verified || verified === UNVERIFIED_RESPONSE_IP) return verified;
   return providerSource("ipapi.co", data, {
     country: data?.country_name || data?.country_code,
     countryCode: data?.country_code,
@@ -215,7 +238,8 @@ async function fetchIpapiIs(ip, token, fetchImpl) {
     body: JSON.stringify(body),
   }, fetchImpl);
   // IPapi.is echoes the lookup address. Accept equivalent IPv6 spellings.
-  if (!sameLookupAddress(ip, data?.ip)) return null;
+  const verified = lookupAddressVerified(ip, data);
+  if (!verified || verified === UNVERIFIED_RESPONSE_IP) return verified;
   const location = data?.location || {};
   const company = data?.company;
   const companyEntry = Array.isArray(company) ? company[0] : company;
@@ -233,6 +257,44 @@ async function fetchIpapiIs(ip, token, fetchImpl) {
     latitude: location.latitude ?? data?.lat,
     longitude: location.longitude ?? data?.lon,
   });
+}
+
+async function fetchMaxMind(ip, accountId, licenseKey, fetchImpl) {
+  const url = "https://geolite.info/geoip/v2.1/country/" + encodeURIComponent(ip);
+  const data = await fetchJson(url, {
+    headers: { Authorization: "Basic " + Buffer.from(accountId + ":" + licenseKey).toString("base64") },
+  }, fetchImpl);
+  const verified = lookupAddressVerified(ip, data, data?.traits?.ip_address);
+  if (!verified || verified === UNVERIFIED_RESPONSE_IP) return verified;
+  const code = data.country?.iso_code;
+  if (!/^[A-Z]{2}$/.test(code)) return null;
+
+  const traits = data.traits || {};
+  const anonymizer = data.anonymizer || {};
+  const hasFlag = (key) => traits[key] === true || anonymizer[key] === true;
+  return providerSource("maxmind", {
+    is_anonymous: hasFlag("is_anonymous"),
+    is_datacenter: hasFlag("is_hosting_provider"),
+    is_vpn: hasFlag("is_anonymous_vpn"),
+    is_proxy: hasFlag("is_public_proxy") || hasFlag("is_residential_proxy"),
+    is_tor: hasFlag("is_tor_exit_node"),
+    is_anycast: hasFlag("is_anycast"),
+  }, {
+    countryCode: code,
+    country: data.country.names?.en,
+  });
+}
+
+function diagnosticOutcome(provider, source) {
+  if (source === UNVERIFIED_RESPONSE_IP) return { provider, status: "unverified_response_ip" };
+  if (!source) return { provider, status: "unavailable" };
+  return {
+    provider,
+    status: "usable",
+    countryCode: locationCountryCode(source) || null,
+    networkIndicators: source.networkIndicators || [],
+    crawler: source.crawlerDetected === true,
+  };
 }
 
 async function normalizeUnknownSubdivisions(sources, token, fetchImpl) {
@@ -279,6 +341,8 @@ export async function resolveVisitorLocation(request, {
   fetchImpl = fetch,
   getIp = ipAddress,
   getVercelLocation = geolocation,
+  now = Date.now(),
+  logDiagnostic = (details) => console.info("Portfolio visitor geo diagnostic", details),
 } = {}) {
   if (!trackingEligible || (requiresExplicitVisitorConsent(request.headers) && consentAccepted !== true)) {
     return {
@@ -288,7 +352,9 @@ export async function resolveVisitorLocation(request, {
   }
 
   const sources = [];
-  let providerTotal = 1;
+  const expiry = Date.parse(env.VISITOR_GEO_DIAGNOSTICS_UNTIL || "");
+  const diagnosticsEnabled = expiry > now && expiry - now <= MAX_DIAGNOSTIC_WINDOW_MS;
+  let ipStatus = "missing";
   try {
     const value = getVercelLocation(request);
     const source = providerSource("vercel", value, {
@@ -311,23 +377,45 @@ export async function resolveVisitorLocation(request, {
   let ip = "";
   try {
     // @vercel/functions reads Vercel's trusted client-IP context; never use request headers here.
-    ip = normalizePublicVisitorIp(getIp(request) || "");
+    const rawIp = getIp(request);
+    ip = normalizePublicVisitorIp(rawIp);
+    ipStatus = ip ? "public" : rawIp ? "invalid_or_nonpublic" : "missing";
   } catch {
     // Without Vercel's trusted visitor IP, skip third-party lookups and retain Vercel data.
   }
 
   const lookups = [];
-  if (ip && env.IPINFO_TOKEN) lookups.push(fetchIpinfo(ip, env.IPINFO_TOKEN, fetchImpl));
-  else if (ip && env.IPINFO_LITE_TOKEN) lookups.push(fetchIpinfoLite(ip, env.IPINFO_LITE_TOKEN, fetchImpl));
-  if (ip && env.IPAPI_TOKEN) lookups.push(fetchIpapiCo(ip, env.IPAPI_TOKEN, fetchImpl));
-  if (ip) lookups.push(fetchIpapiIs(ip, env.IPAPI_IS_TOKEN, fetchImpl));
-  providerTotal += lookups.length;
-  const results = await Promise.all(lookups);
-  sources.push(...results.filter(Boolean));
-  if (sources.some((source) => source.crawlerDetected)) return { crawlerDetected: true };
-  if (!sources.length) return unavailableLocation(providerTotal);
-  const normalized = env.COUNTRY_STATE_CITY_API_KEY
+  if (ip && env.IPINFO_TOKEN) lookups.push(["ipinfo", fetchIpinfo(ip, env.IPINFO_TOKEN, fetchImpl)]);
+  else if (ip && env.IPINFO_LITE_TOKEN) lookups.push(["ipinfo-lite", fetchIpinfoLite(ip, env.IPINFO_LITE_TOKEN, fetchImpl)]);
+  if (ip && env.IPAPI_TOKEN) lookups.push(["ipapi.co", fetchIpapiCo(ip, env.IPAPI_TOKEN, fetchImpl)]);
+  if (ip) lookups.push(["ipapi.is", fetchIpapiIs(ip, env.IPAPI_IS_TOKEN, fetchImpl)]);
+  if (ip && env.MAXMIND_ACCOUNT_ID && env.MAXMIND_LICENSE_KEY) {
+    lookups.push(["maxmind", fetchMaxMind(ip, env.MAXMIND_ACCOUNT_ID, env.MAXMIND_LICENSE_KEY, fetchImpl)]);
+  }
+
+  const results = await Promise.all(lookups.map(([, lookup]) => lookup));
+  const vercelSource = sources[0];
+  sources.push(...results.filter((source) => source && source !== UNVERIFIED_RESPONSE_IP));
+  const providerTotal = 1 + lookups.length;
+  const crawlerDetected = sources.some((source) => source.crawlerDetected);
+  const normalized = !crawlerDetected && env.COUNTRY_STATE_CITY_API_KEY
     ? await normalizeUnknownSubdivisions(sources, env.COUNTRY_STATE_CITY_API_KEY, fetchImpl)
     : sources;
-  return locationFromProviderSources(normalized, { providerTotal });
+  const location = normalized.length
+    ? locationFromProviderSources(normalized, { providerTotal })
+    : unavailableLocation(providerTotal);
+
+  if (diagnosticsEnabled) {
+    logDiagnostic({
+      ipSource: "@vercel/functions ipAddress (x-real-ip)",
+      ipStatus,
+      ipVersion: ip ? isIP(ip) : null,
+      providers: [
+        diagnosticOutcome("vercel", vercelSource),
+        ...results.map((source, index) => diagnosticOutcome(lookups[index][0], source)),
+      ],
+      fieldConfidence: location.fieldConfidence || null,
+    });
+  }
+  return crawlerDetected ? { crawlerDetected: true } : location;
 }
