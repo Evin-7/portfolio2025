@@ -26,6 +26,7 @@ import {
   requiresExplicitVisitorConsent,
 } from "../../../lib/visitorNotifications.mjs";
 import { resolveVisitorLocation } from "../../../lib/visitorLocationProviders.mjs";
+import { looksAutomated } from "../../../lib/visitorRequestPolicy.mjs";
 
 export const runtime = "nodejs";
 
@@ -36,13 +37,6 @@ function json(body, status = 200) {
     status,
     headers: { "Cache-Control": "no-store, max-age=0" },
   });
-}
-
-function looksAutomated(request) {
-  const agent = request.headers.get("user-agent") || "";
-  if (!agent || /bot|crawler|spider|slurp|headless|phantom|python-requests|curl\/|wget\/|scrapy/i.test(agent)) return true;
-  const fetchSite = request.headers.get("sec-fetch-site");
-  return Boolean(fetchSite && fetchSite !== "same-origin");
 }
 
 function isAllowedRuntime(request) {

@@ -1,4 +1,6 @@
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
+import { ipAddress } from "@vercel/functions";
+import { hasPrivacyOptOut, isSameOriginRequest } from "./visitorRequestPolicy.mjs";
 import {
   EMAILJS_PUBLIC_KEY,
   EMAILJS_SERVICE_ID,
@@ -6,6 +8,7 @@ import {
 } from "./emailjsConfig";
 
 export const VISITOR_CONSENT_COOKIE = "portfolio_visitor_consent";
+export { hasPrivacyOptOut, isSameOriginRequest };
 const LOCAL_CONSENT_SECRET = "local-only-portfolio-consent-secret-for-tests";
 const LOCAL_HASH_SECRET = "local-only-portfolio-hash-secret-for-tests";
 
@@ -40,16 +43,6 @@ export function getHashSecret() {
 
 export function getNotificationMode() {
   return process.env.VISITOR_NOTIFICATION_MODE === "daily" ? "daily" : "individual";
-}
-
-export function isSameOriginRequest(request) {
-  const origin = request.headers.get("origin");
-  if (!origin) return false;
-  try {
-    return new URL(origin).origin === new URL(request.url).origin;
-  } catch {
-    return false;
-  }
 }
 
 export function getConsentFromRequest(request) {
@@ -87,14 +80,10 @@ export function createConsentCookie(decision) {
   return VISITOR_CONSENT_COOKIE + "=" + signed + "." + signature + "; Path=/; Max-Age=15552000; HttpOnly; SameSite=Lax" + secure;
 }
 
-export function hasPrivacyOptOut(request) {
-  return request.headers.get("dnt") === "1" || request.headers.get("sec-gpc") === "1";
-}
-
 export function getPseudonymousNetworkKey(request) {
   if (isLocalTestMode()) return createHmac("sha256", getHashSecret()).update("local-test-network").digest("hex");
-  const forwarded = request.headers.get("x-forwarded-for") || "";
-  const address = forwarded.split(",")[0].trim() || request.headers.get("x-real-ip") || "unknown";
+  // Use Vercel's trusted client-IP helper; never select a caller-controlled forwarded header.
+  const address = ipAddress(request) || "unknown";
   return createHmac("sha256", getHashSecret()).update(address).digest("hex");
 }
 

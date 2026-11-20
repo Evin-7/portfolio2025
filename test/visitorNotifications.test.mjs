@@ -135,6 +135,12 @@ test("email contains required summary fields and no precise or personal data", (
       providerCount: 3,
       providerTotal: 3,
       providerNames: ["vercel", "ipinfo", "ipapi.is"],
+      networkIndicators: ["Provider organization suggests cloud or hosting infrastructure; VPN/proxy status is unconfirmed"],
+      providerObservations: [
+        { provider: "vercel", country: "Germany", region: "Berlin", city: "Berlin" },
+        { provider: "ipinfo", country: "Germany", region: "Berlin", city: "Berlin" },
+        { provider: "ipapi.is", country: "Germany", region: "Berlin", city: "Berlin" },
+      ],
     },
     page: "/",
     pageUrl: "https://portfolio.example/",
@@ -152,12 +158,15 @@ test("email contains required summary fields and no precise or personal data", (
   assert.match(email.message, /Approximate coordinates \(IP-based, city-level\): 52\.52, 13\.40/);
   assert.match(email.message, /Google Maps: https:\/\/www\.google\.com\/maps\?q=52\.52,13\.40/);
   assert.match(email.message, /Network organization \/ ISP: Example ISP/);
+  assert.match(email.message, /Network indicator: Provider organization suggests cloud or hosting infrastructure/);
   assert.match(email.message, /Visited: November 12, 2026/);
   assert.match(email.message, /Time: 6:30 PM IST/);
   assert.match(email.message, /Page URL: https:\/\/portfolio\.example\/\n/);
   assert.match(email.message, /Device\/browser: Desktop · macOS · Safari/);
   assert.match(email.message, /Source: linkedin\.com/);
   assert.match(email.message, /Location providers: vercel, ipinfo, ipapi\.is \(3 usable of 3 checked\)/);
+  assert.match(email.message, /Location confidence:/);
+  assert.match(email.message, /Provider results:/);
   assert.match(email.message, /Location certainty:/);
   assert.doesNotMatch(email.message, /latitude|longitude|street address|visitor email/i);
 });
@@ -188,6 +197,7 @@ test("daily summary includes approximate location details, providers, coordinate
         providerCount: 1,
         providerTotal: 2,
         providerNames: ["ipapi.is"],
+        confidence: "Low — single-provider IP estimate; physical presence is unverified.",
       },
       visitHour: "9 AM IST",
       page: "/",
@@ -205,6 +215,7 @@ test("daily summary includes approximate location details, providers, coordinate
   assert.match(email.message, /Location providers: ipapi\.is \(1 usable of 2 checked\)/);
   assert.match(email.message, /Approximate coordinates \(IP-based, city-level\): 9\.00, 76\.93/);
   assert.match(email.message, /Google Maps: https:\/\/www\.google\.com\/maps\?q=9\.00,76\.93/);
+  assert.match(email.message, /Location confidence:/);
   assert.match(email.message, /IPapi\.is rate limits or outages fall back to available Vercel data/);
   assert.doesNotMatch(email.message, /144\.16\.176\.142|203\.0\.113\.1/);
 });

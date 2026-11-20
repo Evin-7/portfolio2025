@@ -1,3 +1,4 @@
+import { isIP } from "node:net";
 import { geolocation, ipAddress } from "@vercel/functions";
 import {
   cleanLocationPart,
@@ -7,6 +8,71 @@ import {
 } from "./visitorNotifications.mjs";
 
 const PROVIDER_TIMEOUT_MS = 2500;
+
+function isPublicIpv4(ip) {
+  const [first, second, third] = ip.split(".").map(Number);
+  if (first === 0 || first === 10 || first === 127 || first >= 224) return false;
+  if (first === 100 && second >= 64 && second <= 127) return false;
+  if (first === 169 && second === 254) return false;
+  if (first === 172 && second >= 16 && second <= 31) return false;
+  if (first === 192 && second === 168) return false;
+  if (first === 192 && second === 0 && (third === 0 || third === 2)) return false;
+  if (first === 192 && second === 88 && third === 99) return false;
+  if (first === 198 && (second === 18 || second === 19 || (second === 51 && third === 100))) return false;
+  if (first === 203 && second === 0 && third === 113) return false;
+  return true;
+}
+
+function ipv6Bytes(ip) {
+  if (ip.includes("%")) return null;
+  let address = ip.toLowerCase();
+  const ipv4Tail = address.match(/(?:^|:)(\d{1,3}(?:\.\d{1,3}){3})$/);
+  if (ipv4Tail) {
+    const octets = ipv4Tail[1].split(".").map(Number);
+    if (octets.some((octet) => octet > 255)) return null;
+    const hexTail = ((octets[0] << 8) | octets[1]).toString(16) + ":" + ((octets[2] << 8) | octets[3]).toString(16);
+    address = address.slice(0, address.length - ipv4Tail[1].length) + hexTail;
+  }
+
+  const halves = address.split("::");
+  if (halves.length > 2) return null;
+  const parseHalf = (half) => half ? half.split(":").map((group) => /^[\da-f]{1,4}$/.test(group) ? Number.parseInt(group, 16) : NaN) : [];
+  const left = parseHalf(halves[0]);
+  const right = halves.length === 2 ? parseHalf(halves[1]) : [];
+  if ([...left, ...right].some((group) => !Number.isInteger(group))) return null;
+  const missing = 8 - left.length - right.length;
+  if ((halves.length === 1 && missing !== 0) || (halves.length === 2 && missing < 1)) return null;
+  return [...left, ...Array(missing).fill(0), ...right].flatMap((group) => [group >> 8, group & 255]);
+}
+
+function isPublicIpv6(ip) {
+  const bytes = ipv6Bytes(ip);
+  if (!bytes) return false;
+
+  const isIpv4Mapped = bytes.slice(0, 10).every((byte) => byte === 0) && bytes[10] === 255 && bytes[11] === 255;
+  if (isIpv4Mapped) return isPublicIpv4(bytes.slice(12).join("."));
+
+  // Only globally routed unicast space is eligible for third-party lookups.
+  if ((bytes[0] & 0xe0) !== 0x20) return false;
+  const firstWord = (bytes[0] << 8) | bytes[1];
+  const secondWord = (bytes[2] << 8) | bytes[3];
+  const thirdWord = (bytes[4] << 8) | bytes[5];
+  if (firstWord === 0x2001 && (secondWord === 0 || secondWord === 0x0db8)) return false;
+  if (firstWord === 0x2001 && secondWord === 0x0002 && thirdWord === 0) return false;
+  if (firstWord === 0x2001 && secondWord === 0x0010) return false;
+  if (firstWord === 0x2001 && secondWord === 0x0020) return false;
+  if (firstWord === 0x2002) return false;
+  return true;
+}
+
+export function normalizePublicVisitorIp(value) {
+  if (typeof value !== "string") return "";
+  const ip = value.trim();
+  const version = isIP(ip);
+  if (version === 4 && isPublicIpv4(ip)) return ip;
+  if (version === 6 && isPublicIpv6(ip)) return ip;
+  return "";
+}
 
 function cleanProviderValue(value) {
   if (typeof value === "number" && Number.isFinite(value)) return cleanLocationPart(String(value));
@@ -43,6 +109,20 @@ function providerSource(provider, data, fields = {}) {
     postalCode: cleanProviderValue(fields.postalCode),
     organization: cleanProviderValue(fields.organization),
   };
+  const networkIndicators = [];
+  for (const [field, label] of [
+    ["is_datacenter", "Provider identifies a data-center network"],
+    ["is_vpn", "Provider identifies a VPN"],
+    ["is_proxy", "Provider identifies a proxy"],
+    ["is_tor", "Provider identifies a Tor exit"],
+    ["is_crawler", "Provider identifies crawler traffic"],
+  ]) {
+    if (data[field] === true) networkIndicators.push(label);
+  }
+  if (/\b(cloud|hosting|data[ -]?cent(?:er|re)|vps|colocation|server farm)\b/i.test(source.organization)) {
+    networkIndicators.push("Provider organization suggests cloud or hosting infrastructure; VPN/proxy status is unconfirmed");
+  }
+  if (networkIndicators.length) source.networkIndicators = networkIndicators;
   const coordinates = normalizeCoordinates({ latitude: fields.latitude, longitude: fields.longitude });
   if (coordinates) source.coordinates = coordinates;
   return Object.values(source).some((value) => value && value !== provider) || source.coordinates ? source : null;
@@ -108,9 +188,10 @@ async function fetchIpapiIs(ip, token, fetchImpl) {
   }, fetchImpl);
   const location = data?.location || {};
   const company = data?.company;
+  const companyEntry = Array.isArray(company) ? company[0] : company;
   const organization = typeof company === "string"
     ? company
-    : company?.name || data?.asn?.org || data?.asn;
+    : companyEntry?.name || data?.asn?.org || data?.asn;
   return providerSource("ipapi.is", data, {
     country: location.country || data?.country,
     countryCode: location.country_code || data?.country_code,
@@ -158,7 +239,9 @@ export async function resolveVisitorLocation(request, {
     const source = providerSource("vercel", value, {
       country: value?.countryName || value?.country,
       countryCode: value?.countryCode || value?.country,
-      region: value?.countryRegion || value?.region,
+      // `geolocation().region` is the Vercel execution region from x-vercel-id,
+      // not the visitor's state/region. Use only countryRegion for visitor geography.
+      region: value?.countryRegion,
       city: value?.city,
       district: value?.district,
       postalCode: value?.postalCode || request.headers.get("x-vercel-ip-postal-code"),
@@ -173,7 +256,7 @@ export async function resolveVisitorLocation(request, {
   let ip = "";
   try {
     // @vercel/functions reads Vercel's trusted client-IP context; never use request headers here.
-    ip = getIp(request) || "";
+    ip = normalizePublicVisitorIp(getIp(request) || "");
   } catch {
     // Without Vercel's trusted visitor IP, skip third-party lookups and retain Vercel data.
   }
