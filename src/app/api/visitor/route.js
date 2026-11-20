@@ -19,12 +19,13 @@ import {
 import {
   istDayKey,
   istHourBucket,
-  locationFromHeaders,
   makeVisitorEmail,
+  normalizeCoordinates,
   normalizeReferral,
   normalizeVisitedPage,
   requiresExplicitVisitorConsent,
 } from "../../../lib/visitorNotifications.mjs";
+import { resolveVisitorLocation } from "../../../lib/visitorLocationProviders.mjs";
 
 export const runtime = "nodejs";
 
@@ -69,7 +70,7 @@ export async function POST(request) {
     return json({ ok: false }, 400);
   }
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) return json({ ok: false }, 400);
-  if (Object.keys(payload).some((key) => !["page", "referrer"].includes(key))) return json({ ok: false }, 400);
+  if (Object.keys(payload).some((key) => !["page", "referrer", "deviceCoordinates"].includes(key))) return json({ ok: false }, 400);
 
   const day = istDayKey();
   const networkDigest = getPseudonymousNetworkKey(request);
@@ -91,10 +92,15 @@ export async function POST(request) {
       return json({ ok: true, recorded: false, capped: true });
     }
 
-    const location = locationFromHeaders(request.headers, {
+    const location = await resolveVisitorLocation(request, {
       trackingEligible: true,
       consentAccepted: consent?.accepted === true,
     });
+    const deviceCoordinates = normalizeCoordinates(payload.deviceCoordinates);
+    if (deviceCoordinates) {
+      location.coordinates = deviceCoordinates;
+      location.coordinateSource = "device";
+    }
     const page = normalizeVisitedPage(payload.page);
     const userAgent = request.headers.get("user-agent") || "";
     const details = {

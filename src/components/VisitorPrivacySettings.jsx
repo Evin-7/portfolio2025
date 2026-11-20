@@ -84,7 +84,7 @@ export default function VisitorPrivacySettings() {
     <section id="visitor-notifications" className="privacy-settings" aria-labelledby="visitor-notifications-title">
       <h2 id="visitor-notifications-title">Visitor-location notifications</h2>
       <p>
-        Choose whether this browser should be excluded from the site’s approximate visitor-location analytics and email alerts. Your choice is saved in a signed first-party preference cookie.
+        Allowing enables approximate IP-based visitor analytics and email alerts. For eligible visits, Vercel and, when configured, IPinfo and IPapi.co process the request IP to estimate city-level location; the portfolio does not store raw IP addresses. Device coordinates are read only if this browser already grants location permission, and the site never prompts. Your choice is saved in a signed first-party preference cookie.
       </p>
       <div className="privacy-settings-control">
         <p role="status" aria-live="polite">{message}</p>

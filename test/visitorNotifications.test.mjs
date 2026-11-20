@@ -127,6 +127,7 @@ test("email contains required summary fields and no precise or personal data", (
       city: "Berlin",
       coordinates: { latitude: 52.52, longitude: 13.4 },
       certainty: "Approximate; may be uncertain.",
+      providerCount: 3,
     },
     page: "/",
     pageUrl: "https://portfolio.example/",
@@ -144,6 +145,7 @@ test("email contains required summary fields and no precise or personal data", (
   assert.match(email.message, /Page URL: https:\/\/portfolio\.example\/\n/);
   assert.match(email.message, /Device\/browser: Desktop · macOS · Safari/);
   assert.match(email.message, /Source: linkedin\.com/);
+  assert.match(email.message, /Location providers: 3 of 3 responded/);
   assert.match(email.message, /Location certainty:/);
   assert.doesNotMatch(email.message, /latitude|longitude|street address|visitor email/i);
 });

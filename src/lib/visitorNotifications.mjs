@@ -91,12 +91,26 @@ export function istHourBucket(date = new Date()) {
   return period ? hour + " " + period + " IST" : "Unavailable";
 }
 
+function roundCoordinate(value, minimum, maximum) {
+  if (typeof value !== "number" || !Number.isFinite(value) || value < minimum || value > maximum) return null;
+  return Math.round(value * 100) / 100;
+}
+
 function roundedCoordinate(headers, name, minimum, maximum) {
   const raw = headers.get(name);
   if (typeof raw !== "string" || !raw.trim()) return null;
   const value = Number(raw);
-  if (!Number.isFinite(value) || value < minimum || value > maximum) return null;
-  return Math.round(value * 100) / 100;
+  return roundCoordinate(value, minimum, maximum);
+}
+
+export function normalizeCoordinates(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const latitudeValue = typeof value.latitude === "string" && value.latitude.trim() ? Number(value.latitude) : value.latitude;
+  const longitudeValue = typeof value.longitude === "string" && value.longitude.trim() ? Number(value.longitude) : value.longitude;
+  const latitude = roundCoordinate(latitudeValue, -90, 90);
+  const longitude = roundCoordinate(longitudeValue, -180, 180);
+  if (latitude === null || longitude === null) return undefined;
+  return { latitude, longitude };
 }
 
 export function approximateCoordinatesFromHeaders(headers, {
@@ -115,7 +129,10 @@ export function approximateCoordinatesFromHeaders(headers, {
 export function formatApproximateCoordinates(location) {
   const { latitude, longitude } = location?.coordinates || {};
   if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return "";
-  return `Approximate coordinates (IP-based, city-level): ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
+  const label = location.coordinateSource === "device"
+    ? "Approximate coordinates (device location, rounded)"
+    : "Approximate coordinates (IP-based, city-level)";
+  return `${label}: ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
 }
 
 export function locationFromHeaders(headers, options) {
@@ -132,6 +149,81 @@ export function locationFromHeaders(headers, options) {
     certainty: available
       ? "Approximate; network location may be uncertain, especially with a VPN, mobile carrier, or proxy."
       : "Unavailable or uncertain; Vercel did not provide usable location information.",
+  };
+}
+
+function normalizedGroupValue(value) {
+  return cleanLocationPart(value)
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("en-US")
+    .replace(/[^\p{L}\p{N}]/gu, "");
+}
+
+function largestGroup(groups) {
+  const ranked = [...groups.values()].sort((left, right) => right.length - left.length);
+  const winner = ranked[0] || [];
+  const runnerUp = ranked[1] || [];
+  return winner.length >= 2 && winner.length > runnerUp.length ? winner : [];
+}
+
+export function locationFromProviderSources(sources) {
+  const usable = Array.isArray(sources)
+    ? sources.filter((source) => source && normalizedGroupValue(source.country))
+    : [];
+  if (usable.length === 0) {
+    return {
+      country: "Unavailable",
+      region: "Unavailable",
+      city: "Unavailable",
+      certainty: "Unavailable; no IP location providers returned usable data.",
+      providerCount: 0,
+    };
+  }
+
+  const countries = new Map();
+  for (const source of usable) {
+    const country = normalizedGroupValue(source.country);
+    const group = countries.get(country) || [];
+    group.push(source);
+    countries.set(country, group);
+  }
+
+  const countryWinner = largestGroup(countries);
+  const cityGroups = new Map();
+  for (const source of countryWinner) {
+    const city = normalizedGroupValue(source.city);
+    if (!city) continue;
+    const group = cityGroups.get(city) || [];
+    group.push(source);
+    cityGroups.set(city, group);
+  }
+
+  const cityWinner = largestGroup(cityGroups);
+  const selected = cityWinner[0];
+  const regionGroups = new Map();
+  for (const source of cityWinner) {
+    const region = normalizedGroupValue(source.region);
+    if (!region) continue;
+    const group = regionGroups.get(region) || [];
+    group.push(source);
+    regionGroups.set(region, group);
+  }
+  const regionWinner = largestGroup(regionGroups);
+  const coordinates = selected
+    ? cityWinner.map((source) => normalizeCoordinates(source.coordinates)).find(Boolean)
+    : undefined;
+  const country = countryWinner[0]?.country || "Uncertain";
+
+  return {
+    country,
+    region: regionWinner[0]?.region || "Uncertain",
+    city: selected?.city || "Uncertain",
+    ...(coordinates ? { coordinates } : {}),
+    certainty: selected
+      ? `Approximate; ${cityWinner.length} of ${usable.length} IP location sources agree on city. A VPN, mobile carrier, or proxy may make it inaccurate.`
+      : `Uncertain; IP location sources did not reach a city majority (${usable.length} source(s) available).`,
+    providerCount: usable.length,
   };
 }
 
@@ -153,9 +245,10 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
       "Page URL: " + (pageUrl || page),
       "Device/browser: " + (deviceBrowser || "Unavailable"),
       "Source: " + source,
+      ...(Number.isInteger(location.providerCount) ? [`Location providers: ${location.providerCount} of 3 responded`] : []),
       "Location certainty: " + location.certainty,
       "",
-      "Location and coordinates are approximate and derived from network information. Coordinates are city-level, not the visitor's exact location. No precise location or visitor contact details were collected.",
+      "IP-based location is approximate and may be uncertain. When configured, the site shares the visitor IP with Vercel, IPinfo, and IPapi.co to estimate location; provider results may disagree. Device coordinates are used only when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates are stored by this site.",
     ].join("\n"),
   };
 }

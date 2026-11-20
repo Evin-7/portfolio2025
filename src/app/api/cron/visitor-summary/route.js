@@ -44,11 +44,14 @@ function emailBody(rows, day) {
       String(row.count) + " visit(s) | " + row.details.visitHour + " | " + place + " | " + (row.details.pageUrl || row.details.page) + " | " + (row.details.deviceBrowser || "Device/browser unavailable") + " | " + row.details.source +
         " | " + row.details.location.certainty,
     );
+    if (Number.isInteger(row.details.location.providerCount)) {
+      lines.push("Location providers: " + row.details.location.providerCount + " of 3 responded");
+    }
     const coordinates = formatApproximateCoordinates(row.details.location);
     if (coordinates) lines.push(coordinates);
   }
   if (omitted) lines.push("", "Additional grouped visits not listed: " + omitted);
-  lines.push("", "All locations and coordinates are approximate and derived from network information. Coordinates are city-level, not the visitor's exact location. No precise location or visitor contact details were collected.");
+  lines.push("", "IP-based coordinates are approximate city-level estimates. When configured, the site shares the visitor IP with Vercel, IPinfo, and IPapi.co to estimate location; provider results may disagree. Device coordinates are only read when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates were stored by this site.");
   return { subject: "New Portfolio Visitor", message: lines.join("\n") };
 }
 
