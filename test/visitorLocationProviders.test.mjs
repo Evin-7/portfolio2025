@@ -381,3 +381,34 @@ test("missing trusted geolocation and IP yields unavailable data without a looku
   assert.equal(location.country, "Unavailable");
   assert.equal(location.providerCount, 0);
 });
+
+test("uses IPinfo Lite for country without treating it as a state or city vote", async () => {
+  const location = await resolveVisitorLocation(request("IN"), getLocationOptions({
+    env: { IPINFO_LITE_TOKEN: "test-lite-token" },
+    getVercelLocation: () => ({ country: "IN", countryRegion: "KL", city: "Tirur" }),
+    fetchImpl: async (url, options) => {
+      if (String(url).includes("ipinfo.io")) {
+        assert.equal(String(url), "https://api.ipinfo.io/lite/8.8.8.8");
+        assert.equal(options.headers.Authorization, "Bearer test-lite-token");
+        return jsonResponse({ ip: "8.8.8.8", country_code: "IN", country: "India", as_name: "Example Network" });
+      }
+      return jsonResponse(ipapiIsResponse());
+    },
+  }));
+  assert.deepEqual(location.providerNames, ["vercel", "ipinfo-lite", "ipapi.is"]);
+  assert.deepEqual(location.fieldConfidence, { country: "agree", region: "agree", city: "conflicting" });
+  assert.equal(location.region, "Kerala");
+  assert.equal(location.city, "Uncertain");
+});
+
+test("keeps Vercel if IPinfo Lite fails or returns another IP", async () => {
+  for (const response of [jsonResponse({}, 429), jsonResponse({ ip: "1.1.1.1", country_code: "US" })]) {
+    const location = await resolveVisitorLocation(request("IN"), getLocationOptions({
+      env: { IPINFO_LITE_TOKEN: "test-lite-token" },
+      getVercelLocation: () => ({ country: "IN", countryRegion: "KL" }),
+      fetchImpl: async (url) => String(url).includes("ipinfo.io") ? response : jsonResponse({}, 503),
+    }));
+    assert.deepEqual(location.providerNames, ["vercel"]);
+    assert.equal(location.region, "Kerala");
+  }
+});

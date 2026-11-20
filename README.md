@@ -23,9 +23,11 @@ Set these server-only Vercel environment variables:
 - `VISITOR_NOTIFICATION_MODE=individual` (or `daily` for a daily digest)
 - `VISITOR_EMAIL_ORIGIN` only if the deployment URL cannot be derived or must be overridden
 - `IPINFO_TOKEN` (optional provider token with city-level lookup access)
+- `IPINFO_LITE_TOKEN` (optional [free IPinfo Lite token](https://ipinfo.io/dashboard/lite) for country and network organization, used when `IPINFO_TOKEN` is unset)
+- `IPAPI_IS_TOKEN` (optional [free IPapi.is key](https://ipapi.is/developers.html) for state estimates, a higher quota, and network indicators)
 - `IPAPI_TOKEN` (optional production API token)
 
-IPapi.is is the production-compatible free fallback and does not require an account; its anonymous endpoint is limited to 30 lookups per caller IP per UTC day, and rate-limit responses fall back to Vercel. An optional `IPAPI_IS_TOKEN` uses the free account quota of 1,000 requests/day. `IPINFO_TOKEN` and `IPAPI_TOKEN` remain optional; without them those providers are skipped. Keep all tokens server-only. Production use of IPapi.co requires a production plan/token; do not use its public test endpoint for production traffic.
+IPapi.is is the production-compatible free fallback and does not require an account; its anonymous endpoint is limited to 30 lookups per caller IP per UTC day, and rate-limit responses fall back to Vercel. An optional `IPAPI_IS_TOKEN` uses the free account quota of 1,000 requests/day. The server uses at most one IPinfo endpoint per visit. IPinfo Lite can corroborate the country and contributes no state or city data. IPapi.co is skipped without `IPAPI_TOKEN`. Keep all tokens server-only. Production use of IPapi.co requires a production plan/token; do not use its public test endpoint for production traffic.
 
 Copy `.env.example` as a reference. Vercel Cron calls `/api/cron/visitor-summary` daily at 00:05 IST to send the preceding day's summary. A delivery attempt is marked before contacting EmailJS to avoid duplicate messages if the provider response is lost. Until the required Vercel variables are configured, the feature stays disabled.
 

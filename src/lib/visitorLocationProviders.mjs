@@ -175,6 +175,20 @@ async function fetchIpinfo(ip, token, fetchImpl) {
   });
 }
 
+async function fetchIpinfoLite(ip, token, fetchImpl) {
+  const url = "https://api.ipinfo.io/lite/" + encodeURIComponent(ip);
+  const data = await fetchJson(url, {
+    headers: { Authorization: "Bearer " + token },
+  }, fetchImpl);
+  if (!sameLookupAddress(ip, data?.ip) || !/^[A-Z]{2}$/.test(data.country_code)) return null;
+
+  return providerSource("ipinfo-lite", data, {
+    country: data.country,
+    countryCode: data.country_code,
+    organization: data.as_name,
+  });
+}
+
 async function fetchIpapiCo(ip, token, fetchImpl) {
   const url = "https://ipapi.co/" + encodeURIComponent(ip) + "/json/?key=" + encodeURIComponent(token);
   const data = await fetchJson(url, {}, fetchImpl);
@@ -278,6 +292,7 @@ export async function resolveVisitorLocation(request, {
 
   const lookups = [];
   if (ip && env.IPINFO_TOKEN) lookups.push(fetchIpinfo(ip, env.IPINFO_TOKEN, fetchImpl));
+  else if (ip && env.IPINFO_LITE_TOKEN) lookups.push(fetchIpinfoLite(ip, env.IPINFO_LITE_TOKEN, fetchImpl));
   if (ip && env.IPAPI_TOKEN) lookups.push(fetchIpapiCo(ip, env.IPAPI_TOKEN, fetchImpl));
   if (ip) lookups.push(fetchIpapiIs(ip, env.IPAPI_IS_TOKEN, fetchImpl));
   providerTotal += lookups.length;

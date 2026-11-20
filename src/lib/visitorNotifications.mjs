@@ -181,7 +181,7 @@ export function formatGoogleMapsLink(location) {
 
 export function formatLocationProviderLine(location) {
   if (!Number.isInteger(location?.providerCount)) return "";
-  const names = location.providerNames?.length ? location.providerNames.join(", ") : "none returned usable data";
+  const names = location.providerNames?.length ? location.providerNames.map((provider) => provider === "ipinfo-lite" ? "IPinfo Lite (country only)" : provider).join(", ") : "none returned usable data";
   return `Location providers: ${names} (${location.providerCount} usable of ${location.providerTotal ?? location.providerCount} checked)`;
 }
 
@@ -448,6 +448,7 @@ function displayProviderName(provider) {
   return ({
     vercel: "Vercel",
     ipinfo: "IPinfo",
+    "ipinfo-lite": "IPinfo Lite",
     "ipapi.co": "IPapi.co",
     "ipapi.is": "IPapi.is",
   })[provider] || provider;
