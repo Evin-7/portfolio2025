@@ -334,7 +334,7 @@ export function locationFromProviderSources(sources, { providerTotal } = {}) {
       providerObservations: providerObservations(usable),
       providerConflict: true,
       confidence: "Low — country agreement only; city and region omitted because provider results conflict.",
-      certainty: `Uncertain; providers agree on country but disagree on city or region. Only country is reported; ${usable.length - countryWinner.length} provider result(s) differ.`,
+      certainty: "Uncertain; providers agree on country but disagree on city or region. Only country is reported; city and region details were omitted.",
       providerCount: usable.length,
       providerTotal: total,
       providerNames,
@@ -397,7 +397,7 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
       "Location confidence: " + confidence,
       "Location certainty: " + location.certainty,
       "",
-      "IP-based location is approximate and may be uncertain. For eligible visits, the site shares the trusted visitor IP with Vercel and IPapi.is, and with IPinfo or IPapi.co only when their server-side tokens are configured. If providers conflict, the email marks the result uncertain and prefers Vercel, then IPinfo, IPapi.co, and IPapi.is, filling missing fields from other sources. A single result is reported as a single-provider estimate. Device coordinates are used only when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates are stored by this site.",
+      "IP-based location is an approximate, low-confidence estimate; provider agreement does not establish physical presence. Eligible visits share the trusted visitor IP with Vercel and IPapi.is, and with IPinfo or IPapi.co only when their server-side tokens are configured. Provider results are shown when they conflict. If providers agree only on country, city and region are omitted; without a country majority, the uncertain Vercel-first fallback is used. A possible cloud/hosting indicator comes from provider metadata and does not confirm a VPN or proxy. Device coordinates are used only when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates are stored by this site.",
     ].join("\n"),
   };
 }
@@ -450,7 +450,7 @@ export function makeVisitorDailySummaryEmail(rows, day, date = new Date()) {
     if (mapLink) lines.push("Google Maps: " + mapLink);
   }
   if (omitted) lines.push("", "Additional grouped visits not listed: " + omitted);
-  lines.push("", "IP-based coordinates are approximate city-level estimates. Eligible requests use Vercel and IPapi.is; IPinfo and IPapi.co are used only when their server-side tokens are configured. IPapi.is rate limits or outages fall back to available Vercel data. Provider results may disagree. Device coordinates are only read when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates were stored by this site.");
+  lines.push("", "IP-based location and coordinates are approximate, low-confidence estimates; provider agreement does not establish physical presence. Eligible requests use Vercel and IPapi.is; IPinfo and IPapi.co are used only when their server-side tokens are configured. IPapi.is rate limits or outages fall back to available Vercel data. Provider disagreements are shown. If providers agree only on country, city and region are omitted; without a country majority, an uncertain Vercel-first fallback is used. A possible cloud/hosting indicator from provider data does not confirm a VPN or proxy. Device coordinates are only read when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates were stored by this site.");
   return { subject: "New Portfolio Visitor", message: lines.join("\n") };
 }
 

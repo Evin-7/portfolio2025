@@ -237,6 +237,7 @@ test("reports only country when providers disagree on city but agree on country"
   assert.equal(location.city, "Unavailable");
   assert.equal(location.coordinates, undefined);
   assert.match(location.certainty, /Only country is reported/);
+  assert.doesNotMatch(location.certainty, /0 provider result/);
   assert.equal(location.providerObservations.length, 2);
 });
 
