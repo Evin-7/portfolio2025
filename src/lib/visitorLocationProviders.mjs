@@ -16,7 +16,7 @@ function providerSource(provider, data, country, region, city, latitude, longitu
   };
   const coordinates = normalizeCoordinates({ latitude, longitude });
   if (coordinates) source.coordinates = coordinates;
-  return source.country ? source : null;
+  return source.country || source.region || source.city || coordinates ? source : null;
 }
 
 async function fetchJson(url, options, fetchImpl) {

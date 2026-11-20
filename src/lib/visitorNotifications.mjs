@@ -167,9 +167,29 @@ function largestGroup(groups) {
   return winner.length >= 2 && winner.length > runnerUp.length ? winner : [];
 }
 
+function sourcePriority(source) {
+  return source.provider === "vercel" ? 0 : source.provider === "ipinfo" ? 1 : 2;
+}
+
+function locationFields(sources) {
+  const ranked = [...sources].sort((left, right) => sourcePriority(left) - sourcePriority(right));
+  const first = (key) => ranked.find((source) => source[key])?.[key];
+  const citySource = ranked.find((source) => source.city) || ranked[0];
+  const coordinates = normalizeCoordinates(citySource?.coordinates) || ranked.map((source) => normalizeCoordinates(source.coordinates)).find(Boolean);
+  return {
+    country: first("country") || "Unavailable",
+    region: first("region") || "Unavailable",
+    city: first("city") || "Unavailable",
+    ...(coordinates ? { coordinates } : {}),
+  };
+}
+
 export function locationFromProviderSources(sources) {
   const usable = Array.isArray(sources)
-    ? sources.filter((source) => source && normalizedGroupValue(source.country))
+    ? sources.filter((source) => source && (
+      normalizedGroupValue(source.country) || normalizedGroupValue(source.region) || normalizedGroupValue(source.city) ||
+      normalizeCoordinates(source.coordinates)
+    ))
     : [];
   if (usable.length === 0) {
     return {
@@ -181,48 +201,43 @@ export function locationFromProviderSources(sources) {
     };
   }
 
-  const countries = new Map();
+  const cityGroups = new Map();
   for (const source of usable) {
     const country = normalizedGroupValue(source.country);
-    const group = countries.get(country) || [];
-    group.push(source);
-    countries.set(country, group);
-  }
-
-  const countryWinner = largestGroup(countries);
-  const cityGroups = new Map();
-  for (const source of countryWinner) {
     const city = normalizedGroupValue(source.city);
-    if (!city) continue;
-    const group = cityGroups.get(city) || [];
+    if (!country || !city) continue;
+    const key = country + ":" + city;
+    const group = cityGroups.get(key) || [];
     group.push(source);
-    cityGroups.set(city, group);
+    cityGroups.set(key, group);
   }
 
   const cityWinner = largestGroup(cityGroups);
-  const selected = cityWinner[0];
-  const regionGroups = new Map();
-  for (const source of cityWinner) {
-    const region = normalizedGroupValue(source.region);
-    if (!region) continue;
-    const group = regionGroups.get(region) || [];
-    group.push(source);
-    regionGroups.set(region, group);
+  if (cityWinner.length >= 2) {
+    const agreed = locationFields(cityWinner);
+    const conflicted = cityWinner.length < usable.length;
+    return {
+      ...agreed,
+      certainty: conflicted
+        ? `Uncertain; ${cityWinner.length} of ${usable.length} location sources agree on city. Using the majority result; other source(s) conflict. A VPN, mobile carrier, or proxy may make it inaccurate.`
+        : `Approximate; ${cityWinner.length} of ${usable.length} location sources agree on city. A VPN, mobile carrier, or proxy may make it inaccurate.`,
+      providerCount: usable.length,
+    };
   }
-  const regionWinner = largestGroup(regionGroups);
-  const coordinates = selected
-    ? cityWinner.map((source) => normalizeCoordinates(source.coordinates)).find(Boolean)
-    : undefined;
-  const country = countryWinner[0]?.country || "Uncertain";
 
+  const fallback = locationFields(usable);
+  if (usable.length === 1) {
+    return {
+      ...fallback,
+      certainty: `Low confidence; only ${usable[0].provider || "one location source"} returned usable data. This is an approximate network location and may be inaccurate.`,
+      providerCount: 1,
+    };
+  }
+
+  const preferredSource = [...usable].sort((left, right) => sourcePriority(left) - sourcePriority(right))[0];
   return {
-    country,
-    region: regionWinner[0]?.region || "Uncertain",
-    city: selected?.city || "Uncertain",
-    ...(coordinates ? { coordinates } : {}),
-    certainty: selected
-      ? `Approximate; ${cityWinner.length} of ${usable.length} IP location sources agree on city. A VPN, mobile carrier, or proxy may make it inaccurate.`
-      : `Uncertain; IP location sources did not reach a city majority (${usable.length} source(s) available).`,
+    ...fallback,
+    certainty: `Uncertain; location sources conflict or do not share a city. Fallback: prefer Vercel data, then IPinfo, then IPapi.co, filling missing fields from the next available source. Selected source: ${preferredSource.provider || "unknown"}.`,
     providerCount: usable.length,
   };
 }
@@ -248,7 +263,7 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
       ...(Number.isInteger(location.providerCount) ? [`Location providers: ${location.providerCount} of 3 responded`] : []),
       "Location certainty: " + location.certainty,
       "",
-      "IP-based location is approximate and may be uncertain. When configured, the site shares the visitor IP with Vercel, IPinfo, and IPapi.co to estimate location; provider results may disagree. Device coordinates are used only when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates are stored by this site.",
+      "IP-based location is approximate and may be uncertain. When configured, the site shares the visitor IP with Vercel, IPinfo, and IPapi.co to estimate location. If sources conflict, Vercel is preferred, then IPinfo, then IPapi.co; the email marks the result uncertain. A single available source is reported as low confidence. Device coordinates are used only when browser location permission was already granted and are rounded before transmission. No raw IP addresses or unrounded device coordinates are stored by this site.",
     ].join("\n"),
   };
 }
