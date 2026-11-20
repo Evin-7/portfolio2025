@@ -18,7 +18,7 @@ export default function PrivacyPage() {
       <section>
         <h2>What is recorded</h2>
         <p>
-          When you visit, Vercel supplies an approximate country, region, and city based on the network address used for the request. The site records the page URL without query strings or fragments, the visit time in IST, the referring website’s domain when available, and a coarse device and browser description from the standard browser header. The location may be unavailable or inaccurate, for example when a VPN, mobile carrier, or proxy is used. The site does not request GPS/browser geolocation or collect your name, email address, or street address.
+          When you visit, Vercel supplies an approximate country, region, and city based on the network address used for the request. When Vercel also supplies valid latitude and longitude headers, and the visitor is eligible under the consent rules described here, the site includes those coordinates rounded to two decimal places in visitor emails. They are approximate IP-based, city-level estimates and do not identify your exact location; a VPN, mobile carrier, or proxy may make them inaccurate. The site records the page URL without query strings or fragments, the visit time in IST, the referring website’s domain when available, and a coarse device and browser description from the standard browser header. The site does not request GPS/browser geolocation or collect your name, email address, or street address.
         </p>
       </section>
 

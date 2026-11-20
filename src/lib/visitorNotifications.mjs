@@ -91,15 +91,44 @@ export function istHourBucket(date = new Date()) {
   return period ? hour + " " + period + " IST" : "Unavailable";
 }
 
-export function locationFromHeaders(headers) {
+function roundedCoordinate(headers, name, minimum, maximum) {
+  const raw = headers.get(name);
+  if (typeof raw !== "string" || !raw.trim()) return null;
+  const value = Number(raw);
+  if (!Number.isFinite(value) || value < minimum || value > maximum) return null;
+  return Math.round(value * 100) / 100;
+}
+
+export function approximateCoordinatesFromHeaders(headers, {
+  trackingEligible = false,
+  consentAccepted = false,
+  date = new Date(),
+} = {}) {
+  if (!trackingEligible || (requiresExplicitVisitorConsent(headers, date) && consentAccepted !== true)) return undefined;
+
+  const latitude = roundedCoordinate(headers, "x-vercel-ip-latitude", -90, 90);
+  const longitude = roundedCoordinate(headers, "x-vercel-ip-longitude", -180, 180);
+  if (latitude === null || longitude === null) return undefined;
+  return { latitude, longitude };
+}
+
+export function formatApproximateCoordinates(location) {
+  const { latitude, longitude } = location?.coordinates || {};
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return "";
+  return `Approximate coordinates (IP-based, city-level): ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
+}
+
+export function locationFromHeaders(headers, options) {
   const country = cleanLocationPart(headers.get("x-vercel-ip-country"));
   const region = cleanLocationPart(headers.get("x-vercel-ip-country-region"));
   const city = cleanLocationPart(headers.get("x-vercel-ip-city"));
+  const coordinates = approximateCoordinatesFromHeaders(headers, options);
   const available = Boolean(country || region || city);
   return {
     country: country || "Unavailable",
     region: region || "Unavailable",
     city: city || "Unavailable",
+    ...(coordinates ? { coordinates } : {}),
     certainty: available
       ? "Approximate; network location may be uncertain, especially with a VPN, mobile carrier, or proxy."
       : "Unavailable or uncertain; Vercel did not provide usable location information.",
@@ -109,6 +138,7 @@ export function locationFromHeaders(headers) {
 export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, source, date = new Date(), count = 1, title = "New Portfolio Visitor" }) {
   const { date: istDate, time: istTime } = formatIstDateTime(date);
   const countLine = count > 1 ? "Eligible visits recorded: " + count : "A visitor opened your portfolio.";
+  const coordinates = formatApproximateCoordinates(location);
   return {
     subject: title,
     message: [
@@ -117,6 +147,7 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
       "Country: " + location.country,
       "Region: " + location.region,
       "City: " + location.city,
+      ...(coordinates ? [coordinates] : []),
       "Visited: " + istDate,
       "Time: " + istTime + " IST",
       "Page URL: " + (pageUrl || page),
@@ -124,7 +155,7 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
       "Source: " + source,
       "Location certainty: " + location.certainty,
       "",
-      "Location is approximate and derived from network information. No precise location or visitor contact details were collected.",
+      "Location and coordinates are approximate and derived from network information. Coordinates are city-level, not the visitor's exact location. No precise location or visitor contact details were collected.",
     ].join("\n"),
   };
 }

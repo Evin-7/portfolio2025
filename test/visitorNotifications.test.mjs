@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  formatApproximateCoordinates,
   formatIstDateTime,
   istDayKey,
   istHourBucket,
@@ -45,6 +46,64 @@ test("marks missing or partial Vercel location as unavailable or uncertain", () 
   assert.equal(locationFromHeaders(new Headers({ "x-vercel-ip-city": "New%20York" })).city, "New York");
 });
 
+test("reads valid IP-based coordinates only for an eligible visitor", () => {
+  const headers = new Headers({
+    "x-vercel-ip-country": "DE",
+    "x-vercel-ip-city": "Berlin",
+    "x-vercel-ip-latitude": "52.520008",
+    "x-vercel-ip-longitude": "13.404954",
+  });
+  const location = locationFromHeaders(headers, { trackingEligible: true, consentAccepted: true });
+  assert.deepEqual(location.coordinates, { latitude: 52.52, longitude: 13.4 });
+});
+
+test("ignores missing or partial coordinate headers", () => {
+  const eligible = { trackingEligible: true };
+  assert.equal(locationFromHeaders(new Headers({ "x-vercel-ip-country": "US" }), eligible).coordinates, undefined);
+  assert.equal(
+    locationFromHeaders(new Headers({ "x-vercel-ip-country": "US", "x-vercel-ip-latitude": "40.71" }), eligible).coordinates,
+    undefined,
+  );
+});
+
+test("ignores invalid or out-of-range coordinate headers", () => {
+  const eligible = { trackingEligible: true };
+  const invalidLatitude = new Headers({ "x-vercel-ip-country": "US", "x-vercel-ip-latitude": "91", "x-vercel-ip-longitude": "10" });
+  const invalidLongitude = new Headers({ "x-vercel-ip-country": "US", "x-vercel-ip-latitude": "10", "x-vercel-ip-longitude": "181" });
+  const nonNumeric = new Headers({ "x-vercel-ip-country": "US", "x-vercel-ip-latitude": "north", "x-vercel-ip-longitude": "10" });
+  assert.equal(locationFromHeaders(invalidLatitude, eligible).coordinates, undefined);
+  assert.equal(locationFromHeaders(invalidLongitude, eligible).coordinates, undefined);
+  assert.equal(locationFromHeaders(nonNumeric, eligible).coordinates, undefined);
+});
+
+test("rounds coordinates to two decimal places", () => {
+  const headers = new Headers({
+    "x-vercel-ip-country": "US",
+    "x-vercel-ip-latitude": "37.7749",
+    "x-vercel-ip-longitude": "-122.4194",
+  });
+  const location = locationFromHeaders(headers, { trackingEligible: true });
+  assert.deepEqual(location.coordinates, { latitude: 37.77, longitude: -122.42 });
+  assert.equal(
+    formatApproximateCoordinates(location),
+    "Approximate coordinates (IP-based, city-level): 37.77, -122.42",
+  );
+});
+
+test("does not include coordinates without tracking eligibility or required opt-in", () => {
+  const headers = new Headers({
+    "x-vercel-ip-country": "DE",
+    "x-vercel-ip-latitude": "52.52",
+    "x-vercel-ip-longitude": "13.40",
+  });
+  assert.equal(locationFromHeaders(headers, { trackingEligible: true }).coordinates, undefined);
+  assert.equal(
+    locationFromHeaders(headers, { trackingEligible: true, consentAccepted: false }).coordinates,
+    undefined,
+  );
+  assert.equal(locationFromHeaders(headers, { trackingEligible: false, consentAccepted: true }).coordinates, undefined);
+});
+
 test("requires explicit opt-in for consent-first regions and when country is unavailable", () => {
   assert.equal(requiresExplicitVisitorConsent(new Headers({ "x-vercel-ip-country": "DE" })), true);
   assert.equal(requiresExplicitVisitorConsent(new Headers({ "x-vercel-ip-country": "GB" })), true);
@@ -66,6 +125,7 @@ test("email contains required summary fields and no precise or personal data", (
       country: "DE",
       region: "Berlin",
       city: "Berlin",
+      coordinates: { latitude: 52.52, longitude: 13.4 },
       certainty: "Approximate; may be uncertain.",
     },
     page: "/",
@@ -78,6 +138,7 @@ test("email contains required summary fields and no precise or personal data", (
   assert.match(email.message, /Country: DE/);
   assert.match(email.message, /Region: Berlin/);
   assert.match(email.message, /City: Berlin/);
+  assert.match(email.message, /Approximate coordinates \(IP-based, city-level\): 52\.52, 13\.40/);
   assert.match(email.message, /Visited: November 12, 2026/);
   assert.match(email.message, /Time: 6:30 PM IST/);
   assert.match(email.message, /Page URL: https:\/\/portfolio\.example\/\n/);
@@ -85,4 +146,14 @@ test("email contains required summary fields and no precise or personal data", (
   assert.match(email.message, /Source: linkedin\.com/);
   assert.match(email.message, /Location certainty:/);
   assert.doesNotMatch(email.message, /latitude|longitude|street address|visitor email/i);
+});
+
+test("omits the coordinate line when coordinates are unavailable", () => {
+  const email = makeVisitorEmail({
+    location: { country: "Unavailable", region: "Unavailable", city: "Unavailable", certainty: "Unavailable" },
+    page: "/",
+    deviceBrowser: "Desktop · macOS · Safari",
+    source: "Direct / unavailable",
+  });
+  assert.doesNotMatch(email.message, /Approximate coordinates \(IP-based, city-level\):/);
 });

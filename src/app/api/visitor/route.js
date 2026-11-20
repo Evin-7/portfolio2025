@@ -91,7 +91,10 @@ export async function POST(request) {
       return json({ ok: true, recorded: false, capped: true });
     }
 
-    const location = locationFromHeaders(request.headers);
+    const location = locationFromHeaders(request.headers, {
+      trackingEligible: true,
+      consentAccepted: consent?.accepted === true,
+    });
     const page = normalizeVisitedPage(payload.page);
     const userAgent = request.headers.get("user-agent") || "";
     const details = {

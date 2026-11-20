@@ -9,7 +9,11 @@ import {
   sendVisitorEmail,
   visitorFeatureEnabled,
 } from "../../../../lib/visitorSecurity";
-import { formatIstDateTime, istDayKey } from "../../../../lib/visitorNotifications.mjs";
+import {
+  formatApproximateCoordinates,
+  formatIstDateTime,
+  istDayKey,
+} from "../../../../lib/visitorNotifications.mjs";
 
 export const runtime = "nodejs";
 
@@ -40,9 +44,11 @@ function emailBody(rows, day) {
       String(row.count) + " visit(s) | " + row.details.visitHour + " | " + place + " | " + (row.details.pageUrl || row.details.page) + " | " + (row.details.deviceBrowser || "Device/browser unavailable") + " | " + row.details.source +
         " | " + row.details.location.certainty,
     );
+    const coordinates = formatApproximateCoordinates(row.details.location);
+    if (coordinates) lines.push(coordinates);
   }
   if (omitted) lines.push("", "Additional grouped visits not listed: " + omitted);
-  lines.push("", "All locations are approximate and derived from network information. No precise location or visitor contact details were collected.");
+  lines.push("", "All locations and coordinates are approximate and derived from network information. Coordinates are city-level, not the visitor's exact location. No precise location or visitor contact details were collected.");
   return { subject: "New Portfolio Visitor", message: lines.join("\n") };
 }
 
