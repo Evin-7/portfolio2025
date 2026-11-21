@@ -3,7 +3,9 @@ import { Redis } from "@upstash/redis";
 const localState = globalThis.__portfolioVisitorTestState || {
   buckets: new Map(),
   keys: new Map(),
+  values: new Map(),
 };
+localState.values ||= new Map();
 globalThis.__portfolioVisitorTestState = localState;
 
 function isLocalTestMode() {
@@ -50,6 +52,25 @@ export async function releaseKey(key) {
     return;
   }
   await getRedis().del(key);
+}
+
+export async function getCachedValue(key) {
+  if (isLocalTestMode()) return localState.values.get(key) ?? null;
+  const value = await getRedis().get(key);
+  if (typeof value !== "string") return value ?? null;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
+export async function setCachedValue(key, value, ttlSeconds) {
+  if (isLocalTestMode()) {
+    localState.values.set(key, value);
+    return;
+  }
+  await getRedis().set(key, JSON.stringify(value), { ex: ttlSeconds });
 }
 
 export async function incrementCounter(key, ttlSeconds) {

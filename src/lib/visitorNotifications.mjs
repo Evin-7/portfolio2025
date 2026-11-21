@@ -170,6 +170,9 @@ export function flagLocationOffsetMismatch(location, browserOffset, date) {
 }
 
 function countryEstimateNotice(location) {
+  if (location.deviceCoordinates) {
+    return "This country is an IP-network estimate; the permissioned browser location is shown separately below.";
+  }
   if (location.browserOffsetMismatch) {
     return "Visitor country: Unverified. The browser UTC offset differs substantially from the IP timezone.";
   }
@@ -482,10 +485,23 @@ function formatDeviceCoordinateLines(location) {
   const coordinates = normalizeDeviceCoordinates(location?.deviceCoordinates);
   if (!coordinates) return [];
 
-  const lines = [
+  const lines = ["Browser location (only after permission; coordinate and map estimates are not independently verified):"];
+  const place = location?.devicePlace;
+  if (place && typeof place === "object") {
+    if (place.locality) lines.push("Locality (map estimate): " + place.locality);
+    if (place.district) lines.push("District (map estimate): " + place.district);
+    if (place.additionalArea) lines.push("Additional administrative area (map estimate): " + place.additionalArea);
+    if (place.state) lines.push("State (map estimate): " + place.state);
+    if (place.country) lines.push("Country (map estimate): " + place.country);
+    if (place.countryCode) lines.push("Country code (map estimate): " + place.countryCode);
+    if (place.locality || place.district || place.state || place.country) {
+      lines.push("Reverse geocoding: © OpenStreetMap contributors (https://www.openstreetmap.org/copyright)");
+    }
+  }
+  lines.push(
     "Browser-reported coordinates (provided after location permission; not independently verified): " +
       coordinates.latitude + ", " + coordinates.longitude,
-  ];
+  );
   if (coordinates.accuracyMeters !== undefined) {
     lines.push("Browser-reported accuracy: ±" + Math.round(coordinates.accuracyMeters) + " m");
   }
@@ -500,7 +516,7 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
   const providerLine = formatLocationProviderLine(location);
   const coordinatesLink = formatGoogleMapsLink(location);
   const confidence = location.deviceCoordinates
-    ? "Device-reported coordinates are included after browser permission; the browser-reported accuracy is approximate and the coordinates are not independently verified. IP-derived country, region, and city remain estimates."
+    ? "Device-reported coordinates and a map-derived area are included after browser permission; browser accuracy is approximate and map labels may refer to a nearby feature. Neither is independently verified. IP-derived country, region, and city remain separate estimates."
     : location.confidence || (location.country !== "Unavailable"
       ? "Low — approximate IP estimate; provider agreement cannot establish physical presence."
       : "Unavailable — no usable location data.");
@@ -542,9 +558,11 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
       ...(providerLine ? [providerLine] : []),
       ...(providerResults.length ? ["Provider results: " + providerResults.join(" | ")] : []),
       "Location confidence: " + confidence,
-      "Location certainty: " + location.certainty,
+      "Location certainty: " + location.certainty + (location.deviceCoordinates
+        ? " Permissioned browser coordinates and the map-derived area above are separate from the IP estimate."
+        : ""),
       "",
-      "IP-based location is an approximate, low-confidence estimate; provider agreement does not establish physical presence. Eligible visits share the trusted visitor IP with Vercel and IPapi.is, and with IPinfo, IPapi.co, or MaxMind only when their server-side tokens are configured. Country, region, and city confidence are evaluated independently; conflicting city values are shown as unverified estimates and IP coordinates are omitted. A possible cloud/hosting indicator comes from provider metadata and does not confirm a VPN or proxy. Browser-reported coordinates are included in individual alerts only after the browser grants location permission; they are not independently verified or retained in grouped visit records. Raw IP addresses are not stored by this feature.",
+      "IP-based location is an approximate, low-confidence estimate; provider agreement does not establish physical presence. Eligible visits share the trusted visitor IP with Vercel and IPapi.is, and with IPinfo, IPapi.co, or MaxMind only when their server-side tokens are configured. Country, region, and city confidence are evaluated independently; conflicting city values are shown as unverified estimates and IP coordinates are omitted. A possible cloud/hosting indicator comes from provider metadata and does not confirm a VPN or proxy. After permission, rounded browser coordinates are sent to the configured reverse-geocoding service (Nominatim by default) to estimate locality and district; map data may be incomplete or select a nearby feature. Only the resulting locality, district, additional administrative area, state, and country are included in the individual email, and are not retained in grouped records. The Nominatim result is cached for up to 24 hours under a keyed coordinate digest; raw device coordinates are not stored in that cache. Browser-reported coordinates are included in individual alerts only after the browser grants location permission; they are not independently verified or retained in grouped visit records. Raw IP addresses are not stored by this feature.",
     ].join("\n"),
   };
 }

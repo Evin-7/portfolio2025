@@ -3,7 +3,9 @@ import {
   addAggregate,
   claimKey,
   decrementCounter,
+  getCachedValue,
   incrementCounter,
+  setCachedValue,
 } from "../../../lib/visitorStore";
 import {
   getConsentFromRequest,
@@ -27,6 +29,7 @@ import {
   requiresExplicitVisitorConsent,
 } from "../../../lib/visitorNotifications.mjs";
 import { resolveVisitorLocation } from "../../../lib/visitorLocationProviders.mjs";
+import { reverseGeocodeDeviceCoordinates } from "../../../lib/visitorReverseGeocoding.mjs";
 import { looksAutomated } from "../../../lib/visitorRequestPolicy.mjs";
 
 export const runtime = "nodejs";
@@ -111,8 +114,19 @@ export async function POST(request) {
 
     if (getNotificationMode() === "individual") {
       const deviceCoordinates = normalizeDeviceCoordinates(payload.deviceCoordinates);
+      const devicePlace = deviceCoordinates
+        ? await reverseGeocodeDeviceCoordinates(deviceCoordinates, {
+          cacheKey: "portfolio:reverse-geocode:" + createHmac("sha256", getHashSecret())
+            .update(String(Math.round(deviceCoordinates.latitude * 10_000) / 10_000) + ":" + String(Math.round(deviceCoordinates.longitude * 10_000) / 10_000))
+            .digest("hex"),
+          getCached: getCachedValue,
+          setCached: setCachedValue,
+          claimProviderSlot: () => claimKey("portfolio:reverse-geocoder:global-rate-limit", 2),
+          referer: new URL("/privacy", request.url).toString(),
+        })
+        : undefined;
       const emailLocation = deviceCoordinates
-        ? { ...details.location, deviceCoordinates }
+        ? { ...details.location, deviceCoordinates, ...(devicePlace ? { devicePlace } : {}) }
         : details.location;
       const email = makeVisitorEmail({ ...details, location: emailLocation, date: visitedAt });
       try {
