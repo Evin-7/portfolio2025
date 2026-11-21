@@ -9,9 +9,7 @@ function hasOptOutSignal() {
   return navigator.doNotTrack === "1" || navigator.globalPrivacyControl === true;
 }
 
-function requestDeviceCoordinates() {
-  if (!navigator.geolocation) return Promise.resolve(null);
-
+function readDeviceCoordinates(options) {
   return new Promise((resolve) => {
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => resolve({
@@ -19,10 +17,29 @@ function requestDeviceCoordinates() {
         longitude: coords.longitude,
         accuracyMeters: coords.accuracy,
       }),
-      () => resolve(null),
-      { enableHighAccuracy: true, maximumAge: 30_000, timeout: 10_000 },
+      (error) => resolve({ errorCode: error.code }),
+      options,
     );
   });
+}
+
+async function requestDeviceCoordinates() {
+  if (!navigator.geolocation) return null;
+
+  const first = await readDeviceCoordinates({
+    enableHighAccuracy: true,
+    maximumAge: 30_000,
+    timeout: 10_000,
+  });
+  if (!first?.errorCode) return first;
+  if (first.errorCode === 1) return null;
+
+  const retry = await readDeviceCoordinates({
+    enableHighAccuracy: false,
+    maximumAge: 30_000,
+    timeout: 10_000,
+  });
+  return retry?.errorCode ? null : retry;
 }
 
 async function getDeviceCoordinatesIfEligible() {
@@ -43,8 +60,10 @@ async function getDeviceCoordinatesIfEligible() {
       hasOptOutSignal()
     ) return null;
 
-    deviceCoordinatesRequest ||= requestDeviceCoordinates();
-    return await deviceCoordinatesRequest;
+    const request = deviceCoordinatesRequest ||= requestDeviceCoordinates();
+    const coordinates = await request;
+    if (!coordinates && deviceCoordinatesRequest === request) deviceCoordinatesRequest = undefined;
+    return coordinates;
   } catch {
     // Fail closed if the server cannot confirm that location collection is eligible.
     return null;
