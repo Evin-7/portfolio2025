@@ -485,84 +485,54 @@ function formatDeviceCoordinateLines(location) {
   const coordinates = normalizeDeviceCoordinates(location?.deviceCoordinates);
   if (!coordinates) return [];
 
-  const lines = ["Browser location (only after permission; coordinate and map estimates are not independently verified):"];
   const place = location?.devicePlace;
-  if (place && typeof place === "object") {
-    if (place.locality) lines.push("Locality (map estimate): " + place.locality);
-    if (place.district) lines.push("District (map estimate): " + place.district);
-    if (place.additionalArea) lines.push("Additional administrative area (map estimate): " + place.additionalArea);
-    if (place.state) lines.push("State (map estimate): " + place.state);
-    if (place.country) lines.push("Country (map estimate): " + place.country);
-    if (place.countryCode) lines.push("Country code (map estimate): " + place.countryCode);
-    if (place.locality || place.district || place.state || place.country) {
-      lines.push("Reverse geocoding: © OpenStreetMap contributors (https://www.openstreetmap.org/copyright)");
-    }
-  }
-  lines.push(
-    "Browser-reported coordinates (provided after location permission; not independently verified): " +
-      coordinates.latitude + ", " + coordinates.longitude,
-  );
+  const placeParts = [place?.locality, place?.district, place?.state, place?.country].filter(Boolean);
+  const lines = [
+    "Location (browser, approximate): " + (placeParts.length ? placeParts.join(", ") : "Map area unavailable"),
+  ];
+  if (place?.additionalArea) lines.push("Additional area: " + place.additionalArea);
   if (coordinates.accuracyMeters !== undefined) {
-    lines.push("Browser-reported accuracy: ±" + Math.round(coordinates.accuracyMeters) + " m");
+    lines.push("Accuracy: ±" + Math.round(coordinates.accuracyMeters) + " m (browser estimate)");
   }
-  lines.push("Google Maps (device coordinates): https://www.google.com/maps?q=" + coordinates.latitude + "," + coordinates.longitude);
+  lines.push("Map: https://www.google.com/maps?q=" + coordinates.latitude + "," + coordinates.longitude);
+  if (placeParts.length) lines.push("Map data: © OpenStreetMap contributors (https://www.openstreetmap.org/copyright)");
   return lines;
 }
 
 export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, source, date = new Date(), count = 1, title = "New Portfolio Visitor" }) {
   const { date: istDate, time: istTime } = formatIstDateTime(date);
   const countLine = count > 1 ? "Eligible visits recorded: " + count : "A visitor opened your portfolio.";
-  const coordinates = formatApproximateCoordinates(location);
-  const providerLine = formatLocationProviderLine(location);
-  const coordinatesLink = formatGoogleMapsLink(location);
-  const confidence = location.deviceCoordinates
-    ? "Device-reported coordinates and a map-derived area are included after browser permission; browser accuracy is approximate and map labels may refer to a nearby feature. Neither is independently verified. IP-derived country, region, and city remain separate estimates."
-    : location.confidence || (location.country !== "Unavailable"
-      ? "Low — approximate IP estimate; provider agreement cannot establish physical presence."
-      : "Unavailable — no usable location data.");
-  const deviceCoordinateLines = formatDeviceCoordinateLines(location);
-  const providerResults = location.providerObservations?.length > 1
-    ? location.providerObservations.map((observation) => {
-      const place = [observation.city, observation.region, observation.country].filter(Boolean).join(", ") || "location unavailable";
-      return `${observation.provider}: ${place}`;
-    })
-    : [];
-  const networkIndicators = location.networkIndicators || [];
+  const hasDeviceCoordinates = Boolean(normalizeDeviceCoordinates(location.deviceCoordinates));
+  const ipLocation = [
+    location.country && location.country !== "Unavailable"
+      ? location.country + (location.countryCode ? " (" + location.countryCode + ")" : "")
+      : "",
+    location.region !== "Unavailable" ? location.region : "",
+  ].filter(Boolean).join(" · ");
+  const locationLines = hasDeviceCoordinates
+    ? formatDeviceCoordinateLines(location)
+    : [
+      "Approximate IP location: " + (ipLocation || "Unavailable"),
+      ...(location.city !== "Unavailable" ? ["City: " + formatCity(location)] : []),
+      ...(location.confidence ? ["Confidence: " + location.confidence] : []),
+      ...(location.networkIndicators?.length || location.browserOffsetMismatch
+        ? ["Note: IP location may reflect network routing and differ from physical location."]
+        : []),
+    ];
+  const referrerLine = source && !["Direct / unavailable", "Unavailable", "Internal navigation"].includes(source)
+    ? "Referrer: " + source
+    : "";
   return {
     subject: title,
     message: [
       countLine,
       "",
-      "Country (IP estimate): " + location.country,
-      ...(countryEstimateNotice(location) ? [countryEstimateNotice(location)] : []),
-      ...(location.countryCode ? ["Country code: " + location.countryCode] : []),
-      "Region: " + location.region,
-      "City: " + formatCity(location) + (location.city !== "Unavailable" && !isCityConflict(location) ? " (IP estimate)" : ""),
-      ...(isCityConflict(location)
-        ? ["Conflicting city values are unverified IP estimates, not a confirmed physical location."]
-        : []),
-      "Postal code (IP estimate): " + (networkIndicators.length ? "Unavailable" : location.postalCode || "Unavailable"),
-      "Timezone (IP estimate): " + (location.timezone || "Unavailable"),
-      ...deviceCoordinateLines,
-      ...(coordinates ? [coordinates] : []),
-      ...(coordinatesLink ? ["Google Maps: " + coordinatesLink] : []),
-      ...(location.organization ? ["Network organization / ISP: " + location.organization] : []),
-      ...(networkIndicators.length ? ["Network indicator: " + networkIndicators.join("; ")] : []),
-      ...(networkIndicators.length ? ["Network exit estimate: The reported place may be the network exit. The visitor’s physical location is unknown."] : []),
-      "Visited: " + istDate,
-      "Time: " + istTime + " IST",
-      "Time (UTC): " + date.toISOString(),
-      "Page URL: " + (pageUrl || page),
-      "Device/browser: " + (deviceBrowser || "Unavailable"),
-      "Source: " + (source || "Unavailable"),
-      ...(providerLine ? [providerLine] : []),
-      ...(providerResults.length ? ["Provider results: " + providerResults.join(" | ")] : []),
-      "Location confidence: " + confidence,
-      "Location certainty: " + location.certainty + (location.deviceCoordinates
-        ? " Permissioned browser coordinates and the map-derived area above are separate from the IP estimate."
-        : ""),
+      ...locationLines,
       "",
-      "IP-based location is an approximate, low-confidence estimate; provider agreement does not establish physical presence. Eligible visits share the trusted visitor IP with Vercel and IPapi.is, and with IPinfo, IPapi.co, or MaxMind only when their server-side tokens are configured. Country, region, and city confidence are evaluated independently; conflicting city values are shown as unverified estimates and IP coordinates are omitted. A possible cloud/hosting indicator comes from provider metadata and does not confirm a VPN or proxy. After permission, rounded browser coordinates are sent to the configured reverse-geocoding service (Nominatim by default) to estimate locality and district; map data may be incomplete or select a nearby feature. Only the resulting locality, district, additional administrative area, state, and country are included in the individual email, and are not retained in grouped records. The Nominatim result is cached for up to 24 hours under a keyed coordinate digest; raw device coordinates are not stored in that cache. Browser-reported coordinates are included in individual alerts only after the browser grants location permission; they are not independently verified or retained in grouped visit records. Raw IP addresses are not stored by this feature.",
+      "Visited: " + istDate + " at " + istTime + " IST",
+      "Page: " + (pageUrl || page),
+      "Device/browser: " + (deviceBrowser || "Unavailable"),
+      ...(referrerLine ? [referrerLine] : []),
     ].join("\n"),
   };
 }
