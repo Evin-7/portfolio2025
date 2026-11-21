@@ -41,7 +41,8 @@ Keywords are used in page titles and useful copy, without a `meta keywords` tag 
 - `npm test`: passed, 55 tests and 0 failures. The existing `visitorStore.js` module-type warning remains; it did not fail the test run.
 - `npm run build`: passed. Static output includes the homepage, About, Projects, Services, Contact, Privacy, three service detail routes, `robots.txt`, and `sitemap.xml`.
 - Inspected generated canonical URLs, JSON-LD, `robots.txt`, and `sitemap.xml` in the production build output. The sitemap contains the intended public HTML routes.
-- Live deployment and route verification: pending final production check.
+- Production deployment for commit `b1a6bf3548155f389521e699d4e161a80209d13b` reached Vercel `READY`.
+- Live checks returned HTTP 200 for `/`, `/about`, `/projects`, `/services`, all three service detail routes, `/contact`, `/privacy`, `/robots.txt`, `/sitemap.xml`, and `/og-evin-leyander.png`. Page-specific titles were present on all HTML routes.
 - Search Console ownership access: unavailable in the connected browser session, so no indexing request was submitted.
 - Performance measurements: not run; no Lighthouse or Core Web Vitals scores are reported.
 
