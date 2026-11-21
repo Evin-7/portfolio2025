@@ -1,6 +1,10 @@
 const footerLinks = [
   ["GitHub", "https://github.com/Evin-7"],
   ["LinkedIn", "https://www.linkedin.com/in/evin-leyander-536a70236/"],
+  ["About", "/about"],
+  ["Projects", "/projects"],
+  ["Services", "/services"],
+  ["Contact", "/contact"],
   ["Email", "mailto:yjevin75@gmail.com"],
   ["Back to top ↑", "#home"],
 ];

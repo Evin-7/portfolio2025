@@ -1,10 +1,12 @@
 import Link from "next/link";
 import VisitorPrivacySettings from "../../components/VisitorPrivacySettings";
+import { createPageMetadata } from "../../lib/siteMetadata";
 
-export const metadata = {
-  title: "Privacy — Evin Leyander",
-  description: "Privacy information for Evin Leyander’s portfolio website.",
-};
+export const metadata = createPageMetadata({
+  title: "Privacy | Evin Leyander",
+  description: "Read the privacy notice and manage visitor-location analytics preferences for Evin Leyander’s portfolio.",
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (

@@ -89,12 +89,12 @@ export default function Hero() {
           >
             EVIN LEYANDER <span aria-hidden="true">·</span> SOFTWARE ENGINEER
           </motion.p>
-          <h1 className="hero-title" id="hero-title" aria-label="Building thoughtful digital experiences.">
-            <span className="hero-title-line" aria-hidden="true">
+          <h1 className="hero-title" id="hero-title">
+            <span className="hero-title-line">
               <HeroWord delay={0.18} introComplete={introComplete} reduceMotion={reduceMotion}>Building</HeroWord>
               <HeroWord className="hero-title-accent" delay={0.3} introComplete={introComplete} reduceMotion={reduceMotion}>thoughtful</HeroWord>
             </span>
-            <span className="hero-title-line" aria-hidden="true">
+            <span className="hero-title-line">
               <HeroWord delay={0.42} introComplete={introComplete} reduceMotion={reduceMotion}>digital</HeroWord>
               <HeroWord delay={0.54} introComplete={introComplete} reduceMotion={reduceMotion}>experiences.</HeroWord>
             </span>
@@ -119,7 +119,7 @@ export default function Hero() {
             animate={{ opacity: reduceMotion || introComplete ? 1 : 0 }}
             transition={{ duration: 0.55, delay: reduceMotion ? 0 : 0.84 }}
           >
-            <span>50+ projects</span><span>End-to-end product development</span>
+            <span>Web &amp; mobile products</span><span>End-to-end product development</span>
           </motion.p>
         </div>
       </div>

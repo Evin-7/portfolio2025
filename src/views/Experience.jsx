@@ -1,35 +1,6 @@
 import Image from "next/image";
 import Reveal from "../components/Reveal";
-
-const experience = [
-  {
-    period: "Oct 2022 – Mar 2024",
-    role: "Junior Frontend Developer",
-    company: "Leopard Tech Labs",
-    location: "Kanjirappally, Kerala, India",
-    country: "India",
-    countryMap: "/company/india-outline.svg",
-    focus: "Built Vue booking platforms with payment integrations, increasing online bookings by 40% and supporting 15,000+ monthly reserve bookings.",
-  },
-  {
-    period: "Apr 2024 – Aug 2025",
-    role: "Software Engineer",
-    company: "Turinix",
-    location: "Mumbai, India",
-    country: "India",
-    countryMap: "/company/india-outline.svg",
-    focus: "Improved a Vue food-delivery platform's page loads by 60%, supporting 5,000+ concurrent users at 99.9% uptime.",
-  },
-  {
-    period: "Feb 2026 – Aug 2026",
-    role: "Software Engineer",
-    company: "Penieltech LLC",
-    location: "Dubai, UAE",
-    country: "United Arab Emirates",
-    countryMap: "/company/uae-outline.svg",
-    focus: "Built SaaS HR and AI workflows, contributed to check-printing and e-invoicing software, and delivered a Medusa.js storefront.",
-  },
-];
+import { experience } from "../data/experience";
 
 function LocationIcon() {
   return (

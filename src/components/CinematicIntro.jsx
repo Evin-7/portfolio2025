@@ -172,7 +172,7 @@ export default function CinematicIntro() {
       <p className="intro-index">Independent software engineer <span>·</span> 2026</p>
       <div className="intro-center">
         <p className="intro-kicker">Thoughtful products. Built to move.</p>
-        <h1 className="sr-only">Evin Leyander — Software Engineer</h1>
+        <p className="sr-only">Evin Leyander — Software Engineer</p>
         <div className="intro-name">
           <LetterRun className="intro-name-first" text={firstName} />
           <LetterRun className="intro-name-last" text={lastName} />

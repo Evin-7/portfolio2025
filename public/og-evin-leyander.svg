@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="background" x1="54" y1="48" x2="1121" y2="616" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#080909"/>
+      <stop offset="0.62" stop-color="#0C1110"/>
+      <stop offset="1" stop-color="#101A16"/>
+    </linearGradient>
+    <linearGradient id="stroke" x1="716" y1="101" x2="1136" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#79D99E" stop-opacity="0.04"/>
+      <stop offset="0.56" stop-color="#79D99E" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#A2F1BC" stop-opacity="0.07"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="matrix(0 330 -421 0 946 320)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#79D99E" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#79D99E" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M42 0H0V42" stroke="#D6F8E2" stroke-opacity="0.035"/>
+      <circle cx="1" cy="1" r="1" fill="#A2F1BC" fill-opacity="0.2"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" rx="28" fill="url(#background)"/>
+  <rect width="1200" height="630" rx="28" fill="url(#glow)"/>
+  <rect x="610" y="0" width="590" height="630" fill="url(#grid)"/>
+  <path d="M0 1H1200" stroke="#D6F8E2" stroke-opacity="0.1"/>
+  <path d="M0 629H1200" stroke="#79D99E" stroke-opacity="0.46"/>
+  <path d="M84 151V470" stroke="#79D99E" stroke-opacity="0.62" stroke-width="2"/>
+  <circle cx="965" cy="315" r="204" stroke="url(#stroke)"/>
+  <circle cx="965" cy="315" r="163" stroke="#D6F8E2" stroke-opacity="0.1" stroke-dasharray="2 10"/>
+  <path d="M758 315H1172M965 108V522" stroke="#D6F8E2" stroke-opacity="0.08"/>
+  <path d="M827 177L1103 453M1103 177L827 453" stroke="#D6F8E2" stroke-opacity="0.055"/>
+  <rect x="880" y="229" width="170" height="170" rx="42" fill="#0A100D" fill-opacity="0.76" stroke="#79D99E" stroke-opacity="0.45"/>
+  <text x="965" y="348" text-anchor="middle" fill="#A2F1BC" font-family="Arial, Helvetica, sans-serif" font-size="84" font-weight="700" letter-spacing="-8">EL</text>
+  <circle cx="965" cy="315" r="5" fill="#A2F1BC"/>
+  <text x="116" y="192" fill="#A2F1BC" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="4">SOFTWARE ENGINEER · PORTFOLIO</text>
+  <text x="112" y="289" fill="#F4F6F5" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="700" letter-spacing="-4">Evin Leyander</text>
+  <text x="116" y="346" fill="#D9E2DC" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="500" letter-spacing="0.2">Full Stack Software Engineer</text>
+  <rect x="116" y="390" width="78" height="3" rx="1.5" fill="#79D99E"/>
+  <text x="116" y="445" fill="#A6AEAA" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="500">React  ·  Next.js  ·  Vue.js  ·  React Native</text>
+  <text x="116" y="554" fill="#89938E" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="500" letter-spacing="0.3">evinleyander.vercel.app</text>
+  <rect x="84" y="517" width="8" height="8" rx="4" fill="#79D99E"/>
+</svg>

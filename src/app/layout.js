@@ -1,24 +1,27 @@
 import SmoothScroll from "../components/SmoothScroll";
 import VisitorTracker from "../components/VisitorTracker";
+import { createPageMetadata, PROFILE, SITE_NAME, SITE_URL } from "../lib/siteMetadata";
 import "./globals.css";
 
 export const metadata = {
-  metadataBase: new URL("https://evinleyander.vercel.app"),
-  title: "Evin Leyander — Full Stack Software Engineer",
-  description:
-    "Portfolio of Evin Leyander, a full stack software engineer building thoughtful web and mobile products with React, TypeScript, Vue, and Node.js.",
-  openGraph: {
-    type: "website",
-    url: "https://evinleyander.vercel.app",
-    title: "Evin Leyander — Full Stack Software Engineer",
-    description: "Thoughtful web and mobile products, software engineering, and selected work by Evin Leyander.",
-    images: ["/developer-workspace.webp"],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Evin Leyander — Full Stack Software Engineer",
-    description: "Thoughtful web and mobile products, software engineering, and selected work by Evin Leyander.",
-    images: ["/developer-workspace.webp"],
+  metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
+  ...createPageMetadata({
+    title: "Evin Leyander | Full Stack Software Engineer",
+    description: PROFILE.description,
+  }),
+  authors: [{ name: PROFILE.name, url: PROFILE.url }],
+  creator: PROFILE.name,
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   icons: {
     icon: [{ url: "/el-monogram-favicon.png", sizes: "256x256", type: "image/png" }],
