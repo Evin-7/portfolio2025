@@ -3,6 +3,8 @@ import {
   getConsentFromRequest,
   isSameOriginRequest,
   hasPrivacyOptOut,
+  getNotificationMode,
+  isLocalTestMode,
   visitorFeatureEnabled,
 } from "../../../lib/visitorSecurity";
 import { requiresExplicitVisitorConsent } from "../../../lib/visitorNotifications.mjs";
@@ -25,6 +27,7 @@ export async function GET(request) {
     optOutSignal,
     requiresConsent: requiresExplicitVisitorConsent(request.headers),
     explicitConsent: consent?.accepted === true,
+    requestDeviceLocation: visitorFeatureEnabled() && !isLocalTestMode() && getNotificationMode() === "individual",
   });
 }
 

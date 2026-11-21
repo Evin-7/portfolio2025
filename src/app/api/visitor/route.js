@@ -23,6 +23,7 @@ import {
   makeVisitorEmail,
   normalizeReferral,
   normalizeVisitedPage,
+  normalizeDeviceCoordinates,
   requiresExplicitVisitorConsent,
 } from "../../../lib/visitorNotifications.mjs";
 import { resolveVisitorLocation } from "../../../lib/visitorLocationProviders.mjs";
@@ -65,7 +66,6 @@ export async function POST(request) {
     return json({ ok: false }, 400);
   }
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) return json({ ok: false }, 400);
-  // Older open tabs may still send deviceCoordinates. Ignore it entirely.
   if (Object.keys(payload).some((key) => !["page", "referrer", "deviceCoordinates", "utcOffsetMinutes"].includes(key))) return json({ ok: false }, 400);
 
   const day = istDayKey(visitedAt);
@@ -110,7 +110,11 @@ export async function POST(request) {
     await addAggregate(day, bucketId, details);
 
     if (getNotificationMode() === "individual") {
-      const email = makeVisitorEmail({ ...details, date: visitedAt });
+      const deviceCoordinates = normalizeDeviceCoordinates(payload.deviceCoordinates);
+      const emailLocation = deviceCoordinates
+        ? { ...details.location, deviceCoordinates }
+        : details.location;
+      const email = makeVisitorEmail({ ...details, location: emailLocation, date: visitedAt });
       try {
         const result = await sendVisitorEmail(request, email);
         if (!result.sent) console.error("Portfolio visitor notification delivery failed", { status: result.status || 0 });

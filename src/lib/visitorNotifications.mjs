@@ -115,6 +115,21 @@ export function normalizeCoordinates(value) {
   return { latitude, longitude };
 }
 
+export function normalizeDeviceCoordinates(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const { latitude, longitude, accuracyMeters } = value;
+  if (
+    typeof latitude !== "number" || !Number.isFinite(latitude) || latitude < -90 || latitude > 90 ||
+    typeof longitude !== "number" || !Number.isFinite(longitude) || longitude < -180 || longitude > 180
+  ) return undefined;
+
+  const normalized = { latitude, longitude };
+  if (typeof accuracyMeters === "number" && Number.isFinite(accuracyMeters) && accuracyMeters >= 0 && accuracyMeters <= 100_000) {
+    normalized.accuracyMeters = accuracyMeters;
+  }
+  return normalized;
+}
+
 export function approximateCoordinatesFromHeaders(headers, {
   trackingEligible = false,
   consentAccepted = false,
@@ -463,15 +478,33 @@ function displayProviderName(provider) {
   })[provider] || provider;
 }
 
+function formatDeviceCoordinateLines(location) {
+  const coordinates = normalizeDeviceCoordinates(location?.deviceCoordinates);
+  if (!coordinates) return [];
+
+  const lines = [
+    "Browser-reported coordinates (provided after location permission; not independently verified): " +
+      coordinates.latitude + ", " + coordinates.longitude,
+  ];
+  if (coordinates.accuracyMeters !== undefined) {
+    lines.push("Browser-reported accuracy: ±" + Math.round(coordinates.accuracyMeters) + " m");
+  }
+  lines.push("Google Maps (device coordinates): https://www.google.com/maps?q=" + coordinates.latitude + "," + coordinates.longitude);
+  return lines;
+}
+
 export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, source, date = new Date(), count = 1, title = "New Portfolio Visitor" }) {
   const { date: istDate, time: istTime } = formatIstDateTime(date);
   const countLine = count > 1 ? "Eligible visits recorded: " + count : "A visitor opened your portfolio.";
   const coordinates = formatApproximateCoordinates(location);
   const providerLine = formatLocationProviderLine(location);
   const coordinatesLink = formatGoogleMapsLink(location);
-  const confidence = location.confidence || (location.country !== "Unavailable"
+  const confidence = location.deviceCoordinates
+    ? "Device-reported coordinates are included after browser permission; the browser-reported accuracy is approximate and the coordinates are not independently verified. IP-derived country, region, and city remain estimates."
+    : location.confidence || (location.country !== "Unavailable"
       ? "Low — approximate IP estimate; provider agreement cannot establish physical presence."
       : "Unavailable — no usable location data.");
+  const deviceCoordinateLines = formatDeviceCoordinateLines(location);
   const providerResults = location.providerObservations?.length > 1
     ? location.providerObservations.map((observation) => {
       const place = [observation.city, observation.region, observation.country].filter(Boolean).join(", ") || "location unavailable";
@@ -494,6 +527,7 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
         : []),
       "Postal code (IP estimate): " + (networkIndicators.length ? "Unavailable" : location.postalCode || "Unavailable"),
       "Timezone (IP estimate): " + (location.timezone || "Unavailable"),
+      ...deviceCoordinateLines,
       ...(coordinates ? [coordinates] : []),
       ...(coordinatesLink ? ["Google Maps: " + coordinatesLink] : []),
       ...(location.organization ? ["Network organization / ISP: " + location.organization] : []),
@@ -510,7 +544,7 @@ export function makeVisitorEmail({ location, page, pageUrl, deviceBrowser, sourc
       "Location confidence: " + confidence,
       "Location certainty: " + location.certainty,
       "",
-      "IP-based location is an approximate, low-confidence estimate; provider agreement does not establish physical presence. Eligible visits share the trusted visitor IP with Vercel and IPapi.is, and with IPinfo, IPapi.co, or MaxMind only when their server-side tokens are configured. Country, region, and city confidence are evaluated independently; conflicting city values are shown as unverified estimates and coordinates are omitted. A possible cloud/hosting indicator comes from provider metadata and does not confirm a VPN or proxy. This feature uses IP location only. Raw IP addresses are not stored by this feature.",
+      "IP-based location is an approximate, low-confidence estimate; provider agreement does not establish physical presence. Eligible visits share the trusted visitor IP with Vercel and IPapi.is, and with IPinfo, IPapi.co, or MaxMind only when their server-side tokens are configured. Country, region, and city confidence are evaluated independently; conflicting city values are shown as unverified estimates and IP coordinates are omitted. A possible cloud/hosting indicator comes from provider metadata and does not confirm a VPN or proxy. Browser-reported coordinates are included in individual alerts only after the browser grants location permission; they are not independently verified or retained in grouped visit records. Raw IP addresses are not stored by this feature.",
     ].join("\n"),
   };
 }
@@ -571,7 +605,7 @@ export function makeVisitorDailySummaryEmail(rows, day, date = new Date()) {
     if (mapLink) lines.push("Google Maps: " + mapLink);
   }
   if (omitted) lines.push("", "Additional grouped visits not listed: " + omitted);
-  lines.push("", "IP-based location and coordinates are approximate, low-confidence estimates; provider agreement does not establish physical presence. Eligible requests use Vercel and IPapi.is; IPinfo, IPapi.co, and MaxMind are used only when their server-side tokens are configured. IPapi.is rate limits or outages fall back to available Vercel data. Country, region, and city confidence are evaluated independently; conflicting city values are shown as unverified estimates and coordinates are omitted. A possible cloud/hosting indicator from provider data does not confirm a VPN or proxy. This feature uses IP location only. Raw IP addresses are not stored by this feature.");
+  lines.push("", "IP-based location and coordinates are approximate, low-confidence estimates; provider agreement does not establish physical presence. Eligible requests use Vercel and IPapi.is; IPinfo, IPapi.co, and MaxMind are used only when their server-side tokens are configured. IPapi.is rate limits or outages fall back to available Vercel data. Country, region, and city confidence are evaluated independently; conflicting city values are shown as unverified estimates and IP coordinates are omitted. Daily summaries use IP location only. Browser-reported coordinates are not retained in grouped visit records. A possible cloud/hosting indicator from provider data does not confirm a VPN or proxy. Raw IP addresses are not stored by this feature.");
   return { subject: "New Portfolio Visitor", message: lines.join("\n") };
 }
 
