@@ -1,7 +1,7 @@
 "use client";
 
 import { gsap } from "gsap";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const firstName = "EVIN";
 const lastName = "LEYANDER";
@@ -25,12 +25,6 @@ export default function CinematicIntro() {
   const [visible, setVisible] = useState(true);
   const stageRef = useRef(null);
   const timelineRef = useRef(null);
-  const finishRef = useRef(null);
-
-  const finish = useCallback(() => {
-    if (!visible) return;
-    finishRef.current?.();
-  }, [visible]);
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -50,9 +44,7 @@ export default function CinematicIntro() {
       completed = true;
       revealHero();
       setVisible(false);
-      finishRef.current = null;
     };
-    finishRef.current = complete;
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) {
@@ -155,7 +147,6 @@ export default function CinematicIntro() {
       disposed = true;
       timelineRef.current?.kill();
       timelineRef.current = null;
-      finishRef.current = null;
       context?.revert();
     };
   }, []);
@@ -179,9 +170,6 @@ export default function CinematicIntro() {
         </div>
         <span className="intro-rule" aria-hidden="true" />
       </div>
-      <button className="intro-skip" type="button" tabIndex={0} onClick={finish} aria-label="Skip the introduction">
-        Skip intro <span aria-hidden="true">↗</span>
-      </button>
     </div>
   );
 }

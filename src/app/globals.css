@@ -282,42 +282,10 @@ textarea {
 
 .intro-index span { padding-inline: 5px; color: var(--accent-light); }
 
-.intro-skip {
-  position: absolute;
-  z-index: 5;
-  top: 24px;
-  right: 28px;
-  display: inline-flex;
-  min-height: 40px;
-  align-items: center;
-  gap: 12px;
-  border: 1px solid rgba(121, 217, 158, 0.24);
-  border-radius: 999px;
-  padding: 0 15px;
-  background: rgba(9, 11, 10, 0.58);
-  color: rgba(245, 255, 247, 0.78);
-  cursor: pointer;
-  font: inherit;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
-}
-
-.intro-skip:hover,
-.intro-skip:focus-visible {
-  border-color: rgba(121, 217, 158, 0.72);
-  background: rgba(121, 217, 158, 0.12);
-  color: #fff;
-}
-
-.intro-skip span { color: var(--accent-light); font-size: 14px; }
-
 @media (max-width: 620px) {
   .intro-name-first { font-size: clamp(6rem, 27vw, 8rem); }
   .intro-name-last { font-size: clamp(3.45rem, 15vw, 4.7rem); }
   .intro-index { bottom: 20px; left: 20px; font-size: 8px; }
-  .intro-skip { top: 18px; right: 18px; min-height: 36px; padding-inline: 12px; font-size: 9px; }
   .intro-ripple { width: 62vw; }
   .intro-ripple--two { width: 88vw; }
 }
