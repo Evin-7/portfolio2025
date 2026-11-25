@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { requestGrantedDeviceCoordinates } from "../lib/visitorDevicePermission.mjs";
 
 let deviceCoordinatesRequest;
 
@@ -9,40 +10,7 @@ function hasOptOutSignal() {
   return navigator.doNotTrack === "1" || navigator.globalPrivacyControl === true;
 }
 
-function readDeviceCoordinates(options) {
-  return new Promise((resolve) => {
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => resolve({
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-        accuracyMeters: coords.accuracy,
-      }),
-      (error) => resolve({ errorCode: error.code }),
-      options,
-    );
-  });
-}
-
-async function requestDeviceCoordinates() {
-  if (!navigator.geolocation) return null;
-
-  const first = await readDeviceCoordinates({
-    enableHighAccuracy: true,
-    maximumAge: 30_000,
-    timeout: 10_000,
-  });
-  if (!first?.errorCode) return first;
-  if (first.errorCode === 1) return null;
-
-  const retry = await readDeviceCoordinates({
-    enableHighAccuracy: false,
-    maximumAge: 30_000,
-    timeout: 10_000,
-  });
-  return retry?.errorCode ? null : retry;
-}
-
-async function getDeviceCoordinatesIfEligible() {
+async function getEligibleBrowserSignals() {
   try {
     const response = await fetch("/api/privacy-consent", {
       cache: "no-store",
@@ -53,17 +21,26 @@ async function getDeviceCoordinatesIfEligible() {
     const settings = await response.json();
     if (
       !settings.enabled ||
-      !settings.requestDeviceLocation ||
       settings.optedOut ||
       settings.optOutSignal ||
       (settings.requiresConsent && !settings.explicitConsent) ||
       hasOptOutSignal()
     ) return null;
 
-    const request = deviceCoordinatesRequest ||= requestDeviceCoordinates();
-    const coordinates = await request;
-    if (!coordinates && deviceCoordinatesRequest === request) deviceCoordinatesRequest = undefined;
-    return coordinates;
+    const signals = {
+      browserTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      browserLanguage: navigator.language,
+      ...(navigator.webdriver === true ? { webdriver: true } : {}),
+    };
+    if (!settings.requestDeviceLocation) return signals;
+    const request = deviceCoordinatesRequest ||= requestGrantedDeviceCoordinates(navigator);
+    try {
+      const deviceCoordinates = await request;
+      if (deviceCoordinates) signals.deviceCoordinates = deviceCoordinates;
+    } finally {
+      if (deviceCoordinatesRequest === request) deviceCoordinatesRequest = undefined;
+    }
+    return signals;
   } catch {
     // Fail closed if the server cannot confirm that location collection is eligible.
     return null;
@@ -84,7 +61,8 @@ export default function VisitorTracker() {
         // Keep referral unavailable if the browser supplies an invalid value.
       }
 
-      const deviceCoordinates = await getDeviceCoordinatesIfEligible();
+      const browserSignals = await getEligibleBrowserSignals();
+      if (hasOptOutSignal()) return;
       void fetch("/api/visitor", {
         method: "POST",
         credentials: "same-origin",
@@ -95,7 +73,7 @@ export default function VisitorTracker() {
           page: pathname || "/",
           referrer,
           utcOffsetMinutes: -new Date().getTimezoneOffset(),
-          ...(deviceCoordinates ? { deviceCoordinates } : {}),
+          ...browserSignals,
         }),
       }).catch(() => {
         // Visitor notifications are optional and never affect page rendering.
