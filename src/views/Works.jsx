@@ -180,7 +180,6 @@ export default function Works() {
             <p className="section-kicker">02 / Digital exhibition</p>
             <h2 className="section-title" id="works-title">Selected work<span aria-hidden="true">.</span></h2>
           </div>
-          <p className="work-heading-note">A collection of products and experiences, shaped from first idea to launch.</p>
           <Link className="work-heading-link" href="/projects">Browse all projects <span aria-hidden="true">↗</span></Link>
         </header>
       </div>
