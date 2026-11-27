@@ -212,7 +212,9 @@ export default function LiquidGlassBackground() {
     const hero = document.querySelector(".hero-section");
     let frameId = 0;
     let startedAt = performance.now();
-    const pixelRatio = () => Math.min(window.devicePixelRatio || 1, refs.mobile ? 0.8 : 1.25);
+    // Keep the hero canvas at the same density as the intro canvas so the
+    // handoff does not look like the animation suddenly shrinks or softens.
+    const pixelRatio = () => Math.min(window.devicePixelRatio || 1, refs.mobile ? 1.25 : 1.5);
 
     const setActive = (active) => {
       refs.active = active;
@@ -223,11 +225,14 @@ export default function LiquidGlassBackground() {
     const setSize = () => {
       refs.mobile = window.matchMedia("(max-width: 620px)").matches;
       const ratio = pixelRatio();
-      const width = Math.max(1, Math.round(window.innerWidth * ratio));
-      const heroHeight = refs.introComplete && hero
-        ? hero.getBoundingClientRect().height
-        : window.innerHeight;
-      const height = Math.max(1, Math.round(heroHeight * ratio));
+      // The intro is viewport-sized, but after its reveal this canvas is fitted
+      // to the hero section. Measure the rendered box rather than assuming the
+      // viewport and section dimensions are interchangeable.
+      const bounds = wrapper.getBoundingClientRect();
+      const cssWidth = bounds.width || window.innerWidth;
+      const cssHeight = bounds.height || window.innerHeight;
+      const width = Math.max(1, Math.round(cssWidth * ratio));
+      const height = Math.max(1, Math.round(cssHeight * ratio));
       if (gl && (canvas.width !== width || canvas.height !== height)) {
         canvas.width = width;
         canvas.height = height;
@@ -312,6 +317,13 @@ export default function LiquidGlassBackground() {
     const observer = hero ? new IntersectionObserver(updateSceneBounds, { rootMargin: "30px 0px" }) : null;
     if (hero) observer?.observe(hero);
 
+    const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(() => {
+      if (refs.introComplete) updateSceneBounds();
+      else setSize();
+    });
+    resizeObserver?.observe(wrapper);
+    if (hero) resizeObserver?.observe(hero);
+
     const onIntroComplete = () => {
       refs.introComplete = true;
       updateSceneBounds();
@@ -352,6 +364,7 @@ export default function LiquidGlassBackground() {
       refs.running = false;
       window.cancelAnimationFrame(frameId);
       observer?.disconnect();
+      resizeObserver?.disconnect();
       window.removeEventListener("portfolio:intro-complete", onIntroComplete);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerleave", onPointerLeave);
