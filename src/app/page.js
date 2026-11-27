@@ -6,6 +6,7 @@ import Highlights from "../views/Highlights";
 import Skills from "../views/Skills";
 import Works from "../views/Works";
 import Experience from "../views/Experience";
+import Meeting from "../views/Meeting";
 import Contact from "../views/Contact";
 import PointerEffects from "../components/PointerEffects";
 import { PROFILE } from "../lib/siteMetadata";
@@ -55,6 +56,7 @@ export default function HomePage() {
           <Skills />
           <Works />
           <Experience />
+          <Meeting />
           <Contact />
         </main>
         <Footer />

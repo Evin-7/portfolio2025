@@ -71,7 +71,7 @@ export default function Contact() {
       <section className="section contact-section" aria-labelledby="contact-title" data-story="contact">
         <div className="page-container contact-layout">
           <Reveal className="contact-copy nav-anchor-target" id="contact">
-            <p className="section-kicker">04 / Contact</p>
+            <p className="section-kicker">05 / Contact</p>
             <h2 className="section-title" id="contact-title">Let’s build something meaningful.</h2>
             <a className="contact-email" href="mailto:yjevin75@gmail.com" data-magnetic>
               yjevin75@gmail.com <span aria-hidden="true">↗</span>

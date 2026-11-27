@@ -50,6 +50,12 @@ npm run dev
 
 Run `VISITOR_NOTIFICATIONS_TEST_MODE=true npm run dev` to test consent, visit capture, and the scheduled summary locally. This mode uses in-memory storage and simulates email delivery; it never contacts EmailJS. Run the unit suite with `npm test`.
 
+### Google Calendar appointment scheduling
+
+Create a 30-minute appointment schedule in Google Calendar and enable Google Meet conferencing in that schedule's booking settings. Open the schedule's **Sharing options → Website embed → Inline booking page**, then copy the `src` URL from Google's iframe snippet into `NEXT_PUBLIC_GOOGLE_CALENDAR_BOOKING_URL`. The portfolio embeds Google's live scheduler and also links to the same page in a new tab. If the variable is unset, the section offers an email fallback and does not show fabricated availability.
+
+For local development, add the variable to `.env.local` and restart the dev server. In Vercel, open the project **Settings → Environment Variables**, add `NEXT_PUBLIC_GOOGLE_CALENDAR_BOOKING_URL` with the copied HTTPS `calendar.google.com` URL for the environments you use, save it, and redeploy. This public URL is exposed to website visitors; do not put credentials or private tokens in it. Google controls appointment availability, confirmations, calendar invitations, and Meet links through the schedule settings.
+
 ## Production
 
 ```bash
