@@ -38,7 +38,7 @@ Keywords are used in page titles and useful copy, without a `meta keywords` tag 
 ## Validation
 
 - `npm run lint`: passed with no errors.
-- `npm test`: passed, 55 tests and 0 failures. The existing `visitorStore.js` module-type warning remains; it did not fail the test run.
+- `npm test`: passed, 55 tests and 0 failures at the time of the SEO audit.
 - `npm run build`: passed. Static output includes the homepage, About, Projects, Services, Contact, Privacy, three service detail routes, `robots.txt`, and `sitemap.xml`.
 - Inspected generated canonical URLs, JSON-LD, `robots.txt`, and `sitemap.xml` in the production build output. The sitemap contains the intended public HTML routes.
 - Production deployment for commit `b1a6bf3548155f389521e699d4e161a80209d13b` reached Vercel `READY`.

@@ -19,7 +19,6 @@ uniform vec2 uResolution;
 uniform vec2 uImageResolution;
 uniform vec2 uPointer;
 uniform float uTime;
-uniform float uIntroProgress;
 uniform float uHeroMode;
 uniform float uScroll;
 uniform float uMobile;
@@ -67,49 +66,11 @@ vec2 coverUv(vec2 uv, float screenAspect, float imageAspect) {
   return uv;
 }
 
-vec3 glassVortex(vec3 baseColor, vec2 p, float progress, float time) {
-  float radius = length(p);
-  float angle = atan(p.y, p.x);
-  float formation = smoothstep(0.24, 0.5, progress) * (1.0 - smoothstep(0.74, 0.9, progress));
-  float organic = fbm(vec2(angle * 1.7 + 4.0, time * 0.07 + radius * 2.2));
-  float wave = 0.058 * sin(angle * 2.0 + time * 0.21)
-    + 0.036 * sin(angle * 3.0 - time * 0.14)
-    + 0.022 * sin(angle * 5.0 + time * 0.11)
-    + (organic - 0.5) * 0.085;
-  float ringRadius = 0.36 + wave;
-  float distance = radius - ringRadius;
-  float absoluteDistance = abs(distance);
-  float aa = max(fwidth(radius) * 1.8, 0.0025);
-  float thickness = 0.102 + 0.018 * sin(angle * 3.0 + time * 0.25);
-  float body = 1.0 - smoothstep(thickness - aa, thickness + aa, absoluteDistance);
-  float innerRim = 1.0 - smoothstep(aa * 0.8, aa * 3.6, abs(distance + thickness * 0.77));
-  float outerRim = 1.0 - smoothstep(aa * 0.8, aa * 3.6, abs(distance - thickness * 0.73));
-  float travelingLight = pow(max(0.0, cos(angle - time * 0.42 + organic * 1.7)), 28.0);
-  float longReflection = pow(max(0.0, cos(angle + time * 0.23 + 1.7)), 48.0);
-  float causticTrack = exp(-pow((distance - sin(angle * 2.0 + time * 0.35 + organic) * thickness * 0.22) * 28.0, 2.0));
-  float curvedSurface = sqrt(max(0.0, 1.0 - pow(distance / thickness, 2.0)));
-  float surfaceShade = 0.5 + 0.5 * curvedSurface + 0.12 * sin(angle * 2.0 - time * 0.16 + organic * 4.0);
-  float hole = 1.0 - smoothstep(ringRadius - thickness * 0.98, ringRadius - thickness * 0.76, radius);
-  vec3 darkCenter = vec3(0.0015, 0.006, 0.0045);
-  vec3 glassTint = baseColor * vec3(0.44, 0.79, 0.59) + vec3(0.002, 0.025, 0.013);
-  vec3 imageUnderGlass = mix(baseColor, glassTint, 0.72);
-  vec3 color = mix(baseColor, darkCenter, formation * hole * 0.9);
-  color = mix(color, imageUnderGlass * surfaceShade, formation * body * 0.88);
-  float specular = formation * (innerRim * (0.3 + 0.7 * travelingLight) + outerRim * (0.18 + 0.56 * longReflection) + causticTrack * (0.1 + 0.2 * travelingLight));
-  vec3 highlight = mix(vec3(0.28, 0.9, 0.55), vec3(0.95, 1.0, 0.97), clamp(travelingLight + longReflection * 0.32, 0.0, 1.0));
-  return color + highlight * specular * surfaceShade * 0.78;
-}
-
 void main() {
   float screenAspect = uResolution.x / max(uResolution.y, 1.0);
   float imageAspect = uImageResolution.x / max(uImageResolution.y, 1.0);
   vec2 uv = coverUv(vUv, screenAspect, imageAspect);
   float imageHeight = screenAspect / imageAspect;
-
-  float introWindow = (1.0 - uHeroMode) * smoothstep(0.08, 0.42, uIntroProgress) * (1.0 - smoothstep(0.74, 0.94, uIntroProgress));
-  vec2 screenPoint = vec2(vUv.x - 0.5, vUv.y - 0.5);
-  float radius = length(screenPoint);
-  float angle = atan(screenPoint.y, screenPoint.x);
   float turbulence = fbm(uv * 5.2 + vec2(uTime * 0.025, -uTime * 0.018));
 
   float motionScale = 1.0 - uHeroMode + uHeroMode * 0.36;
@@ -117,35 +78,25 @@ void main() {
   float flowY = cos(uv.x * 6.0 - uTime * 0.09 + turbulence * 1.8) * 0.0032;
   vec2 drift = vec2(flowX + uPointer.x * 0.003 + uScroll * 0.002, flowY + uPointer.y * 0.003) * motionScale;
 
-  float vortexTwist = introWindow * (2.4 + 0.48 * sin(angle * 2.0 + uTime * 0.25)) * exp(-radius * 2.05);
-  vec2 vortexPoint = vec2(cos(angle + vortexTwist), sin(angle + vortexTwist)) * radius;
-  vec2 vortexUv = vUv + vec2(vortexPoint.x - screenPoint.x, vortexPoint.y - screenPoint.y);
-  vec2 sampledScreenUv = mix(vUv, vortexUv, introWindow * 0.78);
-  uv = mix(uv, coverUv(vortexUv, screenAspect, imageAspect), introWindow * 0.78) + drift;
-
   vec3 baseColor;
   if (uMobile > 0.5) {
-    vec2 topUv = vec2(sampledScreenUv.x, sampledScreenUv.y / max(imageHeight, 0.001)) + drift;
-    vec2 bottomUv = vec2(sampledScreenUv.x, 1.0 - (1.0 - sampledScreenUv.y) / max(imageHeight, 0.001)) + drift;
+    vec2 topUv = vec2(vUv.x, vUv.y / max(imageHeight, 0.001)) + drift;
+    vec2 bottomUv = vec2(vUv.x, 1.0 - (1.0 - vUv.y) / max(imageHeight, 0.001)) + drift;
     vec3 dark = vec3(0.003, 0.008, 0.006);
     vec3 upperGlass = texture(uTexture, clamp(topUv, 0.001, 0.999)).rgb;
     vec3 lowerGlass = texture(uTexture, clamp(bottomUv, 0.001, 0.999)).rgb;
-    float upperFade = 1.0 - smoothstep(imageHeight * 0.78, imageHeight, sampledScreenUv.y);
-    float lowerFade = smoothstep(1.0 - imageHeight, 1.0 - imageHeight * 0.78, sampledScreenUv.y);
+    float upperFade = 1.0 - smoothstep(imageHeight * 0.78, imageHeight, vUv.y);
+    float lowerFade = smoothstep(1.0 - imageHeight, 1.0 - imageHeight * 0.78, vUv.y);
     baseColor = mix(dark, upperGlass, upperFade);
     baseColor = mix(baseColor, lowerGlass, lowerFade);
   } else {
-    baseColor = texture(uTexture, clamp(uv, 0.001, 0.999)).rgb;
+    baseColor = texture(uTexture, clamp(uv + drift, 0.001, 0.999)).rgb;
   }
+
   float luminance = dot(baseColor, vec3(0.2126, 0.7152, 0.0722));
   float reflectionMask = smoothstep(0.09, 0.58, luminance) * smoothstep(0.01, 0.12, baseColor.g - baseColor.r * 0.58);
   baseColor += vec3(0.2, 0.34, 0.27) * reflectionMask * 0.012;
-
-  vec2 vortexPointForRim = vec2((vUv.x - 0.5) * max(screenAspect, 0.7), vUv.y - 0.5);
-  vec3 color = glassVortex(baseColor, vortexPointForRim, uIntroProgress, uTime) * (1.0 - uHeroMode);
-  color += baseColor * uHeroMode;
-
-  outColor = vec4(color, 1.0);
+  outColor = vec4(baseColor, 1.0);
 }`;
 
 function compileShader(gl, type, source) {
@@ -239,7 +190,6 @@ export default function LiquidGlassBackground() {
           imageResolution: gl.getUniformLocation(program, "uImageResolution"),
           pointer: gl.getUniformLocation(program, "uPointer"),
           time: gl.getUniformLocation(program, "uTime"),
-          introProgress: gl.getUniformLocation(program, "uIntroProgress"),
           heroMode: gl.getUniformLocation(program, "uHeroMode"),
           scroll: gl.getUniformLocation(program, "uScroll"),
           mobile: gl.getUniformLocation(program, "uMobile"),
@@ -250,7 +200,6 @@ export default function LiquidGlassBackground() {
     const refs = {
       active: !document.documentElement.dataset.introComplete,
       introComplete: document.documentElement.dataset.introComplete === "true",
-      progress: 0,
       pointerX: 0,
       pointerY: 0,
       targetX: 0,
@@ -296,7 +245,6 @@ export default function LiquidGlassBackground() {
       gl.uniform2f(uniforms.imageResolution, 1585, 992);
       gl.uniform2f(uniforms.pointer, refs.pointerX, refs.pointerY);
       gl.uniform1f(uniforms.time, elapsed);
-      gl.uniform1f(uniforms.introProgress, refs.progress);
       gl.uniform1f(uniforms.heroMode, refs.introComplete ? 1 : 0);
       gl.uniform1f(uniforms.scroll, refs.scroll);
       gl.uniform1f(uniforms.mobile, refs.mobile ? 1 : 0);
@@ -364,12 +312,7 @@ export default function LiquidGlassBackground() {
     const observer = hero ? new IntersectionObserver(updateSceneBounds, { rootMargin: "30px 0px" }) : null;
     if (hero) observer?.observe(hero);
 
-    const onIntroProgress = (event) => {
-      const value = Number(event.detail?.progress);
-      if (Number.isFinite(value)) refs.progress = Math.max(0, Math.min(1, value));
-    };
     const onIntroComplete = () => {
-      refs.progress = 1;
       refs.introComplete = true;
       updateSceneBounds();
     };
@@ -393,7 +336,6 @@ export default function LiquidGlassBackground() {
       wrapper.dataset.webgl = "false";
     };
 
-    window.addEventListener("portfolio:intro-progress", onIntroProgress);
     window.addEventListener("portfolio:intro-complete", onIntroComplete);
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     window.addEventListener("pointerleave", onPointerLeave);
@@ -410,7 +352,6 @@ export default function LiquidGlassBackground() {
       refs.running = false;
       window.cancelAnimationFrame(frameId);
       observer?.disconnect();
-      window.removeEventListener("portfolio:intro-progress", onIntroProgress);
       window.removeEventListener("portfolio:intro-complete", onIntroComplete);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerleave", onPointerLeave);

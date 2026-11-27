@@ -1,5 +1,4 @@
 import SmoothScroll from "../components/SmoothScroll";
-import VisitorTracker from "../components/VisitorTracker";
 import { createPageMetadata, PROFILE, SITE_NAME, SITE_URL } from "../lib/siteMetadata";
 import "./globals.css";
 
@@ -37,7 +36,6 @@ export default function RootLayout({ children }) {
           <style>{`.cinematic-intro{display:none!important}.hero-eyebrow,.hero-word,.hero-ctas,.hero-meta{opacity:1!important;transform:none!important;filter:none!important}`}</style>
         </noscript>
         <SmoothScroll>
-          <VisitorTracker />
           {children}
         </SmoothScroll>
       </body>

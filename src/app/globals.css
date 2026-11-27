@@ -95,40 +95,46 @@ textarea {
   position: fixed;
   z-index: 1100;
   inset: 0;
-  display: grid;
   overflow: hidden;
-  place-items: center;
-  padding: 24px;
-  background: transparent;
+  isolation: isolate;
+  background: #010705;
   pointer-events: none;
 }
 
+.intro-backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: #010705;
+}
+
+.intro-shader-canvas {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  touch-action: none;
+}
+
 .intro-mark-wrap {
-  position: relative;
-  width: clamp(250px, 31vw, 500px);
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: 28vmin;
   aspect-ratio: 783 / 509;
-  transform-origin: center;
-  will-change: transform, opacity, filter;
+  translate: -50% -50%;
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity;
 }
 
 .intro-mark {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 0 32px rgba(121, 217, 158, 0.16));
-}
-
-.intro-logo-sweep {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(108deg, transparent 35%, rgba(255, 255, 255, 0.12) 44%, rgba(250, 255, 252, 0.92) 49%, rgba(121, 217, 158, 0.45) 54%, transparent 64%);
-  mask-image: url("/el-monogram-intro.png");
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mix-blend-mode: screen;
-  opacity: 0;
-  pointer-events: none;
 }
 
 .liquid-glass-background {
@@ -153,7 +159,6 @@ textarea {
 .liquid-glass-background[data-webgl="true"] .liquid-glass-canvas { opacity: 1; }
 
 @media (max-width: 620px) {
-  .intro-mark-wrap { width: clamp(220px, 62vw, 340px); }
   .liquid-glass-background { background-image: none; background-color: #050b08; }
   .liquid-glass-background::before,
   .liquid-glass-background::after {
@@ -1391,14 +1396,7 @@ svg {
 .privacy-lead { max-width: 690px; margin: 22px 0 0; color: var(--text-secondary); font-size: 17px; line-height: 1.75; }
 .privacy-page section { max-width: 760px; margin-top: 36px; }
 .privacy-page section h2 { margin: 0; color: var(--text); font-size: 17px; font-weight: 630; letter-spacing: -0.03em; }
-.privacy-page section p { margin: 10px 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.85; }
-.privacy-settings { max-width: 760px; margin-top: 36px; border: 1px solid var(--glass-border); border-radius: 18px; padding: 22px; background: var(--glass-base); }
-.privacy-settings h2 { margin: 0; color: var(--text); font-size: 17px; font-weight: 630; letter-spacing: -0.03em; }
-.privacy-settings > p { margin: 10px 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.8; }
-.privacy-settings-control { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 18px; }
-.privacy-settings-control p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
-.privacy-settings-control .button { flex: 0 0 auto; min-height: 42px; font-size: 12px; }
-.privacy-settings-control .button:disabled { cursor: not-allowed; opacity: 0.58; }
+.privacy-page section p { margin: 10px 0 0; color: var(--text-secondary); font-size: 16px; line-height: 1.75; }
 .privacy-back { display: inline-flex; margin-top: 35px; }
 
 .page-route-header__row { display: flex; min-height: var(--nav-height); align-items: center; justify-content: space-between; gap: 24px; }
@@ -1622,8 +1620,6 @@ svg {
   .footer-links { width: 100%; flex-wrap: wrap; gap: 14px 19px; }
   .privacy-page { padding-block: 92px 76px; }
   .privacy-lead { font-size: 15px; }
-  .privacy-settings-control { align-items: stretch; flex-direction: column; }
-  .privacy-settings-control .button { align-self: flex-start; }
 }
 
 

@@ -21,7 +21,7 @@ export default function Footer() {
           {footerLinks.map(([label, href]) => (
             <a key={label} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noopener noreferrer" : undefined}>{label}</a>
           ))}
-          <a href="/privacy#visitor-notifications">Privacy &amp; visitor settings</a>
+          <a href="/privacy">Privacy</a>
         </nav>
       </div>
       <div className="page-container footer-copyright">© {new Date().getFullYear()} Evin Leyander</div>
