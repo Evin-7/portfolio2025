@@ -90,11 +90,11 @@ export default function Meeting() {
         </div>
 
         <Reveal id={undefined} className="mt-7" delay={0.08} variant="mask">
-          <div className="meeting-frame rounded-[24px] p-px shadow-[0_28px_90px_rgba(0,0,0,0.34)]">
+          <div className="meeting-frame rounded-[24px] p-1 shadow-[0_24px_72px_rgba(0,0,0,0.28)]">
             {bookingUrl ? (
-              <div className="relative h-[940px] overflow-hidden rounded-[23px] bg-[#0c0f0e] sm:h-[800px] lg:h-[740px]">
+              <div className="meeting-embed relative h-[1380px] overflow-hidden rounded-[19px] bg-[#101312] sm:h-[1340px] lg:h-[1300px]">
                 {!isCalendarLoaded && (
-                  <div className="absolute inset-0 z-10 grid place-items-center bg-[#0c0f0e] px-6" role="status" aria-live="polite">
+                  <div className="absolute inset-0 z-10 grid place-items-center bg-[#101312] px-6" role="status" aria-live="polite">
                     <div className="flex items-center gap-3 rounded-full border border-[var(--glass-border)] bg-[var(--surface)] px-5 py-3 text-sm text-[var(--text-secondary)] shadow-xl">
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-[rgba(121,217,158,0.24)] border-t-[var(--accent-light)]" aria-hidden="true" />
                       Loading live availability…
@@ -102,7 +102,7 @@ export default function Meeting() {
                   </div>
                 )}
                 <iframe
-                  className={`absolute inset-0 h-full w-full border-0 transition-opacity duration-500 ${isCalendarLoaded ? "opacity-100" : "opacity-0"}`}
+                  className={`meeting-calendar-frame absolute inset-0 h-full w-full border-0 transition-[opacity,filter] duration-500 ${isCalendarLoaded ? "opacity-100" : "opacity-0"}`}
                   src={bookingUrl}
                   title="Google Calendar appointment availability"
                   loading="lazy"

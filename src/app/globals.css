@@ -1683,16 +1683,21 @@ svg {
 .work-heading-link { justify-self: start; align-self: center; color: var(--accent-light); font-size: 12px; font-weight: 600; white-space: nowrap; }
 .work-heading-link:hover { color: var(--text); }
 
-.meeting-frame { position: relative; isolation: isolate; background: #0c0f0e; }
+.meeting-frame {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid rgba(226, 242, 232, 0.08);
+  background: #0c0f0e;
+}
 .meeting-frame::before {
   position: absolute;
   z-index: 0;
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: conic-gradient(from 0turn, transparent 0 35%, rgba(121, 217, 158, 0.42) 48%, transparent 64% 100%);
+  background: conic-gradient(from 0turn, transparent 0 35%, rgba(121, 217, 158, 0.2) 48%, transparent 64% 100%);
   content: "";
-  animation: meeting-border-drift 12s linear infinite;
+  animation: meeting-border-drift 18s linear infinite;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -1700,7 +1705,16 @@ svg {
   pointer-events: none;
 }
 .meeting-frame > * { position: relative; z-index: 1; }
+.meeting-embed { background: #101312; }
+.meeting-calendar-frame {
+  background: #101312;
+  filter: invert(0.9) hue-rotate(95deg) saturate(0.78) brightness(0.88) contrast(1.12);
+}
 @keyframes meeting-border-drift { to { transform: rotate(1turn); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .meeting-frame::before { animation: none; }
+}
 
 @media (max-width: 1120px) {
   .nav-row { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
