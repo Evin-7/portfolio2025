@@ -3,12 +3,12 @@
 import { gsap } from "gsap";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import LiquidIntroCanvas from "./LiquidIntroCanvas";
+import LiquidIntroSvg, { INTRO_ART_DURATION } from "./LiquidIntroSvg";
 
-const INTRO_SESSION_KEY = "evin-portfolio-membrane-intro-v1";
-const INTRO_DURATION = 2.88;
+const INTRO_SESSION_KEY = "evin-portfolio-emerald-intro-v2";
+const INTRO_DURATION = INTRO_ART_DURATION;
 
-type ProgressUniform = { value: number };
+type ProgressUniform = { value: number; render: () => void };
 
 type IntroLifecycle = {
   completed: boolean;
@@ -71,14 +71,27 @@ export default function CinematicIntro() {
     timelineRef.current = sequence;
 
     sequence
-      .to(progressUniform, { value: 1, duration: INTRO_DURATION, ease: "none" }, 0)
-      .to(mark, { autoAlpha: 1, duration: 0.64, ease: "sine.inOut" }, 1.62)
+      .to(progressUniform, { value: 1, duration: INTRO_DURATION, ease: "none", onUpdate: progressUniform.render }, 0)
+      .to(mark, { autoAlpha: 1, duration: 0.52, ease: "sine.inOut" }, 1.43)
       .add(() => lifecycle.revealHero?.(), INTRO_DURATION)
-      .to(stage, { autoAlpha: 0, duration: 0.4, ease: "power1.out" }, INTRO_DURATION);
+      .to(stage, { autoAlpha: 0, duration: 0.35, ease: "power1.out" }, INTRO_DURATION);
   }, []);
 
   const failAnimation = useCallback(() => {
-    lifecycleRef.current.complete?.(true);
+    const lifecycle = lifecycleRef.current;
+    const stage = stageRef.current;
+    const mark = markRef.current;
+    if (lifecycle.disposed || lifecycle.completed) return;
+    if (!stage || !mark) {
+      lifecycle.complete?.(true);
+      return;
+    }
+
+    lifecycle.started = true;
+    gsap.set(stage, { autoAlpha: 1 });
+    gsap.set(mark, { autoAlpha: 1 });
+    timelineRef.current = gsap.timeline({ onComplete: () => lifecycle.complete?.(true) })
+      .to(stage, { autoAlpha: 0, delay: 0.55, duration: 0.35, ease: "power1.out" });
   }, []);
 
   useEffect(() => {
@@ -166,7 +179,7 @@ export default function CinematicIntro() {
       aria-hidden="true"
     >
       <div className="intro-backdrop" />
-      <LiquidIntroCanvas enabledRef={playRef} onReady={startAnimation} onFailure={failAnimation} />
+      <LiquidIntroSvg enabledRef={playRef} onReady={startAnimation} onFailure={failAnimation} />
       <div className="intro-mark-wrap" ref={markRef}>
         <Image
           className="intro-mark"
@@ -175,7 +188,7 @@ export default function CinematicIntro() {
           width={783}
           height={509}
           priority
-          sizes="28vmin"
+          sizes="24vmin"
         />
       </div>
     </div>

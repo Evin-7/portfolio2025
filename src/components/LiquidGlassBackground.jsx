@@ -335,7 +335,7 @@ export default function LiquidGlassBackground() {
     resizeObserver?.observe(wrapper);
     if (hero) resizeObserver?.observe(hero);
 
-    const onIntroComplete = () => {
+    const onIntroReveal = () => {
       refs.introComplete = true;
       updateSceneBounds();
     };
@@ -359,7 +359,8 @@ export default function LiquidGlassBackground() {
       wrapper.dataset.webgl = "false";
     };
 
-    window.addEventListener("portfolio:intro-complete", onIntroComplete);
+    window.addEventListener("portfolio:intro-reveal", onIntroReveal);
+    window.addEventListener("portfolio:intro-complete", onIntroReveal);
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     window.addEventListener("pointerleave", onPointerLeave);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -376,7 +377,8 @@ export default function LiquidGlassBackground() {
       window.cancelAnimationFrame(frameId);
       observer?.disconnect();
       resizeObserver?.disconnect();
-      window.removeEventListener("portfolio:intro-complete", onIntroComplete);
+      window.removeEventListener("portfolio:intro-reveal", onIntroReveal);
+      window.removeEventListener("portfolio:intro-complete", onIntroReveal);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerleave", onPointerLeave);
       window.removeEventListener("scroll", onScroll);
