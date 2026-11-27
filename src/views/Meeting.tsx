@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Reveal from "../components/Reveal";
 
 function getGoogleBookingUrl(value: string | undefined): string | null {
@@ -109,6 +110,11 @@ export default function Meeting() {
                   referrerPolicy="strict-origin-when-cross-origin"
                   onLoad={() => setIsCalendarLoaded(true)}
                 />
+                {isCalendarLoaded && (
+                  <span className="meeting-avatar-replacement" aria-hidden="true">
+                    <Image src="/el-monogram-favicon.png" alt="" width={30} height={30} />
+                  </span>
+                )}
               </div>
             ) : (
               <div className="grid min-h-[360px] place-items-center rounded-[23px] bg-[radial-gradient(ellipse_at_50%_0%,rgba(121,217,158,0.07),transparent_52%),#0c0f0e] px-6 py-12 text-center sm:min-h-[390px]">
