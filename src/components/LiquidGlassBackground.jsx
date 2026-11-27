@@ -205,6 +205,7 @@ export default function LiquidGlassBackground() {
       targetX: 0,
       targetY: 0,
       scroll: 0,
+      heroMode: 0,
       mobile: window.matchMedia("(max-width: 620px)").matches,
       running: false,
       ready: false,
@@ -212,6 +213,7 @@ export default function LiquidGlassBackground() {
     const hero = document.querySelector(".hero-section");
     let frameId = 0;
     let startedAt = performance.now();
+    let previousFrameAt = startedAt;
     // Keep the hero canvas at the same density as the intro canvas so the
     // handoff does not look like the animation suddenly shrinks or softens.
     const pixelRatio = () => Math.min(window.devicePixelRatio || 1, refs.mobile ? 1.25 : 1.5);
@@ -244,13 +246,17 @@ export default function LiquidGlassBackground() {
     const draw = (now) => {
       if (!refs.running || !imageLoaded || contextLost || !gl || !uniforms) return;
       const elapsed = (now - startedAt) / 1000;
+      const delta = Math.min(0.05, Math.max(0, (now - previousFrameAt) / 1000));
+      previousFrameAt = now;
+      const heroModeTarget = refs.introComplete ? 1 : 0;
+      refs.heroMode += (heroModeTarget - refs.heroMode) * (1 - Math.exp(-delta / 0.45));
       refs.pointerX += (refs.targetX - refs.pointerX) * 0.045;
       refs.pointerY += (refs.targetY - refs.pointerY) * 0.045;
       gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
       gl.uniform2f(uniforms.imageResolution, 1585, 992);
       gl.uniform2f(uniforms.pointer, refs.pointerX, refs.pointerY);
       gl.uniform1f(uniforms.time, elapsed);
-      gl.uniform1f(uniforms.heroMode, refs.introComplete ? 1 : 0);
+      gl.uniform1f(uniforms.heroMode, refs.heroMode);
       gl.uniform1f(uniforms.scroll, refs.scroll);
       gl.uniform1f(uniforms.mobile, refs.mobile ? 1 : 0);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -305,12 +311,17 @@ export default function LiquidGlassBackground() {
 
       const rect = hero.getBoundingClientRect();
       const visible = rect.bottom > 0 && rect.top < window.innerHeight;
-      wrapper.style.top = `${rect.top}px`;
-      wrapper.style.right = "0";
-      wrapper.style.bottom = "auto";
-      wrapper.style.left = "0";
-      wrapper.style.height = `${rect.height}px`;
-      wrapper.style.clipPath = "none";
+      // Keep the render target and texture coordinates anchored to the
+      // viewport across the intro/hero handoff; reveal only the visible hero
+      // slice so the background cannot jump or recrop when the intro ends.
+      const clipTop = Math.max(0, Math.min(window.innerHeight, rect.top));
+      const clipBottom = Math.max(0, Math.min(window.innerHeight, window.innerHeight - rect.bottom));
+      wrapper.style.top = "";
+      wrapper.style.right = "";
+      wrapper.style.bottom = "";
+      wrapper.style.left = "";
+      wrapper.style.height = "";
+      wrapper.style.clipPath = `inset(${clipTop}px 0px ${clipBottom}px 0px)`;
       setSize();
       setActive(visible);
     };

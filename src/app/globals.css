@@ -1500,6 +1500,23 @@ svg {
   background: #101312;
   filter: invert(0.9) hue-rotate(95deg) saturate(0.78) brightness(0.88) contrast(1.12);
 }
+.meeting-avatar-replacement {
+  position: absolute;
+  z-index: 2;
+  top: 24px;
+  left: 32px;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(121, 217, 158, 0.22);
+  border-radius: 50%;
+  background: #080a09;
+  box-shadow: 0 0 0 3px #080a09;
+  pointer-events: none;
+}
+.meeting-avatar-replacement img { width: 28px; height: 28px; object-fit: contain; }
 @keyframes meeting-border-drift { to { transform: rotate(1turn); } }
 
 @media (prefers-reduced-motion: reduce) {
