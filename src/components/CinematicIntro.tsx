@@ -86,6 +86,15 @@ export default function CinematicIntro() {
     const stage = stageRef.current;
     const header = document.querySelector(".site-header");
     const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalBodyOverflow = document.body.style.overflow;
+    let scrollLocked = false;
+    const restorePageScroll = () => {
+      if (!scrollLocked) return;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.body.style.overflow = originalBodyOverflow;
+      scrollLocked = false;
+    };
     let alreadyPlayed = false;
 
     lifecycle.disposed = false;
@@ -98,6 +107,7 @@ export default function CinematicIntro() {
       if (lifecycle.completed) return;
       lifecycle.completed = true;
       playRef.current = false;
+      restorePageScroll();
       try {
         sessionStorage.setItem(INTRO_SESSION_KEY, "true");
       } catch {
@@ -123,10 +133,9 @@ export default function CinematicIntro() {
       };
     }
 
-    const originalHtmlOverflow = document.documentElement.style.overflow;
-    const originalBodyOverflow = document.body.style.overflow;
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
+    scrollLocked = true;
 
     const handleMotionPreference = (event: MediaQueryListEvent) => {
       if (event.matches) lifecycle.complete?.(true);
@@ -140,8 +149,7 @@ export default function CinematicIntro() {
     return () => {
       lifecycle.disposed = true;
       motionPreference.removeEventListener("change", handleMotionPreference);
-      document.documentElement.style.overflow = originalHtmlOverflow;
-      document.body.style.overflow = originalBodyOverflow;
+      restorePageScroll();
       timelineRef.current?.kill();
       timelineRef.current = null;
       headerTweenRef.current?.kill();
