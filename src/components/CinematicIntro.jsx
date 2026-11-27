@@ -1,23 +1,19 @@
 "use client";
 
 import { gsap } from "gsap";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-const firstName = "EVIN";
-const lastName = "LEYANDER";
+const INTRO_SESSION_KEY = "evin-portfolio-liquid-intro-v1";
 
-function LetterRun({ text, className }) {
-  return (
-    <span className={className} aria-hidden="true">
-      {Array.from(text).map((letter, index) => (
-        <span className="intro-letter" key={`${letter}-${index}`}>{letter}</span>
-      ))}
-    </span>
-  );
+function announceProgress(progress) {
+  window.dispatchEvent(new CustomEvent("portfolio:intro-progress", { detail: { progress } }));
 }
 
 function markIntroComplete() {
   document.documentElement.dataset.introComplete = "true";
+  announceProgress(1);
+  window.dispatchEvent(new Event("portfolio:intro-reveal"));
   window.dispatchEvent(new Event("portfolio:intro-complete"));
 }
 
@@ -32,143 +28,108 @@ export default function CinematicIntro() {
 
     let completed = false;
     let disposed = false;
-    let heroRevealed = false;
     let context = null;
-    const revealHero = () => {
-      if (heroRevealed) return;
-      heroRevealed = true;
-      markIntroComplete();
-    };
+    const header = document.querySelector(".site-header");
+
     const complete = () => {
       if (completed) return;
       completed = true;
-      revealHero();
+      try {
+        sessionStorage.setItem(INTRO_SESSION_KEY, "true");
+      } catch {
+        // The animation should still finish if storage is unavailable.
+      }
+      markIntroComplete();
       setVisible(false);
     };
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) {
+    let alreadyPlayed = false;
+    try {
+      alreadyPlayed = sessionStorage.getItem(INTRO_SESSION_KEY) === "true";
+    } catch {
+      alreadyPlayed = false;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || alreadyPlayed) {
       complete();
       return undefined;
     }
 
-    const header = document.querySelector(".site-header");
-    const startIntro = () => {
-      if (disposed || completed) return;
-      context = gsap.context(() => {
-      const firstLetters = gsap.utils.toArray(".intro-name-first .intro-letter");
-      const lastLetters = gsap.utils.toArray(".intro-name-last .intro-letter");
-      const panels = gsap.utils.toArray(".intro-panel");
-
-      gsap.set(stage, { autoAlpha: 1, clipPath: "inset(0% 0% 0% 0%)", scaleX: 1 });
-      gsap.set(".intro-kicker, .intro-index", { autoAlpha: 0, y: 16 });
-      gsap.set(".intro-letter", {
-        autoAlpha: 0,
-        yPercent: 138,
-        scaleX: 0.72,
-        rotateX: -54,
-        transformOrigin: "50% 100%",
-      });
-      gsap.set(".intro-ripple", { autoAlpha: 0, scale: 0.28 });
-      gsap.set(".intro-streak", { scaleX: 0, autoAlpha: 0.9, transformOrigin: "50% 50%" });
-      gsap.set(panels, { xPercent: 0, rotate: 0 });
+    context = gsap.context(() => {
+      gsap.set(stage, { autoAlpha: 1 });
+      gsap.set(".intro-mark-wrap", { autoAlpha: 0, y: 14, scale: 0.88, filter: "blur(9px)" });
       if (header) gsap.set(header, { autoAlpha: 0, y: -18 });
 
-      const sequence = gsap.timeline({ defaults: { overwrite: "auto" }, onComplete: complete });
+      const introMark = stage.querySelector(".intro-mark-wrap");
+      const navbarMark = header?.querySelector(".brand-mark-frame");
+      const introRect = introMark?.getBoundingClientRect();
+      const navbarRect = navbarMark?.getBoundingClientRect();
+      const logoTravel = introRect && navbarRect
+        ? {
+          x: navbarRect.left + navbarRect.width / 2 - (introRect.left + introRect.width / 2),
+          y: navbarRect.top + navbarRect.height / 2 - (introRect.top + introRect.height / 2),
+          scale: Math.min(navbarRect.width / introRect.width, navbarRect.height / introRect.height),
+        }
+        : { x: 0, y: -14, scale: 0.82 };
+
+      const sequence = gsap.timeline({
+        defaults: { overwrite: "auto" },
+        onUpdate: () => announceProgress(timelineRef.current?.progress() ?? 0),
+        onComplete: complete,
+      });
       timelineRef.current = sequence;
 
       sequence
-        .to(".intro-streak", { scaleX: 1, duration: 0.25, ease: "expo.out" }, 0.02)
-        .to(".intro-streak", { scaleX: 0.16, autoAlpha: 0.38, duration: 0.38, ease: "power3.inOut" }, 0.24)
-        .to(".intro-ripple", { autoAlpha: 0.42, scale: 1.5, stagger: 0.08, duration: 0.72, ease: "power3.out" }, 0.1)
-        .to(".intro-ripple", { autoAlpha: 0, scale: 2.35, stagger: 0.08, duration: 0.38, ease: "power2.in" }, 0.38)
-        .to(".intro-index", { autoAlpha: 1, y: 0, duration: 0.42, ease: "power3.out" }, 0.18)
-        .to(".intro-kicker", { autoAlpha: 1, y: 0, duration: 0.46, ease: "power3.out" }, 0.3)
-        .to(firstLetters, {
+        .to({}, { duration: 0.64 })
+        .to({}, { duration: 0.82 })
+        .to(".intro-mark-wrap", {
           autoAlpha: 1,
-          yPercent: 0,
-          scaleX: 1,
-          rotateX: 0,
-          stagger: { each: 0.042, from: "center" },
-          duration: 0.78,
-          ease: "elastic.out(1, 0.48)",
-        }, 0.38)
-        .to(lastLetters, {
-          autoAlpha: 1,
-          yPercent: 0,
-          scaleX: 1,
-          rotateX: 0,
-          stagger: { each: 0.036, from: "center" },
-          duration: 0.78,
-          ease: "elastic.out(1, 0.5)",
-        }, 0.48)
-        .to(".intro-name-first", { xPercent: -4, yPercent: -5, rotate: -2, scale: 1.22, duration: 0.46, ease: "power3.in" }, 1.16)
-        .to(".intro-name-last", { xPercent: 4, yPercent: 5, rotate: 2, scale: 1.2, duration: 0.46, ease: "power3.in" }, 1.16)
-        .to(".intro-kicker, .intro-index", { autoAlpha: 0, y: -14, duration: 0.2, ease: "power2.in" }, 1.26)
+          y: 0,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: 0.74,
+          ease: "power3.out",
+        }, 2.24)
+        .fromTo(".intro-logo-sweep", { xPercent: -130, autoAlpha: 0 }, {
+          xPercent: 130,
+          autoAlpha: 0.88,
+          duration: 0.94,
+          ease: "power2.inOut",
+        }, 2.62)
+        .to(".intro-mark-wrap", { scale: 1.035, duration: 0.65, ease: "sine.inOut" }, 3.24)
+        .to(".intro-mark-wrap", { scale: 0.97, duration: 0.65, ease: "power2.inOut" }, 3.89)
         .add(() => {
-          revealHero();
-          if (header) {
-            gsap.to(header, { autoAlpha: 1, y: 0, duration: 0.62, ease: "power3.out", overwrite: true });
-          }
-        }, 1.58)
-        .to(".intro-panel--left", { xPercent: -112, rotate: -5, duration: 0.66, ease: "power4.inOut" }, 1.53)
-        .to(".intro-panel--right", { xPercent: 112, rotate: 5, duration: 0.66, ease: "power4.inOut" }, 1.53)
-        .to(stage, { clipPath: "inset(47% 0% 47% 0%)", duration: 0.52, ease: "power4.inOut" }, 1.68)
-        .to(".intro-streak", { scaleX: 1.4, autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 1.68)
-        .to(stage, { scaleX: 0, autoAlpha: 0, duration: 0.34, ease: "power3.inOut" }, 2.1);
-      }, stage);
-    };
-
-    const fontsReady = document.fonts?.ready;
-    if (fontsReady) fontsReady.then(startIntro, startIntro);
-    else startIntro();
-
-    const skipIntro = () => {
-      timelineRef.current?.kill();
-      if (prefersReducedMotion) {
-        complete();
-        return;
-      }
-      gsap.to(stage, {
-        clipPath: "inset(48% 0% 48% 0%)",
-        scaleX: 0,
-        duration: 0.34,
-        ease: "power3.inOut",
-        onComplete: complete,
-      });
-    };
-    const onKeyDown = (event) => {
-      if (event.key === "Escape") skipIntro();
-    };
-    window.addEventListener("keydown", onKeyDown);
+          window.dispatchEvent(new Event("portfolio:intro-reveal"));
+          if (header) gsap.to(header, { autoAlpha: 1, y: 0, duration: 0.62, ease: "power3.out", overwrite: true });
+        }, 4.22)
+        .to(".intro-mark-wrap", { ...logoTravel, autoAlpha: 0, duration: 0.72, ease: "power3.inOut" }, 4.22)
+        .to(stage, { autoAlpha: 0, duration: 0.78, ease: "power2.inOut" }, 4.22);
+    }, stage);
 
     return () => {
-      window.removeEventListener("keydown", onKeyDown);
       disposed = true;
       timelineRef.current?.kill();
       timelineRef.current = null;
       context?.revert();
+      if (!completed && disposed) announceProgress(1);
     };
   }, []);
 
   if (!visible) return null;
 
   return (
-    <div className="cinematic-intro" ref={stageRef} role="region" aria-label="Portfolio introduction">
-      <div className="intro-panel intro-panel--left" aria-hidden="true" />
-      <div className="intro-panel intro-panel--right" aria-hidden="true" />
-      <span className="intro-ripple intro-ripple--one" aria-hidden="true" />
-      <span className="intro-ripple intro-ripple--two" aria-hidden="true" />
-      <span className="intro-streak" aria-hidden="true" />
-      <p className="intro-index">Independent software engineer <span>·</span> 2026</p>
-      <div className="intro-center">
-        <p className="intro-kicker">Thoughtful products. Built to move.</p>
-        <p className="sr-only">Evin Leyander — Software Engineer</p>
-        <div className="intro-name">
-          <LetterRun className="intro-name-first" text={firstName} />
-          <LetterRun className="intro-name-last" text={lastName} />
-        </div>
-        <span className="intro-rule" aria-hidden="true" />
+    <div className="cinematic-intro" ref={stageRef} aria-hidden="true">
+      <div className="intro-mark-wrap">
+        <Image
+          className="intro-mark"
+          src="/el-monogram-intro.png"
+          alt=""
+          width={783}
+          height={509}
+          priority
+          sizes="(max-width: 620px) 56vw, 44vw"
+        />
+        <span className="intro-logo-sweep" />
       </div>
     </div>
   );

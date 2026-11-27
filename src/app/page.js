@@ -1,6 +1,7 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CinematicIntro from "../components/CinematicIntro";
+import LiquidGlassBackground from "../components/LiquidGlassBackground";
 import Hero from "../views/Hero";
 import Highlights from "../views/Highlights";
 import Skills from "../views/Skills";
@@ -47,6 +48,7 @@ export default function HomePage() {
     <>
       <JsonLd data={homepageJsonLd} />
       <div className="site-shell min-h-screen">
+        <LiquidGlassBackground />
         <CinematicIntro />
         <a className="skip-link" href="#main-content">Skip to content</a>
         <Navbar />
