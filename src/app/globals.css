@@ -108,7 +108,7 @@ textarea {
   background: #010705;
 }
 
-.intro-liquid-svg {
+.intro-shader-canvas {
   position: absolute;
   z-index: 1;
   display: block;
@@ -123,7 +123,7 @@ textarea {
   z-index: 2;
   top: 50%;
   left: 50%;
-  width: 24vmin;
+  width: 28vmin;
   aspect-ratio: 783 / 509;
   translate: -50% -50%;
   opacity: 0;
@@ -1538,6 +1538,7 @@ svg {
 }
 
 @media (max-width: 920px) {
+  .site-header { background: rgba(8, 9, 9, 0.98); }
   :root { --nav-height: 70px; }
   .page-container { width: min(100% - 40px, 720px); }
   .nav-row { display: flex; justify-content: space-between; }
@@ -1619,6 +1620,13 @@ svg {
   .skill-group-heading { gap: 16px; }
   .skill-category-icon { width: 48px; height: 48px; }
   .tech-badge-list { gap: 9px; }
+  .meeting-avatar-replacement {
+    top: 66px;
+    left: 20px;
+    width: 32px;
+    height: 32px;
+  }
+  .meeting-avatar-replacement img { width: 24px; height: 24px; }
   .experience-list { gap: 13px; margin-top: 32px; }
   .experience-list::before { left: 5px; top: 33px; bottom: 28px; }
   .experience-item { grid-template-columns: 1fr; gap: 0; padding-left: 24px; }
